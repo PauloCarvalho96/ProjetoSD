@@ -12,11 +12,11 @@
 
 @REM ======================== CHANGE BELOW ACCORDING YOUR PROJECT and PC SETTINGS ========================
 @REM ==== PC STUFF ====
-@Set USERNAME=Paulo
+@Set USERNAME=tmsl9
 
 @Set WORKDRIVE=C
 @REM Set JDK=%WORKDRIVE%:\Programas\Java\jdk1.8.0_60
-@Set JDK="C:\Program Files\JetBrains\IntelliJ IDEA 2019.3.3\jbr"
+@Set JDK="C:\Program Files\Java\jdk1.8.0_211\bin"
 @REM These vars will be used to check the output folder (whereto classes are generated)
 @SET NETBEANS=NetBeans
 @SET INTELLIJ=IntelliJ
