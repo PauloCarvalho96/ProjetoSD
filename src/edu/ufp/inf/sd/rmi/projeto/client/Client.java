@@ -3,15 +3,11 @@ package edu.ufp.inf.sd.rmi.projeto.client;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import java.io.IOException;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -19,19 +15,13 @@ import java.rmi.registry.Registry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client extends Application {
+public class Client extends JFrame implements ActionListener {
 
-<<<<<<< HEAD
-    public Text text;
-    public TextField username;
-    public PasswordField password;
-=======
     JPanel panel;
     JLabel user_label, password_label, message;
     JTextField userName_text;
     JTextField password_text;
     JButton submit, cancel;
->>>>>>> parent of b7dd0a8... gui client
 
     /**
      * Context for connecting a RMI client to a RMI Servant
@@ -46,7 +36,6 @@ public class Client extends Application {
         if (args != null && args.length < 2) {
             System.exit(-1);
         } else {
-            launch(args);
             //1. ============ Setup client RMI context ============
             Client hwc = new Client(args);
             //2. ============ Lookup service ============
@@ -56,7 +45,7 @@ public class Client extends Application {
         }
     }
 
-    public Client(String[] args) {
+    public Client(String args[]) {
         try {
             //List ans set args
             SetupContextRMI.printArgs(this.getClass().getName(), args);
@@ -93,8 +82,6 @@ public class Client extends Application {
     }
 
     private void playService() {
-<<<<<<< HEAD
-=======
 //        try {
             //============ Call remote service ============
 //            UserSessionRI sessionRI = this.userFactoryRI.login("test","test");
@@ -126,34 +113,27 @@ public class Client extends Application {
         submit = new JButton("SUBMIT");
 
         panel = new JPanel(new GridLayout(3, 1));
->>>>>>> parent of b7dd0a8... gui client
 
+        panel.add(user_label);
+        panel.add(userName_text);
+        panel.add(password_label);
+        panel.add(password_text);
+
+        message = new JLabel();
+        panel.add(message);
+        panel.add(submit);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Adding the listeners to components..
+        submit.addActionListener(this);
+        add(panel, BorderLayout.CENTER);
+        setTitle("Please Login Here !");
+        setSize(300, 100);
+        setVisible(true);
     }
 
     @Override
-<<<<<<< HEAD
-    public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-        Scene scene = new Scene(root, 601, 402);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    public void handlerLogin() {
-        // se os campos nao tiverem vazios
-        if(!username.getText().trim().isEmpty() && !password.getText().trim().isEmpty()){
-            String usr = username.getText().trim();
-            String psw = password.getText().trim();
-            UserSessionRI sessionRI = null;
-            try {
-                sessionRI = this.userFactoryRI.login(usr,psw);
-                if(sessionRI != null){
-                    text.setText("Sessão iniciada");
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-=======
     public void actionPerformed(ActionEvent ae) {
         String userName = userName_text.getText();
         String password = password_text.getText();
@@ -168,7 +148,6 @@ public class Client extends Application {
             if(sessionRI == null){
                 message.setText("erro");
             }
->>>>>>> parent of b7dd0a8... gui client
         }
     }
 
