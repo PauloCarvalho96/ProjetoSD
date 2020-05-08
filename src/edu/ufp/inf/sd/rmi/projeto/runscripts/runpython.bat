@@ -11,8 +11,7 @@ call setenv client
 @REM cls
 @cd %ABSPATH2CLASSES%
 
-@echo %ABSPATH2CLASSES%
-
+echo %ABSPATH2CLASSES%
 @REM cd %ABSPATH2DIST%
 @REM python 3:
 python -m http.server 8000
@@ -20,3 +19,5 @@ python -m http.server 8000
 @REM python -m SimpleHTTPServer 8000
 
 @cd %ABSPATH2SRC%\%JAVASCRIPTSPATH%
+
+echo %ABSPATH2CLASSES%\%JAVASCRIPTSPATH%
