@@ -11,6 +11,8 @@ call setenv client
 @REM cls
 @cd %ABSPATH2CLASSES%
 
+@echo %ABSPATH2CLASSES%
+
 @REM cd %ABSPATH2DIST%
 @REM python 3:
 python -m http.server 8000
