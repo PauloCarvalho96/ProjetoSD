@@ -137,13 +137,17 @@ public class Client extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         String userName = userName_text.getText();
         String password = password_text.getText();
+        UserSessionRI sessionRI = null;
         try {
-            UserSessionRI sessionRI = this.userFactoryRI.login(userName.trim(),password.trim());
+            sessionRI = this.userFactoryRI.login(userName.trim(),password.trim());
             if(sessionRI != null){
                 message.setText("Sessão iniciada");
             }
         } catch (RemoteException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            if(sessionRI == null){
+                message.setText("erro");
+            }
         }
     }
 
