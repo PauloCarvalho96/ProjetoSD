@@ -3,12 +3,17 @@ package edu.ufp.inf.sd.rmi.projeto.client;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
-import sun.rmi.runtime.Log;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -16,7 +21,11 @@ import java.rmi.registry.Registry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client extends GUIClient {
+public class Client extends Application {
+
+    public Text text;
+    public TextField username;
+    public PasswordField password;
 
     /**
      * Context for connecting a RMI client to a RMI Servant
@@ -27,7 +36,7 @@ public class Client extends GUIClient {
      */
     private UserFactoryRI userFactoryRI;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         if (args != null && args.length < 2) {
             System.exit(-1);
         } else {
@@ -36,7 +45,7 @@ public class Client extends GUIClient {
             //2. ============ Lookup service ============
             hwc.lookupService();
             //3. ============ Play with service ============
-            hwc.playService();
+            hwc.playService(args);
         }
     }
 
@@ -77,33 +86,27 @@ public class Client extends GUIClient {
     }
 
 //    ============ Call remote service ============
-    private void playService() {
-
-        guiLogin();
-
+    private void playService(String[] args) {
+        launch(args);
     }
 
-
-
     @Override
-    public void actionPerformed(ActionEvent ae) {
-        String userName = userName_text.getText();
-        String password = String.valueOf(password_text.getPassword());
-        UserSessionRI sessionRI = null;
-        try {
-            sessionRI = this.userFactoryRI.login(userName.trim(),password.trim());
+    public void start(Stage primaryStage) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
+        Scene scene = new Scene(root, 601, 402);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    public void handlerLogin() throws RemoteException {
+        // se os campos nao tiverem vazios
+        if(!username.getText().trim().isEmpty() && !password.getText().trim().isEmpty()){
+            String usr = username.getText().trim();
+            String psw = password.getText().trim();
+            UserSessionRI sessionRI = this.userFactoryRI.login(usr,psw);
             if(sessionRI != null){
-                guiMenu();
-                message.setText("Sessão iniciada");
-                System.out.println("Sessão iniciada");
-            }else{
-                userName_text.setText("");
-                password_text.setText("");
-                message.setText("Wrong credentials");
-                System.out.println("Erro ao criar sessão");
+                text.setText("Sessão iniciada");
             }
-        } catch (RemoteException e) {
-            e.printStackTrace();
         }
     }
 
