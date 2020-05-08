@@ -3,6 +3,7 @@ package edu.ufp.inf.sd.rmi.projeto.client;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
+import sun.rmi.runtime.Log;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,13 +16,7 @@ import java.rmi.registry.Registry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client extends JFrame implements ActionListener {
-
-    JPanel panel;
-    JLabel user_label, password_label, message;
-    JTextField userName_text;
-    JTextField password_text;
-    JButton submit, cancel;
+public class Client extends GUIClient {
 
     /**
      * Context for connecting a RMI client to a RMI Servant
@@ -82,72 +77,32 @@ public class Client extends JFrame implements ActionListener {
     }
 
     private void playService() {
-//        try {
-            //============ Call remote service ============
-//            UserSessionRI sessionRI = this.userFactoryRI.login("test","test");
-//            if(sessionRI != null){
-//                System.out.println("Sessao iniciada!");
-//            }
-            new Client();
 
-//            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "going to finish, bye. ;)");
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-//        }
+        guiLogin();
+
     }
 
-    Client(){
-        // User Label
-        user_label = new JLabel();
-        user_label.setText("User Name :");
-        userName_text = new JTextField();
 
-        // Password
-
-        password_label = new JLabel();
-        password_label.setText("Password :");
-        password_text = new JTextField();
-
-        // Submit
-
-        submit = new JButton("SUBMIT");
-
-        panel = new JPanel(new GridLayout(3, 1));
-
-        panel.add(user_label);
-        panel.add(userName_text);
-        panel.add(password_label);
-        panel.add(password_text);
-
-        message = new JLabel();
-        panel.add(message);
-        panel.add(submit);
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // Adding the listeners to components..
-        submit.addActionListener(this);
-        add(panel, BorderLayout.CENTER);
-        setTitle("Please Login Here !");
-        setSize(300, 100);
-        setVisible(true);
-    }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
         String userName = userName_text.getText();
-        String password = password_text.getText();
+        String password = String.valueOf(password_text.getPassword());
         UserSessionRI sessionRI = null;
         try {
             sessionRI = this.userFactoryRI.login(userName.trim(),password.trim());
             if(sessionRI != null){
+                guiMenu();
                 message.setText("Sessão iniciada");
+                System.out.println("Sessão iniciada");
+            }else{
+                userName_text.setText("");
+                password_text.setText("");
+                message.setText("Wrong credentials");
+                System.out.println("Erro ao criar sessão");
             }
         } catch (RemoteException e) {
-//            e.printStackTrace();
-            if(sessionRI == null){
-                message.setText("erro");
-            }
+            e.printStackTrace();
         }
     }
 
