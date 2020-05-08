@@ -82,8 +82,6 @@ public class Client extends GUIClient {
 
     }
 
-
-
     @Override
     public void actionPerformed(ActionEvent ae) {
         String userName = userName_text.getText();

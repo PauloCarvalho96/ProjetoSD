@@ -10,11 +10,39 @@ import java.rmi.RemoteException;
 
 public class GUIClient extends JFrame implements ActionListener {
 
-    JPanel panel, panel1;
+    JPanel panel;
     JLabel user_label, password_label, message;
     JTextField userName_text;
     JPasswordField password_text;
-    JButton submit, cancel;
+    JButton submit, cancel, registry, login;
+
+    public void guiRegistry(){
+
+        // Submit
+
+        login = new JButton("LOGIN");
+        registry = new JButton("REGISTRY");
+
+        panel = new JPanel(new GridLayout(3, 1));
+
+        panel.add(user_label);
+        panel.add(userName_text);
+        panel.add(password_label);
+        panel.add(password_text);
+
+        message = new JLabel();
+        panel.add(message);
+        panel.add(submit);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Adding the listeners to components..
+        submit.addActionListener(this);
+        add(panel, BorderLayout.CENTER);
+        setTitle("Please Login Here !");
+        setSize(300, 100);
+        setVisible(true);
+    }
 
     public void guiLogin(){
         // User Label
@@ -49,7 +77,7 @@ public class GUIClient extends JFrame implements ActionListener {
         submit.addActionListener(this);
         add(panel, BorderLayout.CENTER);
         setTitle("Please Login Here !");
-        setSize(300, 100);
+        setSize(900, 300);
         setVisible(true);
     }
 
