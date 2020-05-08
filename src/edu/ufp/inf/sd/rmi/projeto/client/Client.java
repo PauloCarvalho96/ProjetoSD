@@ -4,7 +4,6 @@ import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,7 +11,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
@@ -36,21 +34,21 @@ public class Client extends Application {
      */
     private UserFactoryRI userFactoryRI;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         if (args != null && args.length < 2) {
             System.exit(-1);
         } else {
+            launch(args);
             //1. ============ Setup client RMI context ============
             Client hwc = new Client(args);
             //2. ============ Lookup service ============
             hwc.lookupService();
             //3. ============ Play with service ============
-//            hwc.playService(args);
-            launch(args);
+            hwc.playService();
         }
     }
 
-    public Client(String args[]) {
+    public Client(String[] args) {
         try {
             //List ans set args
             SetupContextRMI.printArgs(this.getClass().getName(), args);
@@ -87,9 +85,9 @@ public class Client extends Application {
     }
 
 //    ============ Call remote service ============
-//    private void playService(String[] args) {
-//        launch(args);
-//    }
+    private void playService() {
+
+    }
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -99,14 +97,19 @@ public class Client extends Application {
         primaryStage.show();
     }
 
-    public void handlerLogin() throws RemoteException {
+    public void handlerLogin() {
         // se os campos nao tiverem vazios
         if(!username.getText().trim().isEmpty() && !password.getText().trim().isEmpty()){
             String usr = username.getText().trim();
             String psw = password.getText().trim();
-            UserSessionRI sessionRI = this.userFactoryRI.login(usr,psw);
-            if(sessionRI != null){
-                text.setText("Sessão iniciada");
+            UserSessionRI sessionRI = null;
+            try {
+                sessionRI = this.userFactoryRI.login(usr,psw);
+                if(sessionRI != null){
+                    text.setText("Sessão iniciada");
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
         }
     }
