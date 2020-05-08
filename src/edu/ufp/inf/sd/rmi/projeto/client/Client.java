@@ -21,9 +21,17 @@ import java.util.logging.Logger;
 
 public class Client extends Application {
 
+<<<<<<< HEAD
     public Text text;
     public TextField username;
     public PasswordField password;
+=======
+    JPanel panel;
+    JLabel user_label, password_label, message;
+    JTextField userName_text;
+    JTextField password_text;
+    JButton submit, cancel;
+>>>>>>> parent of b7dd0a8... gui client
 
     /**
      * Context for connecting a RMI client to a RMI Servant
@@ -84,12 +92,46 @@ public class Client extends Application {
         return userFactoryRI;
     }
 
-//    ============ Call remote service ============
     private void playService() {
+<<<<<<< HEAD
+=======
+//        try {
+            //============ Call remote service ============
+//            UserSessionRI sessionRI = this.userFactoryRI.login("test","test");
+//            if(sessionRI != null){
+//                System.out.println("Sessao iniciada!");
+//            }
+            new Client();
+
+//            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "going to finish, bye. ;)");
+//        } catch (RemoteException ex) {
+//            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+//        }
+    }
+
+    Client(){
+        // User Label
+        user_label = new JLabel();
+        user_label.setText("User Name :");
+        userName_text = new JTextField();
+
+        // Password
+
+        password_label = new JLabel();
+        password_label.setText("Password :");
+        password_text = new JTextField();
+
+        // Submit
+
+        submit = new JButton("SUBMIT");
+
+        panel = new JPanel(new GridLayout(3, 1));
+>>>>>>> parent of b7dd0a8... gui client
 
     }
 
     @Override
+<<<<<<< HEAD
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
         Scene scene = new Scene(root, 601, 402);
@@ -111,6 +153,22 @@ public class Client extends Application {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
+=======
+    public void actionPerformed(ActionEvent ae) {
+        String userName = userName_text.getText();
+        String password = password_text.getText();
+        UserSessionRI sessionRI = null;
+        try {
+            sessionRI = this.userFactoryRI.login(userName.trim(),password.trim());
+            if(sessionRI != null){
+                message.setText("Sessão iniciada");
+            }
+        } catch (RemoteException e) {
+//            e.printStackTrace();
+            if(sessionRI == null){
+                message.setText("erro");
+            }
+>>>>>>> parent of b7dd0a8... gui client
         }
     }
 

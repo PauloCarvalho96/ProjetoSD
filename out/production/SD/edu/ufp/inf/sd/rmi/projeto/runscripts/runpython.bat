@@ -11,7 +11,10 @@ call setenv client
 @REM cls
 @cd %ABSPATH2CLASSES%
 
+<<<<<<< HEAD
 echo %ABSPATH2CLASSES%
+=======
+>>>>>>> parent of b7dd0a8... gui client
 @REM cd %ABSPATH2DIST%
 @REM python 3:
 python -m http.server 8000

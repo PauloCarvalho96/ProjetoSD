@@ -1,7 +1,5 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
-import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -9,15 +7,11 @@ public class DBMockup implements Serializable {
 
     // arraylist com utilizadores
     private final ArrayList<User> users;
-    private final ArrayList<TaskSubjectRI> tasks;
-    private final ArrayList<WorkerObserverRI> workers;
 
     public DBMockup() {
-        users = new ArrayList<>();
-        tasks = new ArrayList<>();
-        workers = new ArrayList<>();
+        users = new ArrayList();
 
-        //Add user
+        //Add one user
         users.add(new User("test", "test"));
     }
 
