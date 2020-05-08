@@ -1,4 +1,5 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
+import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
