@@ -20,7 +20,7 @@ public class Client extends JFrame implements ActionListener {
     JPanel panel;
     JLabel user_label, password_label, message;
     JTextField userName_text;
-    JTextField password_text;
+    JPasswordField password_text;
     JButton submit, cancel;
 
     /**
@@ -45,7 +45,7 @@ public class Client extends JFrame implements ActionListener {
         }
     }
 
-    public Client(String args[]) {
+    public Client(String[] args) {
         try {
             //List ans set args
             SetupContextRMI.printArgs(this.getClass().getName(), args);
@@ -82,21 +82,10 @@ public class Client extends JFrame implements ActionListener {
     }
 
     private void playService() {
-//        try {
-            //============ Call remote service ============
-//            UserSessionRI sessionRI = this.userFactoryRI.login("test","test");
-//            if(sessionRI != null){
-//                System.out.println("Sessao iniciada!");
-//            }
-            new Client();
-
-//            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "going to finish, bye. ;)");
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-//        }
+        GuiClient();
     }
 
-    Client(){
+    public void GuiClient(){
         // User Label
         user_label = new JLabel();
         user_label.setText("User Name :");
@@ -106,7 +95,7 @@ public class Client extends JFrame implements ActionListener {
 
         password_label = new JLabel();
         password_label.setText("Password :");
-        password_text = new JTextField();
+        password_text = new JPasswordField();
 
         // Submit
 
@@ -136,18 +125,17 @@ public class Client extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String userName = userName_text.getText();
-        String password = password_text.getText();
+        String password = String.valueOf(password_text.getPassword());
         UserSessionRI sessionRI = null;
         try {
             sessionRI = this.userFactoryRI.login(userName.trim(),password.trim());
             if(sessionRI != null){
-                message.setText("Sessão iniciada");
+                message.setText("Sessão iniciada!");
+            } else {
+                message.setText("Erro!");
             }
         } catch (RemoteException e) {
-//            e.printStackTrace();
-            if(sessionRI == null){
-                message.setText("erro");
-            }
+            e.printStackTrace();
         }
     }
 
