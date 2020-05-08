@@ -45,7 +45,8 @@ public class Client extends Application {
             //2. ============ Lookup service ============
             hwc.lookupService();
             //3. ============ Play with service ============
-            hwc.playService(args);
+//            hwc.playService(args);
+            launch(args);
         }
     }
 
@@ -86,9 +87,9 @@ public class Client extends Application {
     }
 
 //    ============ Call remote service ============
-    private void playService(String[] args) {
-        launch(args);
-    }
+//    private void playService(String[] args) {
+//        launch(args);
+//    }
 
     @Override
     public void start(Stage primaryStage) throws IOException {
