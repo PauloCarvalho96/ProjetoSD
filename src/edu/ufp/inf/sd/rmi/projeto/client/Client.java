@@ -6,6 +6,7 @@ import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
@@ -14,18 +15,18 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client extends Application {
+public class Client {
 
-    public Text text;
-    public TextField username;
-    public PasswordField password;
+
 
     /**
      * Context for connecting a RMI client to a RMI Servant
@@ -45,8 +46,7 @@ public class Client extends Application {
             //2. ============ Lookup service ============
             hwc.lookupService();
             //3. ============ Play with service ============
-//            hwc.playService(args);
-            launch(args);
+            hwc.playService(args);
         }
     }
 
@@ -87,28 +87,20 @@ public class Client extends Application {
     }
 
 //    ============ Call remote service ============
-//    private void playService(String[] args) {
-//        launch(args);
-//    }
-
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-        Scene scene = new Scene(root, 601, 402);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+    private void playService(String[] args) {
+        LoadGUI.main(args);
     }
 
-    public void handlerLogin() throws RemoteException {
-        // se os campos nao tiverem vazios
-        if(!username.getText().trim().isEmpty() && !password.getText().trim().isEmpty()){
-            String usr = username.getText().trim();
-            String psw = password.getText().trim();
-            UserSessionRI sessionRI = this.userFactoryRI.login(usr,psw);
-            if(sessionRI != null){
-                text.setText("Sessão iniciada");
-            }
-        }
+    public void handlerLogin(ActionEvent actionEvent) throws IOException {
+        System.out.println("client");
+        //        // se os campos nao tiverem vazios
+//        if(!username.getText().trim().isEmpty() && !password.getText().trim().isEmpty()){
+//            String usr = username.getText().trim();
+//            String psw = password.getText().trim();
+//            UserSessionRI sessionRI = this.userFactoryRI.login(usr,psw);
+//            if(sessionRI != null){
+//                text.setText("Sessão iniciada");
+//            }
+//        }
     }
-
 }
