@@ -1,13 +1,16 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import edu.ufp.inf.sd.rmi.projeto.server.DBMockup;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -15,13 +18,7 @@ import java.rmi.registry.Registry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client extends JFrame implements ActionListener {
-
-    JPanel panel;
-    JLabel user_label, password_label, message;
-    JTextField userName_text;
-    JPasswordField password_text;
-    JButton submit, cancel;
+public class Client extends Application {
 
     /**
      * Context for connecting a RMI client to a RMI Servant
@@ -33,16 +30,25 @@ public class Client extends JFrame implements ActionListener {
     private UserFactoryRI userFactoryRI;
 
     public static void main(String[] args) {
-        if (args != null && args.length < 2) {
-            System.exit(-1);
-        } else {
-            //1. ============ Setup client RMI context ============
-            Client hwc = new Client(args);
-            //2. ============ Lookup service ============
-            hwc.lookupService();
-            //3. ============ Play with service ============
-            hwc.playService();
-        }
+        //1. ============ Setup client RMI context ============
+        Client hwc = new Client(args);
+        //2. ============ Lookup service ============
+        hwc.lookupService();
+        //3. ============ Play with service ============
+        hwc.playService();
+
+        //launch(args);
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("login_register.fxml"));
+
+        Scene scene = new Scene(root, 600, 400);
+
+        stage.setTitle("Application");
+        stage.setScene(scene);
+        stage.show();
     }
 
     public Client(String[] args) {
@@ -82,58 +88,15 @@ public class Client extends JFrame implements ActionListener {
     }
 
     private void playService() {
-        GuiClient();
-    }
-
-    public void GuiClient(){
-        // User Label
-        user_label = new JLabel();
-        user_label.setText("User Name :");
-        userName_text = new JTextField();
-
-        // Password
-
-        password_label = new JLabel();
-        password_label.setText("Password :");
-        password_text = new JPasswordField();
-
-        // Submit
-
-        submit = new JButton("SUBMIT");
-
-        panel = new JPanel(new GridLayout(3, 1));
-
-        panel.add(user_label);
-        panel.add(userName_text);
-        panel.add(password_label);
-        panel.add(password_text);
-
-        message = new JLabel();
-        panel.add(message);
-        panel.add(submit);
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // Adding the listeners to components..
-        submit.addActionListener(this);
-        add(panel, BorderLayout.CENTER);
-        setTitle("Please Login Here !");
-        setSize(300, 100);
-        setVisible(true);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-        String userName = userName_text.getText();
-        String password = String.valueOf(password_text.getPassword());
-        UserSessionRI sessionRI = null;
         try {
-            sessionRI = this.userFactoryRI.login(userName.trim(),password.trim());
+            UserSessionRI sessionRI = this.userFactoryRI.login("test","test");
             if(sessionRI != null){
-                message.setText("Sessão iniciada!");
+                // depois de iniciar sessao tem que adicionar a sua sessao no array de sessoes
+                System.out.println("Sessao iniciada!");
             } else {
-                message.setText("Erro!");
+                System.out.println("Erro no login!");
             }
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }
