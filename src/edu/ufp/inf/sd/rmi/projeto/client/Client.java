@@ -45,17 +45,6 @@ public class Client {
         //launch(args);
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("login_register.fxml"));
-
-        Scene scene = new Scene(root, 600, 400);
-
-        stage.setTitle("Application");
-        stage.setScene(scene);
-        stage.show();
-    }
-
     public Client(String[] args) {
         try {
             //List ans set args

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="1080.0" prefWidth="1820.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ufp.inf.lp2.javafx.projeto_fase2.GraphCreatorFXMLController">
+   <children>
+      <MenuBar prefHeight="42.0" prefWidth="1830.0">
+         <menus>
+            <Menu mnemonicParsing="false" text="File">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleReadFileAction" text="Open Text File" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleReadBinFileAction" text="Open Bin File" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleSaveFileAction" text="Save to Text File" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleSaveBinFileAction" text="Save to Bin File" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleExitAction" text="Exit" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleAboutAction" text="About" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+      <TabPane layoutX="-1.0" layoutY="42.0" prefHeight="1048.0" prefWidth="1832.0" tabClosingPolicy="UNAVAILABLE">
+         <tabs>
+            <Tab text="Create Task">
+               <content>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <TextField layoutX="842.0" layoutY="144.0" />
+                        <Button layoutX="877.0" layoutY="294.0" mnemonicParsing="false" text="Create Task" />
+                        <TextField layoutX="842.0" layoutY="184.0" />
+                        <TextField layoutX="842.0" layoutY="224.0" />
+                        <Label layoutX="736.0" layoutY="147.0" prefHeight="18.0" prefWidth="66.0" text="Name" />
+                        <Label layoutX="736.0" layoutY="187.0" prefHeight="18.0" prefWidth="69.0" text="Type of hash" />
+                        <Label layoutX="736.0" layoutY="227.0" prefHeight="18.0" prefWidth="66.0" text="Hash pass" />
+                     </children></AnchorPane>
+               </content></Tab>
+            <Tab text="List Tasks">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1018.0" prefWidth="1454.0">
+                     <children>
+                        <ComboBox fx:id="companyDPComboBox" layoutX="44.0" layoutY="98.0" prefHeight="31.0" prefWidth="158.0" promptText="Name" />
+                        <Button fx:id="addDPButton" layoutX="257.0" layoutY="100.0" mnemonicParsing="false" onAction="#handleAddProfessionalDPButtonAction" prefHeight="26.0" prefWidth="52.0" text="Join" />
+                    <AnchorPane layoutX="23.0" layoutY="49.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="1820.0" />
+                        <TableView fx:id="professionalsDPTable" layoutX="480.0" layoutY="100.0" prefHeight="681.0" prefWidth="906.0">
+                           <columns>
+                              <TableColumn fx:id="nameDPCol" prefWidth="145.2000305056572" text="Name" />
+                              <TableColumn fx:id="idDPCol" minWidth="5.20001220703125" prefWidth="167.59999084472656" text="Password" />
+                              <TableColumn fx:id="birthDPCol" prefWidth="143.20001220703125" text="Hash" />
+                              <TableColumn fx:id="yearsOfExpDPCol" prefWidth="148.199951171875" text="Date" />
+                              <TableColumn fx:id="yearsOfExpDPCol11" prefWidth="148.199951171875" text="Threads" />
+                              <TableColumn fx:id="yearsOfExpDPCol111" prefWidth="148.199951171875" text="Available" />
+                           </columns>
+                        </TableView>
+                        <Pagination layoutX="852.0" layoutY="782.0" prefHeight="45.0" prefWidth="161.0" />
+                        <Label layoutX="86.0" layoutY="32.0" prefHeight="42.0" prefWidth="143.0" text="Label" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
