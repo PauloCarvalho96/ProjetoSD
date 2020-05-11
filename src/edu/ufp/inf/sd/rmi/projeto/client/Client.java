@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
 import edu.ufp.inf.sd.rmi.projeto.server.DBMockup;
+import edu.ufp.inf.sd.rmi.projeto.server.User;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
@@ -89,7 +90,18 @@ public class Client extends Application {
 
     private void playService() {
         try {
-            UserSessionRI sessionRI = this.userFactoryRI.login("test","test");
+            String usr = "test";
+            String psw = "test";
+
+            // registo
+            if(this.userFactoryRI.register(usr, psw)){
+                System.out.println("User criado com sucesso");
+            } else {
+                System.out.println("Erro ao criar user!");
+            }
+
+            // login
+            UserSessionRI sessionRI = this.userFactoryRI.login(usr,psw);
             if(sessionRI != null){
                 // depois de iniciar sessao tem que adicionar a sua sessao no array de sessoes
                 System.out.println("Sessao iniciada!");
