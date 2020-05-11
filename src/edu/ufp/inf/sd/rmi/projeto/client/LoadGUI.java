@@ -16,8 +16,9 @@ public class LoadGUI extends Application implements Serializable {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-        Scene scene = new Scene(root, 601, 402);
+        //Parent root = FXMLLoader.load(getClass().getResource("login_register.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
+        Scene scene = new Scene(root, 1820, 1080);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
