@@ -1,17 +1,15 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import edu.ufp.inf.sd.rmi.projeto.server.DBMockup;
+import edu.ufp.inf.sd.rmi.projeto.server.User;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -27,7 +25,6 @@ import java.util.logging.Logger;
 public class Client {
 
 
-
     /**
      * Context for connecting a RMI client to a RMI Servant
      */
@@ -37,20 +34,29 @@ public class Client {
      */
     private UserFactoryRI userFactoryRI;
 
-    public static void main(String[] args) throws Exception {
-        if (args != null && args.length < 2) {
-            System.exit(-1);
-        } else {
-            //1. ============ Setup client RMI context ============
-            Client hwc = new Client(args);
-            //2. ============ Lookup service ============
-            hwc.lookupService();
-            //3. ============ Play with service ============
-            hwc.playService(args);
-        }
+    public static void main(String[] args) {
+        //1. ============ Setup client RMI context ============
+        Client hwc = new Client(args);
+        //2. ============ Lookup service ============
+        hwc.lookupService();
+        //3. ============ Play with service ============
+        hwc.playService();
+
+        //launch(args);
     }
 
-    public Client(String args[]) {
+    @Override
+    public void start(Stage stage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("login_register.fxml"));
+
+        Scene scene = new Scene(root, 600, 400);
+
+        stage.setTitle("Application");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public Client(String[] args) {
         try {
             //List ans set args
             SetupContextRMI.printArgs(this.getClass().getName(), args);
@@ -86,21 +92,29 @@ public class Client {
         return userFactoryRI;
     }
 
-//    ============ Call remote service ============
-    private void playService(String[] args) {
-        LoadGUI.main(args);
-    }
+    private void playService() {
+        try {
+            String usr = "test";
+            String psw = "test";
 
-    public void handlerLogin(ActionEvent actionEvent) throws IOException {
-        System.out.println("client");
-        //        // se os campos nao tiverem vazios
-//        if(!username.getText().trim().isEmpty() && !password.getText().trim().isEmpty()){
-//            String usr = username.getText().trim();
-//            String psw = password.getText().trim();
-//            UserSessionRI sessionRI = this.userFactoryRI.login(usr,psw);
-//            if(sessionRI != null){
-//                text.setText("Sessão iniciada");
-//            }
-//        }
+            // registo
+            if(this.userFactoryRI.register(usr, psw)){
+                System.out.println("User criado com sucesso");
+            } else {
+                System.out.println("Erro ao criar user!");
+            }
+
+            // login
+            UserSessionRI sessionRI = this.userFactoryRI.login(usr,psw);
+            if(sessionRI != null){
+                // depois de iniciar sessao tem que adicionar a sua sessao no array de sessoes
+                System.out.println("Sessao iniciada!");
+            } else {
+                System.out.println("Erro no login!");
+            }
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 }

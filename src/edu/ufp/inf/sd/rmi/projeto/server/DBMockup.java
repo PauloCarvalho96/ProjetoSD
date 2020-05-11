@@ -1,7 +1,5 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
-import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -9,37 +7,29 @@ public class DBMockup implements Serializable {
 
     // arraylist com utilizadores
     private final ArrayList<User> users;
+    // array sessoes
+    private final ArrayList<UserSessionRI> sessions;
+    // array tasks
     private final ArrayList<TaskSubjectRI> tasks;
-    private final ArrayList<WorkerObserverRI> workers;
+
 
     public DBMockup() {
         users = new ArrayList<>();
+        sessions = new ArrayList<>();
         tasks = new ArrayList<>();
-        workers = new ArrayList<>();
 
-        //Add user
         users.add(new User("test", "test"));
+        users.add(new User("test1", "test1"));
     }
 
-    /**
-     * Registers a new user.
-     * 
-     * @param u username
-     * @param p passwd
-     */
+    // registo
     public void register(String u, String p) {
         if (!exists(u, p)) {
             users.add(new User(u, p));
         }
     }
 
-    /**
-     * Checks the credentials of an user.
-     * 
-     * @param u username
-     * @param p passwd
-     * @return
-     */
+    // verifica se utilizador existe
     public boolean exists(String u, String p) {
         for (User usr : this.users) {
             if (usr.getUname().compareTo(u) == 0 && usr.getPword().compareTo(p) == 0) {
@@ -47,6 +37,26 @@ public class DBMockup implements Serializable {
             }
         }
         return false;
+    }
+
+    // quando utilizador faz login cria nova sessao
+    public void addSession(UserSessionRI sessionRI){
+        sessions.add(sessionRI);
+    }
+
+    // remove sessao
+    public void removeSession(UserSessionRI sessionRI){
+        sessions.remove(sessionRI);
+    }
+
+    // adiciona nova task
+    public void addTask(TaskSubjectRI taskSubjectRI){
+        tasks.add(taskSubjectRI);
+    }
+
+    // todas as tasks disponveis
+    public ArrayList<TaskSubjectRI> allTasks(){
+        return this.tasks;
     }
 
 }

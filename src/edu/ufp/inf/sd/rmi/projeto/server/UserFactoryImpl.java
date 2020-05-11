@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
-import java.io.Serializable;
+import sun.rmi.runtime.Log;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
@@ -28,8 +29,10 @@ public class UserFactoryImpl extends UnicastRemoteObject implements UserFactoryR
     @Override
     public UserSessionRI login(String uname, String pw) throws RemoteException {
         if (db.exists(uname, pw)) {
+            System.out.println("\n"+uname+"\n");
             if(!this.sessions.containsKey(uname)){
                 UserSessionRI userSessionRI = new UserSessionImpl(db);
+                this.sessions.put(uname,userSessionRI);     // insere no array de sessoes
                 return userSessionRI;
             } else {
                 return this.sessions.get(uname);
@@ -37,4 +40,5 @@ public class UserFactoryImpl extends UnicastRemoteObject implements UserFactoryR
         }
         return null;
     }
+
 }
