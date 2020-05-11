@@ -94,11 +94,11 @@ public class Client extends Application {
             String psw = "test";
 
             // registo
-            if(this.userFactoryRI.register(usr, psw)){
+            /*if(this.userFactoryRI.register(usr, psw)){
                 System.out.println("User criado com sucesso");
             } else {
                 System.out.println("Erro ao criar user!");
-            }
+            }*/
 
             // login
             UserSessionRI sessionRI = this.userFactoryRI.login(usr,psw);
