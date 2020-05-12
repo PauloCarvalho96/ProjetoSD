@@ -31,10 +31,10 @@
                      <children>
                         <TextField fx:id="nameTaskTF" layoutX="841.0" layoutY="143.0" />
                         <Button fx:id="createTaskBut" layoutX="877.0" layoutY="294.0" mnemonicParsing="false" onAction="#handlerCreateTask" text="Create Task" />
-                        <ComboBox fx:id="typeHashCB" layoutX="841.0" layoutY="183.0" onAction="#handlerTypeHash" prefHeight="26.0" prefWidth="149.0" />
+                        <ComboBox fx:id="hashTypeCB" layoutX="841.0" layoutY="183.0" onAction="#handlerHashType" prefHeight="26.0" prefWidth="149.0" />
                         <TextField fx:id="hashPassTaskTF" layoutX="842.0" layoutY="224.0" />
                         <Label layoutX="714.0" layoutY="146.0" prefHeight="18.0" prefWidth="66.0" text="Name" />
-                        <Label layoutX="714.0" layoutY="187.0" prefHeight="18.0" prefWidth="69.0" text="Type of hash" />
+                        <Label layoutX="714.0" layoutY="187.0" prefHeight="18.0" prefWidth="69.0" text="Hash type" />
                         <Label layoutX="714.0" layoutY="227.0" prefHeight="18.0" prefWidth="66.0" text="Hash pass" />
                      </children></AnchorPane>
                </content></Tab>
