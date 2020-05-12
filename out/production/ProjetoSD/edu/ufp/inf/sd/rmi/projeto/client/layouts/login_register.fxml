@@ -14,5 +14,6 @@
       <TextField fx:id="usernameRegisterTF" layoutX="345.0" layoutY="139.0" promptText="Username" />
       <PasswordField fx:id="confirmPasswordRegisterTF" layoutX="346.0" layoutY="216.0" promptText="Confirm Password" />
       <Label layoutX="395.0" layoutY="104.0" text="REGISTER" />
+      <Label fx:id="messageLoginRegister" layoutX="153.0" layoutY="337.0" prefHeight="18.0" prefWidth="281.0" />
    </children>
 </AnchorPane>

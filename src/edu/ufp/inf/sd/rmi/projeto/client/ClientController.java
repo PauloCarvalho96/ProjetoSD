@@ -127,6 +127,7 @@ public class ClientController implements Initializable {
     }
 
     public void handlerLogin(ActionEvent actionEvent) throws IOException {
+        goToMenuScene(actionEvent);
         /*String username = usernameLoginTF.getText();
         String password = passwordLoginTF.getText();
 

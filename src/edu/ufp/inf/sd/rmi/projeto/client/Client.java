@@ -88,13 +88,13 @@ public class Client {
             }
 
             // login
-            UserSessionRI sessionRI = this.userFactoryRI.login(usr,psw);
+           /* UserSessionRI sessionRI = this.userFactoryRI.login(usr,psw);
             if(sessionRI != null){
                 // depois de iniciar sessao tem que adicionar a sua sessao no array de sessoes
                 System.out.println("Sessao iniciada!");
             } else {
                 System.out.println("Erro no login!");
-            }
+            }*/
 
         } catch (RemoteException e) {
             e.printStackTrace();
