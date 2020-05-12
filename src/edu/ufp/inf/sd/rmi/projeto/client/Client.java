@@ -4,6 +4,12 @@ import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -12,7 +18,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client {
+public class Client extends Application {
 
     /**
      * Context for connecting a RMI client to a RMI Servant
@@ -23,10 +29,6 @@ public class Client {
      */
     private UserFactoryRI userFactoryRI;
 
-    private UserSessionRI userSessionRI;
-
-    private ArrayList<TaskSubjectRI> taskSubjectRIs = new ArrayList<>();
-
     public static void main(String[] args) {
         //1. ============ Setup client RMI context ============
         Client hwc = new Client(args);
@@ -35,8 +37,18 @@ public class Client {
         //3. ============ Play with service ============
         hwc.playService();
 
-        LoadGUI.main(null);
+//        launch(args);
+    }
 
+    @Override
+    public void start(Stage stage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("login_register.fxml"));
+
+        Scene scene = new Scene(root, 600, 400);
+
+        stage.setTitle("Application");
+        stage.setScene(scene);
+        stage.show();
     }
 
     public Client(String[] args) {
@@ -75,6 +87,7 @@ public class Client {
         return userFactoryRI;
     }
 
+    // para fazer testes as funçoes
     private void playService() {
         try {
             String usr = "test";
@@ -90,8 +103,12 @@ public class Client {
             // login
             UserSessionRI sessionRI = this.userFactoryRI.login(usr,psw);
             if(sessionRI != null){
-                // depois de iniciar sessao tem que adicionar a sua sessao no array de sessoes
+                // abre menu
                 System.out.println("Sessao iniciada!");
+                // cria task
+                TaskSubjectRI taskSubjectRI = sessionRI.createTask("task","MD5","abcdefgh");
+                // password existente no ficheiro
+                System.out.println("\n"+taskSubjectRI.readFile("herdhaak")+"\n");
             } else {
                 System.out.println("Erro no login!");
             }
@@ -100,4 +117,5 @@ public class Client {
             e.printStackTrace();
         }
     }
+
 }
