@@ -1,5 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverImpl;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -14,8 +16,8 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     }
 
     @Override
-    public void logout(UserSessionRI userSessionRI) throws RemoteException {
-        db.removeSession(userSessionRI);
+    public void logout(String uname, UserSessionRI userSessionRI) throws RemoteException {
+        db.removeSession(uname,userSessionRI);
     }
 
     @Override
@@ -23,19 +25,27 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
         return db.allTasks();
     }
 
+    // cria nova task
     @Override
-    public TaskSubjectRI createTask(String name, String hash) throws RemoteException {
-        return null;
+    public TaskSubjectRI createTask(String name, String hashType, String hashPass) throws RemoteException {
+        TaskSubjectRI taskSubjectRI = new TaskSubjectImpl(name,hashType,hashPass);
+        db.addTask(taskSubjectRI);  // adiciona task a DB
+        return taskSubjectRI;
     }
 
     @Override
-    public Boolean pauseTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
-        return null;
+    public void joinTask(TaskSubjectRI taskSubjectRI, WorkerObserverImpl workerObserverImpl) throws RemoteException {
+
     }
 
     @Override
-    public Boolean deleteTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
-        return null;
+    public void deleteTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
+        db.removeTask(taskSubjectRI);
+    }
+
+    @Override
+    public void pauseTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
+
     }
 
 }
