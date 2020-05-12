@@ -55,7 +55,7 @@
                            </columns>
                         </TableView>
                         <Pagination layoutX="318.0" layoutY="715.0" prefHeight="60.0" prefWidth="163.0" />
-                        <Label layoutX="981.0" layoutY="106.0" prefHeight="42.0" prefWidth="323.0" />
+                        <Label fx:id="messageJoinTask" layoutX="981.0" layoutY="106.0" prefHeight="42.0" prefWidth="323.0" />
                      </children>
                   </AnchorPane>
                </content>

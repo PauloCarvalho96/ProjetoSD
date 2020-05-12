@@ -1,9 +1,16 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -18,6 +25,7 @@ public class ClientController implements Initializable {
     /** Join task **/
     public ComboBox<String> nameTasksCB;
     public Button jointTaskBut;
+    public Label messageJoinTask;
     /** List tasks **/
     public TableView<String> professionalsDPTable;
     public TableColumn<String, String> nameCol;
@@ -33,6 +41,7 @@ public class ClientController implements Initializable {
     public Button registerBut;
     public TextField usernameRegisterTF;
     public PasswordField confirmPasswordRegisterTF;
+    public Label messageLoginRegister;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -75,9 +84,39 @@ public class ClientController implements Initializable {
     }
 
     public void handlerRegister(ActionEvent actionEvent) {
-        
+        /*String username = usernameRegisterTF.getText();
+        String password = passwordRegisterTF.getText();
+        String confirmPassword = confirmPasswordRegisterTF.getText();
+
+        if(!username.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty() && password.equals(confirmPassword)){
+            if(this.userFactoryRI.register(username, password)){
+                messageLoginRegister.setText("Registered with success, do login please.");
+            } else {
+                messageLoginRegister.setText("Register didn't succeeded! Username is already taked...");
+            }
+        }*/
     }
 
-    public void handlerLogin(ActionEvent actionEvent) {
+    public void handlerLogin(ActionEvent actionEvent) throws IOException {
+        /*String username = usernameLoginTF.getText();
+        String password = passwordLoginTF.getText();
+
+        if(!username.isEmpty() && !password.isEmpty()) {
+            UserSessionRI sessionRI = this.userFactoryRI.login(username, password);
+            if (sessionRI != null) {
+                goToMenuScene(actionEvent);
+            } else {
+                messageLoginRegister.setText("Login didn't succeeded! Username doesn't exist or data don't match...");
+            }
+        }*/
+    }
+
+    public void goToMenuScene(ActionEvent actionEvent) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("layouts/menu.fxml"));
+        Scene scene = new Scene(root, 1400, 1000);
+        Stage primaryStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        primaryStage.setTitle("Sistemas distribuídos");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }
