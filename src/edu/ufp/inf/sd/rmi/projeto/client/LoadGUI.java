@@ -17,7 +17,7 @@ public class LoadGUI extends Application {
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("layouts/login_register.fxml"));
         Scene scene = new Scene(root, 1400, 1000);
-        primaryStage.setTitle("Sistemas distribuídos");
+        primaryStage.setTitle("Sistemas distribuidos");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

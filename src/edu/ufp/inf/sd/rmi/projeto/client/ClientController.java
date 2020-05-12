@@ -50,19 +50,22 @@ public class ClientController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        hashTypeCB.getItems().clear();
-        hashTypeCB.setPromptText("SHA-512");
-        hashTypeCB.getItems().add("SHA-512");
-        hashTypeCB.getItems().add("PBKDF2");
-        hashTypeCB.getItems().add("BCrypt");
-        hashTypeCB.getItems().add("SCrypt");
+        System.out.println();
+        if(hashTypeCB != null){
+            hashTypeCB.getItems().clear();
+            hashTypeCB.setPromptText("SHA-512");
+            hashTypeCB.getItems().add("SHA-512");
+            hashTypeCB.getItems().add("PBKDF2");
+            hashTypeCB.getItems().add("BCrypt");
+            hashTypeCB.getItems().add("SCrypt");
 
-        //goes to the class and associates de col with the variable
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        passHashCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
-        hashTypeCol.setCellValueFactory(new PropertyValueFactory<>("hashPass"));
-        //threadsCol.setCellValueFactory(new PropertyValueFactory<>("threads"));
-        //availableCol.setCellValueFactory(new PropertyValueFactory<>("available"));
+            //goes to the class and associates de col with the variable
+            nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+            passHashCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
+            hashTypeCol.setCellValueFactory(new PropertyValueFactory<>("hashPass"));
+            //threadsCol.setCellValueFactory(new PropertyValueFactory<>("threads"));
+            //availableCol.setCellValueFactory(new PropertyValueFactory<>("available"));
+        }
     }
 
     public void handleReadFile(ActionEvent actionEvent) {
@@ -149,5 +152,4 @@ public class ClientController implements Initializable {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
 }

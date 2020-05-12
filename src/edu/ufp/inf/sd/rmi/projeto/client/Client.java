@@ -36,7 +36,6 @@ public class Client {
         hwc.playService();
 
         LoadGUI.main(null);
-
     }
 
     public Client(String[] args) {
@@ -95,7 +94,6 @@ public class Client {
             } else {
                 System.out.println("Erro no login!");
             }*/
-
         } catch (RemoteException e) {
             e.printStackTrace();
         }
