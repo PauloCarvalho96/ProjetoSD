@@ -2,24 +2,22 @@ package edu.ufp.inf.sd.rmi.projeto.server;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DBMockup implements Serializable {
 
-    // arraylist com utilizadores
+    // array users
     private final ArrayList<User> users;
-    // array sessoes
-    private final ArrayList<UserSessionRI> sessions;
+    // array sessoes (username/session)
+    private final HashMap<String,UserSessionRI> sessions;
     // array tasks
     private final ArrayList<TaskSubjectRI> tasks;
 
 
     public DBMockup() {
         users = new ArrayList<>();
-        sessions = new ArrayList<>();
+        sessions = new HashMap<>();
         tasks = new ArrayList<>();
-
-//        users.add(new User("test", "test"));
-//        users.add(new User("test1", "test1"));
     }
 
     // registo
@@ -39,14 +37,18 @@ public class DBMockup implements Serializable {
         return false;
     }
 
+    public HashMap<String,UserSessionRI> getSessions() {
+        return sessions;
+    }
+
     // quando utilizador faz login cria nova sessao
-    public void addSession(UserSessionRI sessionRI){
-        sessions.add(sessionRI);
+    public void addSession(String uname,UserSessionRI sessionRI){
+        sessions.put(uname,sessionRI);
     }
 
     // remove sessao
-    public void removeSession(UserSessionRI sessionRI){
-        sessions.remove(sessionRI);
+    public void removeSession(String uname,UserSessionRI sessionRI){
+        sessions.remove(uname,sessionRI);
     }
 
     // adiciona nova task
@@ -54,9 +56,13 @@ public class DBMockup implements Serializable {
         tasks.add(taskSubjectRI);
     }
 
+    public void removeTask(TaskSubjectRI taskSubjectRI){
+        tasks.remove(taskSubjectRI);
+    }
+
     // todas as tasks disponveis
     public ArrayList<TaskSubjectRI> allTasks(){
-        return this.tasks;
+        return tasks;
     }
 
 }

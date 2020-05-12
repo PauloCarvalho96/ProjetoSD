@@ -1,7 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
-import edu.ufp.inf.sd.rmi.projeto.server.DBMockup;
-import edu.ufp.inf.sd.rmi.projeto.server.User;
+import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
@@ -11,11 +10,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -88,23 +87,28 @@ public class Client extends Application {
         return userFactoryRI;
     }
 
+    // para fazer testes as funçoes
     private void playService() {
         try {
             String usr = "test";
             String psw = "test";
 
             // registo
-            /*if(this.userFactoryRI.register(usr, psw)){
+            if(this.userFactoryRI.register(usr, psw)){
                 System.out.println("User criado com sucesso");
             } else {
                 System.out.println("Erro ao criar user!");
-            }*/
+            }
 
             // login
             UserSessionRI sessionRI = this.userFactoryRI.login(usr,psw);
             if(sessionRI != null){
-                // depois de iniciar sessao tem que adicionar a sua sessao no array de sessoes
+                // abre menu
                 System.out.println("Sessao iniciada!");
+                // cria task
+                TaskSubjectRI taskSubjectRI = sessionRI.createTask("task","MD5","abcdefgh");
+                // password existente no ficheiro
+                System.out.println("\n"+taskSubjectRI.readFile("herdhaak")+"\n");
             } else {
                 System.out.println("Erro no login!");
             }

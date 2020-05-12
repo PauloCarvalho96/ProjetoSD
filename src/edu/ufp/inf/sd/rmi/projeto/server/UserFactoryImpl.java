@@ -9,12 +9,10 @@ import java.util.HashMap;
 public class UserFactoryImpl extends UnicastRemoteObject implements UserFactoryRI {
 
     private DBMockup db;
-    private HashMap<String, UserSessionRI> sessions;
 
     protected UserFactoryImpl() throws RemoteException {
         super();
         db = new DBMockup();
-        sessions = new HashMap<>();
     }
 
     @Override
@@ -29,16 +27,14 @@ public class UserFactoryImpl extends UnicastRemoteObject implements UserFactoryR
     @Override
     public UserSessionRI login(String uname, String pw) throws RemoteException {
         if (db.exists(uname, pw)) {
-            System.out.println("\n"+uname+"\n");
-            if(!this.sessions.containsKey(uname)){
+            if(!this.db.getSessions().containsKey(uname)){
                 UserSessionRI userSessionRI = new UserSessionImpl(db);
-                this.sessions.put(uname,userSessionRI);     // insere no array de sessoes
+                this.db.addSession(uname,userSessionRI);     // insere no hashmap de sessoes
                 return userSessionRI;
             } else {
-                return this.sessions.get(uname);
+                return this.db.getSessions().get(uname);
             }
         }
         return null;
     }
-
 }

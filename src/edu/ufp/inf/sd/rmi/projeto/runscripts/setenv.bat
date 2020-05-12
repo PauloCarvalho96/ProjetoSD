@@ -79,7 +79,7 @@ IF "%CURRENT_IDE%"=="%NETBEANS%" (
     @Set JAVAPROJ_DIST_LIB=lib
 )
 IF "%CURRENT_IDE%"=="%INTELLIJ%" (
-    @Set JAVAPROJ_CLASSES=out\\production\\SD\\
+    @Set JAVAPROJ_CLASSES=out\\production\\%JAVAPROJ_NAME%\\
     @Set JAVAPROJ_SRC=src
     @Set JAVAPROJ_DIST=out\\artifacts\\%JAVAPROJ_NAME%\\
     @Set JAVAPROJ_DIST_LIB=lib
