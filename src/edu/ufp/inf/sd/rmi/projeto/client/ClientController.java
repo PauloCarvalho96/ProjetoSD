@@ -1,17 +1,21 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class ClientController implements Initializable {
@@ -20,19 +24,20 @@ public class ClientController implements Initializable {
     public TextField nameTaskTF;
     public Button createTaskBut;
     public ComboBox<String> hashTypeCB;
-    public TextField hashPassTaskTF;
-    public Tab listTasksTab;
+    public TextField hashPassTF;
+    public Label messageCreateTask;
     /** Join task **/
+    public Tab listTasksTab;
     public ComboBox<String> nameTasksCB;
     public Button jointTaskBut;
     public Label messageJoinTask;
     /** List tasks **/
-    public TableView<String> professionalsDPTable;
-    public TableColumn<String, String> nameCol;
-    public TableColumn<String, String> passHashCol;
-    public TableColumn<String, String> hashCol;
-    public TableColumn<String, String> threadsCol;
-    public TableColumn<String, String> availableCol;
+    public TableView<String> tasksTable;
+    public TableColumn<TaskSubjectRI, String> nameCol;
+    public TableColumn<TaskSubjectRI, String> passHashCol;
+    public TableColumn<TaskSubjectRI, String> hashTypeCol;
+    public TableColumn<TaskSubjectRI, String> threadsCol;
+    public TableColumn<TaskSubjectRI, String> availableCol;
     /** Login **/
     public PasswordField passwordLoginTF;
     public PasswordField passwordRegisterTF;
@@ -51,6 +56,13 @@ public class ClientController implements Initializable {
         hashTypeCB.getItems().add("PBKDF2");
         hashTypeCB.getItems().add("BCrypt");
         hashTypeCB.getItems().add("SCrypt");
+
+        //goes to the class and associates de col with the variable
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        passHashCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
+        hashTypeCol.setCellValueFactory(new PropertyValueFactory<>("hashPass"));
+        //threadsCol.setCellValueFactory(new PropertyValueFactory<>("threads"));
+        //availableCol.setCellValueFactory(new PropertyValueFactory<>("available"));
     }
 
     public void handleReadFile(ActionEvent actionEvent) {
@@ -71,16 +83,33 @@ public class ClientController implements Initializable {
     public void handleAbout(ActionEvent actionEvent) {
     }
 
+    public void handlerListTasks(Event event) {
+        /*ArrayList<TaskSubjectRI> taskSubjectRIsList = userSessionRI.listTasks();
+        tasksTable.getItems().clear();
+        tasksTable.getItems().addAll(taskSubjectRIsList);*/
+    }
+
     public void handlerCreateTask(ActionEvent actionEvent) {
+        /*String name = nameTaskTF.getText();
+        String typeHash = hashTypeCB.getValue();
+        String hashPass = hashPassTF.getText();
+
+        if(!name.isEmpty() && !hashPass.isEmpty()){
+            TaskSubjectRI taskSubjectRI = this.userSessionRI.createTask(name, typeHash, hashPass);
+            if(taskSubjectRI != null){
+                taskSubjectRIs.add(taskSubjectRI);
+                nameTaskTF.clear();
+                hashTypeCB.setText("SHA-512");
+                hashPassTF.clear();
+                messageCreateTask.setText("Task was created successfully.");
+            }else{
+                messageCreateTask.setText("Task was not created! Name already exists, choose other one.");
+            }
+        }*/
     }
 
-    public void handlerNameTasksCB(ActionEvent actionEvent) {
-    }
-
-    public void handlerJoinTask(ActionEvent actionEvent) {
-    }
-
-    public void handlerHashType(ActionEvent actionEvent) {
+    public void handlerJoinTask(ActionEvent actionEvent) {///comparar threads, etc.....
+        //workerObserverImpl.selectTask(nameTasksCB.getValue());
     }
 
     public void handlerRegister(ActionEvent actionEvent) {
@@ -119,4 +148,5 @@ public class ClientController implements Initializable {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
 }

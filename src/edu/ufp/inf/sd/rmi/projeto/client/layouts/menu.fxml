@@ -31,31 +31,32 @@
                      <children>
                         <TextField fx:id="nameTaskTF" layoutX="841.0" layoutY="143.0" />
                         <Button fx:id="createTaskBut" layoutX="877.0" layoutY="294.0" mnemonicParsing="false" onAction="#handlerCreateTask" text="Create Task" />
-                        <ComboBox fx:id="hashTypeCB" layoutX="841.0" layoutY="183.0" onAction="#handlerHashType" prefHeight="26.0" prefWidth="149.0" />
-                        <TextField fx:id="hashPassTaskTF" layoutX="842.0" layoutY="224.0" />
+                        <ComboBox fx:id="hashTypeCB" layoutX="841.0" layoutY="183.0" prefHeight="26.0" prefWidth="149.0" />
+                        <TextField fx:id="hashPassTF" layoutX="842.0" layoutY="224.0" />
                         <Label layoutX="714.0" layoutY="146.0" prefHeight="18.0" prefWidth="66.0" text="Name" />
                         <Label layoutX="714.0" layoutY="187.0" prefHeight="18.0" prefWidth="69.0" text="Hash type" />
                         <Label layoutX="714.0" layoutY="227.0" prefHeight="18.0" prefWidth="66.0" text="Hash pass" />
+                        <Label fx:id="messageCreateTask" layoutX="768.0" layoutY="366.0" prefHeight="67.0" prefWidth="295.0" />
                      </children></AnchorPane>
                </content></Tab>
-            <Tab fx:id="listTasksTab" text="List Tasks">
+            <Tab fx:id="listTasksTab" onSelectionChanged="#handlerListTasks" text="List Tasks">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1018.0" prefWidth="1454.0">
                      <children>
-                        <ComboBox fx:id="nameTasksCB" layoutX="981.0" layoutY="179.0" onAction="#handlerNameTasksCB" prefHeight="31.0" prefWidth="198.0" />
+                        <ComboBox fx:id="nameTasksCB" layoutX="981.0" layoutY="179.0" prefHeight="31.0" prefWidth="198.0" />
                         <Button fx:id="jointTaskBut" layoutX="1250.0" layoutY="178.0" mnemonicParsing="false" onAction="#handlerJoinTask" prefHeight="33.0" prefWidth="56.0" text="Join" />
                     <AnchorPane layoutX="23.0" layoutY="49.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="1820.0" />
-                        <TableView fx:id="professionalsDPTable" layoutX="23.0" layoutY="33.0" prefHeight="682.0" prefWidth="753.0">
+                        <TableView fx:id="tasksTable" layoutX="23.0" layoutY="33.0" prefHeight="682.0" prefWidth="753.0">
                            <columns>
                               <TableColumn fx:id="nameCol" prefWidth="145.2000305056572" text="Name" />
                               <TableColumn fx:id="passHashCol" minWidth="5.20001220703125" prefWidth="167.59999084472656" text="Password (Hash)" />
-                              <TableColumn fx:id="hashCol" prefWidth="143.20001220703125" text="Hash" />
+                              <TableColumn fx:id="hashTypeCol" prefWidth="143.20001220703125" text="Hash Type" />
                               <TableColumn fx:id="threadsCol" prefWidth="148.199951171875" text="Threads" />
                               <TableColumn fx:id="availableCol" prefWidth="148.199951171875" text="Available" />
                            </columns>
                         </TableView>
                         <Pagination layoutX="318.0" layoutY="715.0" prefHeight="60.0" prefWidth="163.0" />
-                        <Label fx:id="messageJoinTask" layoutX="981.0" layoutY="106.0" prefHeight="42.0" prefWidth="323.0" />
+                        <Label fx:id="messageJoinTask" layoutX="981.0" layoutY="79.0" prefHeight="69.0" prefWidth="323.0" />
                      </children>
                   </AnchorPane>
                </content>

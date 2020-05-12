@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
@@ -7,6 +8,7 @@ import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +22,10 @@ public class Client {
      * Remote interface that will hold the Servant proxy
      */
     private UserFactoryRI userFactoryRI;
+
+    private UserSessionRI userSessionRI;
+
+    private ArrayList<TaskSubjectRI> taskSubjectRIs = new ArrayList<>();
 
     public static void main(String[] args) {
         //1. ============ Setup client RMI context ============
