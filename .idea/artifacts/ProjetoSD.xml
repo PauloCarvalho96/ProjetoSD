@@ -2,7 +2,7 @@
   <artifact type="jar" build-on-make="true" name="ProjetoSD">
     <output-path>$PROJECT_DIR$/out/artifacts/ProjetoSD</output-path>
     <root id="archive" name="ProjetoSD.jar">
-      <element id="module-output" name="SD" />
+      <element id="module-output" name="ProjetoSD" />
     </root>
   </artifact>
 </component>

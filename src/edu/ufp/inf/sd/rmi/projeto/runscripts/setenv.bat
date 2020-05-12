@@ -12,7 +12,7 @@
 
 @REM ======================== CHANGE BELOW ACCORDING YOUR PROJECT and PC SETTINGS ========================
 @REM ==== PC STUFF ====
-@Set USERNAME=tmsl9
+@Set USERNAME=Paulo
 
 @Set WORKDRIVE=C
 @REM Set JDK=%WORKDRIVE%:\Programas\Java\jdk1.8.0_60
@@ -79,7 +79,7 @@ IF "%CURRENT_IDE%"=="%NETBEANS%" (
     @Set JAVAPROJ_DIST_LIB=lib
 )
 IF "%CURRENT_IDE%"=="%INTELLIJ%" (
-    @Set JAVAPROJ_CLASSES=out\\production\\SD\\
+    @Set JAVAPROJ_CLASSES=out\\production\\%JAVAPROJ_NAME%\\
     @Set JAVAPROJ_SRC=src
     @Set JAVAPROJ_DIST=out\\artifacts\\%JAVAPROJ_NAME%\\
     @Set JAVAPROJ_DIST_LIB=lib
