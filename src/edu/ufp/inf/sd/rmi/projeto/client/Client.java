@@ -1,30 +1,16 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
-import edu.ufp.inf.sd.rmi.projeto.server.DBMockup;
-import edu.ufp.inf.sd.rmi.projeto.server.User;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-
 import java.rmi.registry.Registry;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Client {
-
 
     /**
      * Context for connecting a RMI client to a RMI Servant
@@ -43,7 +29,8 @@ public class Client {
         //3. ============ Play with service ============
         hwc.playService();
 
-        //launch(args);
+        LoadGUI.main(null);
+
     }
 
     public Client(String[] args) {

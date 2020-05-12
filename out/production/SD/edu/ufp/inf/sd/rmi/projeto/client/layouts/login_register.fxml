@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ufp.inf.sd.rmi.projeto.client.Client">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ufp.inf.sd.rmi.projeto.client.ClientController">
    <children>
       <PasswordField layoutX="86.0" layoutY="216.0" promptText="Password" />
       <Button layoutX="137.0" layoutY="266.0" mnemonicParsing="false" text="Login" />

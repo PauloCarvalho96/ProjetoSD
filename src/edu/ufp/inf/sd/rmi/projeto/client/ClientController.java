@@ -4,7 +4,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -19,26 +18,24 @@ public class ClientController implements Initializable {
     public ComboBox<String> nameTasksCB;
     public Button jointTaskBut;
     public TableView<String> professionalsDPTable;
-    public TableColumn nameCol;
-    public TableColumn passHashCol;
-    public TableColumn hashCol;
-    public TableColumn threadsCol;
-    public TableColumn availableCol;
+    public TableColumn<String, String> nameCol;
+    public TableColumn<String, String> passHashCol;
+    public TableColumn<String, String> hashCol;
+    public TableColumn<String, String> threadsCol;
+    public TableColumn<String, String> availableCol;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         typeHashCB.getItems().clear();
+        typeHashCB.setPromptText("SHA-512");
         typeHashCB.getItems().add("SHA-512");
         typeHashCB.getItems().add("PBKDF2");
         typeHashCB.getItems().add("BCrypt");
         typeHashCB.getItems().add("SCrypt");
     }
 
-    public void handlerLogin(ActionEvent actionEvent) throws IOException {
-
-    }
-
     public void handleReadFile(ActionEvent actionEvent) {
+        System.out.println("olaaaaaaaaaaa");
     }
 
     public void handleReadBinFile(ActionEvent actionEvent) {
