@@ -37,7 +37,7 @@ public class Client extends Application {
         //3. ============ Play with service ============
         hwc.playService();
 
-        //launch(args);
+//        launch(args);
     }
 
     @Override
