@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -63,6 +64,15 @@ public class DBMockup implements Serializable {
     // todas as tasks disponveis
     public ArrayList<TaskSubjectRI> allTasks(){
         return tasks;
+    }
+
+    public TaskSubjectRI getTask(String task) throws RemoteException {
+        for (TaskSubjectRI taskSubjectRI:tasks) {
+            if(task.compareTo(taskSubjectRI.getName())==0){
+                return taskSubjectRI;
+            }
+        }
+        return null;
     }
 
 }

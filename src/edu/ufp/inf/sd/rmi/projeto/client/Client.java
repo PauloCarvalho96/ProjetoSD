@@ -5,10 +5,12 @@ import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import sun.misc.GThreadHelper;
 
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
@@ -28,6 +30,12 @@ public class Client {
      * Remote interface that will hold the Servant proxy
      */
     private UserFactoryRI userFactoryRI;
+
+    private UserSessionRI session;
+
+    private String uname;
+
+    private ArrayList<WorkerObserverRI> workers = new ArrayList<>();
 
     public static void main(String[] args) {
         //1. ============ Setup client RMI context ============
@@ -89,21 +97,29 @@ public class Client {
                 System.out.println("Erro ao criar user!");
             }
 
-            // login
-           /* UserSessionRI sessionRI = this.userFactoryRI.login(usr,psw);
-            if(sessionRI != null){
+            session = this.userFactoryRI.login(usr,psw);
+
+            if(session != null){
                 // abre menu
                 System.out.println("Sessao iniciada!");
                 // cria task
-                TaskSubjectRI taskSubjectRI = sessionRI.createTask("task","MD5","abcdefgh");
+                //TaskSubjectRI taskSubjectRI = session.createTask("task","MD5","abcdefgh");
                 // password existente no ficheiro
-                System.out.println("\n"+taskSubjectRI.readFile("herdhaak")+"\n");
+                //System.out.println("\n"+taskSubjectRI.readFile("herdhaak")+"\n");
+                uname=usr;
             } else {
                 System.out.println("Erro no login!");
-            }*/
+            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {///comparar threads, etc.....
+        WorkerObserverRI worker = new WorkerObserverImpl(uname);
+        workers.add(worker);
+        //worker.selectTask(nameTasksCB.getValue());
+        session.joinTask("task",worker);
     }
 
 }
