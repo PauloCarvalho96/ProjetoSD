@@ -1,7 +1,9 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
+import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
+import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
@@ -15,8 +17,14 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.NotBoundException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ClientController implements Initializable {
     /** Create task **/
@@ -48,8 +56,16 @@ public class ClientController implements Initializable {
     public PasswordField confirmPasswordRegisterTF;
     public Label messageLoginRegister;
 
+    private Client client;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        // connection
+        client = new Client();
+        client.lookupService();
+        client.playService();
+
         if(hashTypeCB != null){
             hashTypeCB.getItems().clear();
             hashTypeCB.setPromptText("SHA-512");

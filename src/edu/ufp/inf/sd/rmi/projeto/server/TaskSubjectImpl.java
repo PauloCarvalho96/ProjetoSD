@@ -52,13 +52,13 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     public void notifyAllObservers(){
-        for (WorkerObserverRI obs: workers) {
+        /*for (WorkerObserverRI obs: workers) {
             try {
-                obs.update();
+//                obs.update();
             } catch (RemoteException ex) {
                 Logger.getLogger(TaskSubjectImpl.class.getName()).log(Level.SEVERE,null,ex);
             }
-        }
+        }*/
     }
 
     @Override

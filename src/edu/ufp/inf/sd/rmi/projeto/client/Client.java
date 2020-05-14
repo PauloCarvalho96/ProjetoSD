@@ -10,7 +10,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import sun.misc.GThreadHelper;
 
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
@@ -37,24 +36,13 @@ public class Client {
 
     private ArrayList<WorkerObserverRI> workers = new ArrayList<>();
 
-    public static void main(String[] args) {
-        //1. ============ Setup client RMI context ============
-        Client hwc = new Client(args);
-        //2. ============ Lookup service ============
-        hwc.lookupService();
-        //3. ============ Play with service ============
-        hwc.playService();
 
-        LoadGUI.main(null);
-    }
-
-    public Client(String[] args) {
+    public Client() {
         try {
             //List ans set args
-            SetupContextRMI.printArgs(this.getClass().getName(), args);
-            String registryIP = args[0];
-            String registryPort = args[1];
-            String serviceName = args[2];
+            String registryIP = "localhost";
+            String registryPort = "1099";
+            String serviceName = "ProjetoService";
             //Create a context for RMI setup
             contextRMI = new SetupContextRMI(this.getClass(), registryIP, registryPort, new String[]{serviceName});
         } catch (RemoteException e) {
@@ -62,7 +50,7 @@ public class Client {
         }
     }
 
-    private Remote lookupService() {
+    public Remote lookupService() {
         try {
             //Get proxy to rmiregistry
             Registry registry = contextRMI.getRegistry();
@@ -85,7 +73,7 @@ public class Client {
     }
 
     // para fazer testes as funçoes
-    private void playService() {
+    public void playService() {
         try {
             String usr = "test";
             String psw = "test";
