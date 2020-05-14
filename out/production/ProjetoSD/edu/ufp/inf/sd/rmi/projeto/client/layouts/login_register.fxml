@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ufp.inf.sd.rmi.projeto.client.ClientController">
+   <children>
+      <PasswordField fx:id="passwordLoginTF" layoutX="86.0" layoutY="216.0" promptText="Password" />
+      <Button layoutX="137.0" layoutY="266.0" mnemonicParsing="false" onAction="#handlerLogin" text="Login" />
+      <PasswordField fx:id="passwordRegisterTF" layoutX="345.0" layoutY="176.0" promptText="Password" />
+      <TextField fx:id="usernameLoginTF" layoutX="86.0" layoutY="176.0" promptText="Username" />
+      <Label layoutX="142.0" layoutY="143.0" text="LOGIN" />
+      <Button fx:id="registerBut" layoutX="390.0" layoutY="266.0" mnemonicParsing="false" onAction="#handlerRegister" text="Register" />
+      <TextField fx:id="usernameRegisterTF" layoutX="345.0" layoutY="139.0" promptText="Username" />
+      <PasswordField fx:id="confirmPasswordRegisterTF" layoutX="346.0" layoutY="216.0" promptText="Confirm Password" />
+      <Label layoutX="395.0" layoutY="104.0" text="REGISTER" />
+      <Label fx:id="messageLoginRegister" layoutX="153.0" layoutY="337.0" prefHeight="18.0" prefWidth="281.0" />
+   </children>
+</AnchorPane>
