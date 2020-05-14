@@ -1,10 +1,15 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverImpl;
+
+import java.util.ArrayList;
+
 public class User {
 
     private String uname;
     private String pword;
     private Integer credits;
+    private ArrayList<TaskSubjectImpl> myTasks = new ArrayList<>();
 
     public User(String uname, String pword) {
         this.uname = uname;

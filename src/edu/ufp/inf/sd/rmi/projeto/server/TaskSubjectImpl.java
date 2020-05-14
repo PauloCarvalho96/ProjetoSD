@@ -17,8 +17,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private String hashType;
     private String hashPass;
     private State subjectState;
-    // array de threads
-    private final ArrayList<WorkerObserverRI> threads = new ArrayList<>();
+    // array de workers
+    private final ArrayList<WorkerObserverRI> workers = new ArrayList<>();
 
     public TaskSubjectImpl(String name,String hashType, String hashPass) throws RemoteException {
         super();
@@ -52,7 +52,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     public void notifyAllObservers(){
-        for (WorkerObserverRI obs: threads) {
+        for (WorkerObserverRI obs: workers) {
             try {
                 obs.update();
             } catch (RemoteException ex) {
@@ -63,14 +63,14 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
 
     @Override
     public void attach(WorkerObserverRI obsRI) throws RemoteException {
-        if(!this.threads.contains(obsRI)){
-            this.threads.add(obsRI);
+        if(!this.workers.contains(obsRI)){
+            this.workers.add(obsRI);
         }
     }
 
     @Override
     public void detach(WorkerObserverRI obsRI) throws RemoteException {
-        this.threads.remove(obsRI);
+        this.workers.remove(obsRI);
     }
 
     @Override

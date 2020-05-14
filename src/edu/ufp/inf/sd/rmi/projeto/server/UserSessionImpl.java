@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverImpl;
+import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -34,8 +35,9 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     }
 
     @Override
-    public void joinTask(TaskSubjectRI taskSubjectRI, WorkerObserverImpl workerObserverImpl) throws RemoteException {
-
+    public void joinTask(String taskname, WorkerObserverRI workerObserverRI) throws RemoteException {
+        TaskSubjectRI task = this.db.getTask(taskname);
+        task.attach(workerObserverRI);
     }
 
     @Override
