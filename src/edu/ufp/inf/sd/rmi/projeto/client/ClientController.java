@@ -50,7 +50,6 @@ public class ClientController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println();
         if(hashTypeCB != null){
             hashTypeCB.getItems().clear();
             hashTypeCB.setPromptText("SHA-512");

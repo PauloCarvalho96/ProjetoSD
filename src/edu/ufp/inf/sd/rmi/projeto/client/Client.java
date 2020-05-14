@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client extends Application {
+public class Client {
 
     /**
      * Context for connecting a RMI client to a RMI Servant
@@ -38,17 +38,6 @@ public class Client extends Application {
         hwc.playService();
 
         LoadGUI.main(null);
-    }
-
-    @Override
-    public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("login_register.fxml"));
-
-        Scene scene = new Scene(root, 600, 400);
-
-        stage.setTitle("Application");
-        stage.setScene(scene);
-        stage.show();
     }
 
     public Client(String[] args) {
