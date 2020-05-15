@@ -79,11 +79,8 @@ public class MenuController implements Initializable {
             @Override
             public void handle(MouseEvent event) {
                 try {
-                    System.out.println(tasksTable.getSelectionModel().getSelectedItem().getHashType());
                     nameTaskSelectedLabel.setText(tasksTable.getSelectionModel().getSelectedItem().getName());
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                } catch (Exception ignored) { }
             }
         });
     }

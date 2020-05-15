@@ -4,6 +4,8 @@ import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -37,29 +39,55 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.creditsTotal = creditsTotal;
     }*/
 
-    @Override
-    public boolean readFile(String pswtodiscover) throws RemoteException{
+    public void divideFile(Integer start,Integer delta) throws RemoteException{
+
         try {
-            File myObj = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
-            Scanner myReader = new Scanner(myObj);
-//            for(int i=start;i<end;i++){
-            while (myReader.hasNextLine()){
-                String data = myReader.nextLine();
-                if(data.compareTo(pswtodiscover) == 0){
-                    System.out.println("\nDescobri a password\n");
-                    myReader.close();
-                    return true;
+            // ficheiro do servidor
+            File passwords = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
+            Scanner passwordsReader = new Scanner(passwords);
+            // ficheiro para entregar ao cliente
+            try {
+                File txtToDelivery = createFile(start,delta);
+                FileWriter txtToDeliveryReader = new FileWriter(txtToDelivery);
+
+                for(int i=start;i<start+delta;i++){
+                    String data = passwordsReader.nextLine();
+                    txtToDeliveryReader.write(data+"\n");
+
+                    if(passwordsReader.nextLine() == null){
+                        break;
+                    }
                 }
+
+                txtToDeliveryReader.close();
+                passwordsReader.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            System.out.println("\nPassword não descoberta\n");
-            myReader.close();
-            return false;
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        return false;
+
     }
+
+    public File createFile(Integer start,Integer delta) {
+        try {
+            String filename = name+start+delta+"txt";
+            File newFile = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\"+filename);
+            if (newFile.createNewFile()) {
+                System.out.println("File created");
+                return newFile;
+            } else {
+                System.out.println("Error!");
+                return null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public void notifyAllObservers(){
         /*for (WorkerObserverRI obs: workers) {
@@ -95,9 +123,10 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     @Override
-    public String getName() {
+    public String getName() throws RemoteException {
         return name;
     }
+
 
     @Override
     public String getHashType() {
