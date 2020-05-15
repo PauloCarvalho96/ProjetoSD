@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rmi.projeto.client;
 
 import edu.ufp.inf.sd.rmi.projeto.server.State;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
+import edu.ufp.inf.sd.rmi.projeto.server.WorkerObserverRI;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

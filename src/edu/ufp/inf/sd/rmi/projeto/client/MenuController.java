@@ -3,6 +3,7 @@ package edu.ufp.inf.sd.rmi.projeto.client;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -38,6 +39,7 @@ public class MenuController implements Initializable {
     public TableColumn<TaskSubjectRI, String> hashTypeCol;
     public TableColumn<TaskSubjectRI, String> threadsCol;
     public TableColumn<TaskSubjectRI, String> availableCol;
+    public Pagination listTasksPagination;
 
     private Client client;
 
@@ -47,7 +49,6 @@ public class MenuController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("Menu scene");
         initializeComboBoxAndTableView();
     }
 
@@ -92,12 +93,10 @@ public class MenuController implements Initializable {
     public void handleAbout(ActionEvent actionEvent) {
     }
 
-    public void handlerListTasks(ActionEvent actionEvent) throws RemoteException {
+    public void handlerListTasks(Event event) throws RemoteException {
         ArrayList<TaskSubjectRI> taskSubjectRIsList = this.client.userSessionRI.listTasks();
-        if (taskSubjectRIsList != null) {
-            tasksTable.getItems().clear();
-            tasksTable.getItems().addAll(taskSubjectRIsList);///////probably has to be task impl
-        }
+        tasksTable.getItems().clear();
+        tasksTable.getItems().addAll(taskSubjectRIsList);///////probably has to be task impl
     }
 
     public void handlerCreateTask(ActionEvent actionEvent) throws RemoteException {

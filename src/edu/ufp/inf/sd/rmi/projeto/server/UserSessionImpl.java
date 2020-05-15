@@ -1,8 +1,5 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
-import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverImpl;
-import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
-
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -29,7 +26,7 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     // cria nova task
     @Override
     public TaskSubjectRI createTask(String name, String hashType, String hashPass) throws RemoteException {
-        TaskSubjectRI taskSubjectRI = new TaskSubjectImpl(name,hashType,hashPass);
+        TaskSubjectRI taskSubjectRI = new TaskSubjectImpl(name, hashType, hashPass);
         db.addTask(taskSubjectRI);  // adiciona task a DB
         return taskSubjectRI;
     }
