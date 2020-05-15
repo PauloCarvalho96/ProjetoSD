@@ -79,11 +79,8 @@ public class MenuController implements Initializable {
             @Override
             public void handle(MouseEvent event) {
                 try {
-                    System.out.println(tasksTable.getSelectionModel().getSelectedItem().getHashType());
                     nameTaskSelectedLabel.setText(tasksTable.getSelectionModel().getSelectedItem().getName());
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                } catch (Exception ignored) { }
             }
         });
     }
@@ -109,14 +106,13 @@ public class MenuController implements Initializable {
     public void handlerListTasks(Event event) throws RemoteException {
         ArrayList<TaskSubjectRI> taskSubjectRIsList = this.client.userSessionRI.listTasks();
         tasksTable.getItems().clear();
-        tasksTable.getItems().addAll(taskSubjectRIsList);///////probably has to be task impl
+        tasksTable.getItems().addAll(taskSubjectRIsList);
     }
 
     public void handlerCreateTask(ActionEvent actionEvent) throws RemoteException {
         String name = nameTaskTF.getText();
         String typeHash = hashTypeCB.getValue();
         String hashPass = hashPassTA.getText();
-        System.out.println("\n\n\n\n*** " + typeHash);
 
         if(!name.isEmpty() && !hashPass.isEmpty()){
             TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass);
@@ -135,7 +131,7 @@ public class MenuController implements Initializable {
         }
     }
 
-    public void handlerJoinTask(ActionEvent actionEvent) {///comparar threads, etc.....
-        //workerObserverImpl.selectTask(nameTaskSelectedLabel.getValue());
+    public void handlerJoinTask(ActionEvent actionEvent) {
+        //workerObserverImpl.selectTask(nameTaskSelectedLabel.getText());
     }
 }
