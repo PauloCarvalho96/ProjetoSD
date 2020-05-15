@@ -31,7 +31,6 @@ public class AuthenticationController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("Authentication scene");
         clientConnection();
         initializeRegisterPassRequisitesLabel();
     }
@@ -100,6 +99,7 @@ public class AuthenticationController implements Initializable {
         if(!username.isEmpty() && !password.isEmpty()) {
             UserSessionRI sessionRI = this.client.userFactoryRI.login(username, password);
             if (sessionRI != null) {
+                this.client.userSessionRI = sessionRI;
                 goToMenuScene(actionEvent);
             } else {
                 messageLoginRegister.setWrapText(true);
@@ -112,7 +112,7 @@ public class AuthenticationController implements Initializable {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("layouts/menu.fxml"));
         Parent root = loader.load();
-        Scene scene = new Scene(root, 1400, 1000);
+        Scene scene = new Scene(root);
         MenuController menuController = loader.getController();
         menuController.initData(this.client);
         Stage primaryStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

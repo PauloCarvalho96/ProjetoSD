@@ -1,15 +1,11 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
-import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectRI {
 

@@ -1,8 +1,5 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
-import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverImpl;
-import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
