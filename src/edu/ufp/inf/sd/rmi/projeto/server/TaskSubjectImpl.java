@@ -140,4 +140,11 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         return hashType;
     }
 
+    @Override
+    public String getHashPass() {
+        return hashPass;
+    }
+
+
+
 }
