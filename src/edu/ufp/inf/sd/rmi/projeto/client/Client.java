@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import com.sun.tools.javac.api.JavacTaskPool;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
@@ -66,6 +67,20 @@ public class Client {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         }
         return userFactoryRI;
+    }
+
+    public static class myThread implements Runnable {
+        WorkerObserverRI worker;
+        myThread(WorkerObserverRI w){worker=w;}
+        public void run() {
+
+        }
+
+    }
+
+    public void ReceiveWorker(WorkerObserverRI worker){
+        Thread t1= new Thread(new myThread(worker));
+        t1.start();
     }
 
     // para fazer testes as funçoes
