@@ -127,7 +127,6 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         return name;
     }
 
-
     @Override
     public String getHashType() {
         return hashType;
