@@ -15,6 +15,7 @@ public class LoadGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("layouts/authentication.fxml"));
+        root.setStyle("-fx-background-color: #F0591E;");
         Scene scene = new Scene(root);
         primaryStage.setTitle("Authentication");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream( "logo/logo.png" )));
