@@ -118,6 +118,7 @@ public class MenuController implements Initializable {
         if(!name.isEmpty() && !hashPass.isEmpty()){
             TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass);
             if(taskSubjectRI != null){
+                taskSubjectRI.divideFile();
                 this.client.tasksRI.add(taskSubjectRI);
                 nameTaskTF.clear();
                 hashPassTA.clear();
@@ -133,6 +134,6 @@ public class MenuController implements Initializable {
     }
 
     public void handlerJoinTask(ActionEvent actionEvent) {///comparar threads, etc.....
-        //workerObserverImpl.selectTask(nameTaskSelectedLabel.getValue());
+//        workerObserverImpl.selectTask(nameTaskSelectedLabel.getValue());
     }
 }
