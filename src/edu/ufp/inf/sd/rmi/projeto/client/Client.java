@@ -69,7 +69,4 @@ public class Client {
         return userFactoryRI;
     }
 
-    // para fazer testes as funçoes
-    public void playService() { }
-
 }
