@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -118,6 +119,7 @@ public class AuthenticationController implements Initializable {
         primaryStage.setX(25);
         primaryStage.setY(0);
         primaryStage.setTitle("Menu");
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream( "logo/logo.png" )));
         primaryStage.setScene(scene);
         primaryStage.show();
     }
