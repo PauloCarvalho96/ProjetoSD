@@ -116,6 +116,8 @@ public class AuthenticationController implements Initializable {
         MenuController menuController = loader.getController();
         menuController.initData(this.client);
         Stage primaryStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        primaryStage.setX(25);
+        primaryStage.setY(0);
         primaryStage.setTitle("Menu");
         primaryStage.setScene(scene);
         primaryStage.show();
