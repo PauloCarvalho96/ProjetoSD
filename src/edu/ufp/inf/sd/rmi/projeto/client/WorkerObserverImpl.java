@@ -9,7 +9,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObserverRI {
 
     private State lastObserverState;
-    protected TaskSubjectRI task;
+    private TaskSubjectRI task;
     private String username;
 
     protected WorkerObserverImpl(String username) throws RemoteException {
@@ -49,5 +49,15 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     @Override
     public State getStateWorker() throws RemoteException {
         return null;
+    }
+
+    @Override
+    public String getHashType() throws RemoteException {
+       return this.task.getHashType();
+    }
+
+    @Override
+    public String getHashPass() throws RemoteException {
+        return this.task.getHashPass();
     }
 }
