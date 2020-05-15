@@ -112,6 +112,7 @@ public class AuthenticationController implements Initializable {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("layouts/menu.fxml"));
         Parent root = loader.load();
+        root.setStyle("-fx-background-color: #c4c4c4;");
         Scene scene = new Scene(root);
         MenuController menuController = loader.getController();
         menuController.initData(this.client);
