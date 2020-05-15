@@ -32,6 +32,8 @@ public class Client {
 
     public ArrayList<TaskSubjectRI> tasksRI = new ArrayList<>();
 
+    public Float cash;
+
     public Client() {
         try {
             //List ans set args

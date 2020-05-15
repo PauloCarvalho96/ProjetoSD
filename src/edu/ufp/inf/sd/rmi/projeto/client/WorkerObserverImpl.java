@@ -10,9 +10,9 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     private State lastObserverState;
     protected TaskSubjectRI task;
-    private String uname;
+    private String username;
 
-    protected WorkerObserverImpl(String uname) throws RemoteException {
+    protected WorkerObserverImpl(String username) throws RemoteException {
         super();
     }
 
