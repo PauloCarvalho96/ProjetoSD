@@ -22,7 +22,7 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     }
 
     @Override
-    public ArrayList<TaskSubjectRI> listTask() throws RemoteException {
+    public ArrayList<TaskSubjectRI> listTasks() throws RemoteException {
         return db.allTasks();
     }
 

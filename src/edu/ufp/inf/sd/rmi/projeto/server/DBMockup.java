@@ -10,7 +10,7 @@ public class DBMockup implements Serializable {
     // array users
     private final ArrayList<User> users;
     // array sessoes (username/session)
-    private final HashMap<String,UserSessionRI> sessions;
+    private final HashMap<String, UserSessionRI> sessions;
     // array tasks
     private final ArrayList<TaskSubjectRI> tasks;
 

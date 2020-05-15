@@ -4,12 +4,6 @@ import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
@@ -28,14 +22,15 @@ public class Client {
     /**
      * Remote interface that will hold the Servant proxy
      */
-    private UserFactoryRI userFactoryRI;
+    public UserFactoryRI userFactoryRI;
 
-    private UserSessionRI session;
+    public UserSessionRI userSessionRI;
 
-    private String uname;
+    public String username;
 
-    private ArrayList<WorkerObserverRI> workers = new ArrayList<>();
+    public ArrayList<WorkerObserverRI> workersRI = new ArrayList<>();
 
+    public ArrayList<TaskSubjectRI> tasksRI = new ArrayList<>();
 
     public Client() {
         try {
@@ -73,41 +68,6 @@ public class Client {
     }
 
     // para fazer testes as funçoes
-    public void playService() {
-        try {
-            String usr = "test";
-            String psw = "test";
-
-            // registo
-            if(this.userFactoryRI.register(usr, psw)){
-                System.out.println("User criado com sucesso");
-            } else {
-                System.out.println("Erro ao criar user!");
-            }
-
-            session = this.userFactoryRI.login(usr,psw);
-
-            if(session != null){
-                // abre menu
-                System.out.println("Sessao iniciada!");
-                // cria task
-                //TaskSubjectRI taskSubjectRI = session.createTask("task","MD5","abcdefgh");
-                // password existente no ficheiro
-                //System.out.println("\n"+taskSubjectRI.readFile("herdhaak")+"\n");
-                uname=usr;
-            } else {
-                System.out.println("Erro no login!");
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {///comparar threads, etc.....
-        WorkerObserverRI worker = new WorkerObserverImpl(uname);
-        workers.add(worker);
-        //worker.selectTask(nameTasksCB.getValue());
-        session.joinTask("task",worker);
-    }
+    public void playService() { }
 
 }
