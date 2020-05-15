@@ -2,7 +2,6 @@ package edu.ufp.inf.sd.rmi.projeto.client;
 
 import edu.ufp.inf.sd.rmi.projeto.server.State;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
-import edu.ufp.inf.sd.rmi.projeto.server.WorkerObserverRI;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -11,9 +10,9 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     private State lastObserverState;
     protected TaskSubjectRI task;
-    private String uname;
+    private String username;
 
-    protected WorkerObserverImpl(String uname) throws RemoteException {
+    protected WorkerObserverImpl(String username) throws RemoteException {
         super();
     }
 
