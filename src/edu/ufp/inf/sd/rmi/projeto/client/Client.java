@@ -1,22 +1,20 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
+import edu.ufp.inf.sd.rmi.projeto.server.WorkerObserverRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
-import sun.rmi.runtime.Log;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client extends GUIClient {
+public class Client {
 
     /**
      * Context for connecting a RMI client to a RMI Servant
@@ -25,28 +23,22 @@ public class Client extends GUIClient {
     /**
      * Remote interface that will hold the Servant proxy
      */
-    private UserFactoryRI userFactoryRI;
+    public UserFactoryRI userFactoryRI;
 
-    public static void main(String[] args) {
-        if (args != null && args.length < 2) {
-            System.exit(-1);
-        } else {
-            //1. ============ Setup client RMI context ============
-            Client hwc = new Client(args);
-            //2. ============ Lookup service ============
-            hwc.lookupService();
-            //3. ============ Play with service ============
-            hwc.playService();
-        }
-    }
+    public UserSessionRI userSessionRI;
 
-    public Client(String args[]) {
+    public String username;
+
+    public ArrayList<WorkerObserverRI> workersRI = new ArrayList<>();
+
+    public ArrayList<TaskSubjectRI> tasksRI = new ArrayList<>();
+
+    public Client() {
         try {
             //List ans set args
-            SetupContextRMI.printArgs(this.getClass().getName(), args);
-            String registryIP = args[0];
-            String registryPort = args[1];
-            String serviceName = args[2];
+            String registryIP = "localhost";
+            String registryPort = "1099";
+            String serviceName = "ProjetoService";
             //Create a context for RMI setup
             contextRMI = new SetupContextRMI(this.getClass(), registryIP, registryPort, new String[]{serviceName});
         } catch (RemoteException e) {
@@ -54,7 +46,7 @@ public class Client extends GUIClient {
         }
     }
 
-    private Remote lookupService() {
+    public Remote lookupService() {
         try {
             //Get proxy to rmiregistry
             Registry registry = contextRMI.getRegistry();
@@ -76,34 +68,7 @@ public class Client extends GUIClient {
         return userFactoryRI;
     }
 
-    private void playService() {
-
-        guiLogin();
-
-    }
-
-
-
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-        String userName = userName_text.getText();
-        String password = String.valueOf(password_text.getPassword());
-        UserSessionRI sessionRI = null;
-        try {
-            sessionRI = this.userFactoryRI.login(userName.trim(),password.trim());
-            if(sessionRI != null){
-                guiMenu();
-                message.setText("Sessão iniciada");
-                System.out.println("Sessão iniciada");
-            }else{
-                userName_text.setText("");
-                password_text.setText("");
-                message.setText("Wrong credentials");
-                System.out.println("Erro ao criar sessão");
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
+    // para fazer testes as funçoes
+    public void playService() { }
 
 }

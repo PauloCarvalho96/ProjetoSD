@@ -30,7 +30,7 @@
 @Set PACKAGE_PREFIX=edu.ufp.inf.sd.rmi
 @Set PACKAGE_PREFIX_FOLDERS=edu/ufp/inf/sd/rmi
 @Set SERVICE_NAME_ON_REGISTRY=ProjetoService
-@Set CLIENT_CLASS_PREFIX=Client
+@Set CLIENT_CLASS_PREFIX=LoadGUI
 @Set SERVER_CLASS_PREFIX=Server
 @Set CLIENT_CLASS_POSTFIX=
 @Set SERVER_CLASS_POSTFIX=
@@ -79,7 +79,7 @@ IF "%CURRENT_IDE%"=="%NETBEANS%" (
     @Set JAVAPROJ_DIST_LIB=lib
 )
 IF "%CURRENT_IDE%"=="%INTELLIJ%" (
-    @Set JAVAPROJ_CLASSES=out\\production\\SD\\
+    @Set JAVAPROJ_CLASSES=out\\production\\%JAVAPROJ_NAME%\\
     @Set JAVAPROJ_SRC=src
     @Set JAVAPROJ_DIST=out\\artifacts\\%JAVAPROJ_NAME%\\
     @Set JAVAPROJ_DIST_LIB=lib
