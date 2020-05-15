@@ -1,5 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
@@ -12,16 +14,28 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private String name;
     private String hashType;
     private String hashPass;
+    private String creditsPerWord;
+    private String creditsTotal;
     private State subjectState;
+    private boolean available;
     // array de workers
     private final ArrayList<WorkerObserverRI> workers = new ArrayList<>();
 
-    public TaskSubjectImpl(String name,String hashType, String hashPass) throws RemoteException {
+    public TaskSubjectImpl(String name, String hashType, String hashPass) throws RemoteException {
         super();
         this.name = name;
         this.hashType = hashType;
         this.hashPass = hashPass;
     }
+
+    /*public TaskSubjectImpl(String name, String hashType, String hashPass, String creditsPerWord, String creditsTotal) throws RemoteException {
+        super();
+        this.name = name;
+        this.hashType = hashType;
+        this.hashPass = hashPass;
+        this.creditsPerWord = creditsPerWord;
+        this.creditsTotal = creditsTotal;
+    }*/
 
     @Override
     public boolean readFile(String pswtodiscover) throws RemoteException{
@@ -83,6 +97,11 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getHashType() {
+        return hashType;
     }
 
 }

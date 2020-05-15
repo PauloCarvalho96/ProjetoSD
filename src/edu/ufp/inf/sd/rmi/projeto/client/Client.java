@@ -3,7 +3,6 @@ package edu.ufp.inf.sd.rmi.projeto.client;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
-import edu.ufp.inf.sd.rmi.projeto.server.WorkerObserverRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 
 import java.rmi.NotBoundException;
@@ -32,6 +31,8 @@ public class Client {
     public ArrayList<WorkerObserverRI> workersRI = new ArrayList<>();
 
     public ArrayList<TaskSubjectRI> tasksRI = new ArrayList<>();
+
+    public Float cash;
 
     public Client() {
         try {
