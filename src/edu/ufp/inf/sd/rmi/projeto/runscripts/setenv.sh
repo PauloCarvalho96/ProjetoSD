@@ -15,28 +15,27 @@ export SCRIPT_ROLE=$1
 #@REM ======================== CHANGE BELOW ACCORDING YOUR PROJECT and PC SETTINGS ========================
 #@REM =====================================================================================================
 # @REM ==== PC STUFF ====
-export JDK=/Library/Java/JavaVirtualMachines/jdk-11.0.1.jdk/Contents/Home
+export JDK=/usr/lib/jvm/jdk-8
 #@REM These vars will be used to check the output folder (whereto classes are generated)
 export NETBEANS=NetBeans
 export INTELLIJ=IntelliJ
 export CURRENT_IDE=${INTELLIJ}
 #export CURRENT_IDE=¢{NETBEANS}
 #export CURRENT_IDE=¢{NETBEANS}
-export USERNAME=davidcapela
 
 #@REM ==== JAVA NAMING STUFF ====
-export JAVAPROJ_NAME=SD2020
-export JAVAPROJ=/Users/davidcapela/Desktop/faculdade/3_ANO/SEMESTRE2/${JAVAPROJ_NAME}
+export JAVAPROJ_NAME=ProjetoSD
+export JAVAPROJ=/home/ruitcatarino/Documents/${JAVAPROJ_NAME}
 
-export PACKAGE=calculador
+export PACKAGE=projeto
 export PACKAGE_PREFIX=edu.ufp.inf.sd.rmi
 export PACKAGE_PREFIX_FOLDERS=edu/ufp/inf/sd/rmi
-export SERVICE_NAME_ON_REGISTRY=CalculadorService
-export CLIENT_CLASS_PREFIX=Calculador
-export SERVER_CLASS_PREFIX=Calculador
-export CLIENT_CLASS_POSTFIX=Client
-export SERVER_CLASS_POSTFIX=Server
-export SETUP_CLASS_POSTFIX=Setup
+export SERVICE_NAME_ON_REGISTRY=ProjetoService
+export CLIENT_CLASS_PREFIX=LoadGUI
+export SERVER_CLASS_PREFIX=Server
+export CLIENT_CLASS_POSTFIX=
+export SERVER_CLASS_POSTFIX=
+export SETUP_CLASS_POSTFIX=
 export SERVANT_IMPL_CLASS_POSTFIX=Impl
 export SERVANT_ACTIVATABLE_IMPL_CLASS_POSTFIX=ActivatableImpl
 
