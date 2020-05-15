@@ -55,15 +55,22 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
                 if(txtToDelivery != null){
                     FileWriter txtToDeliveryReader = new FileWriter(txtToDelivery);
 
-                    for(int i=start;i<start+delta;i++){
-                        String data = passwordsReader.nextLine();
-                        txtToDeliveryReader.write(data+"\n");
-
-                        if(passwordsReader.nextLine() == null){
+                    int j = 0;
+                    while(passwordsReader.hasNextLine()){
+                        if(j>=start){
+                            String data = passwordsReader.nextLine();
+                            txtToDeliveryReader.write(data);
+                            if(j < start + delta - 1){
+                                txtToDeliveryReader.write("\n");
+                            }
+                        } else {
+                            passwordsReader.nextLine();
+                        }
+                        j++;
+                        if(j==start+delta){
                             break;
                         }
                     }
-
                     txtToDeliveryReader.close();
                     passwordsReader.close();
 
