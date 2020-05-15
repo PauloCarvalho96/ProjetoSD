@@ -99,6 +99,7 @@ public class MenuController implements Initializable {
             tasksTable.getItems().addAll(taskSubjectRIsList);///////probably has to be task impl
         }
     }
+
     public void handlerCreateTask(ActionEvent actionEvent) throws RemoteException {
         String name = nameTaskTF.getText();
         String typeHash = hashTypeCB.getValue();
