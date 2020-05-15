@@ -10,6 +10,7 @@ call setenv client
 @REM Run python on *build/classes* or *dist* directory
 @REM cls
 @cd %ABSPATH2CLASSES%
+
 @REM cd %ABSPATH2DIST%
 @REM python 3:
 python -m http.server 8000

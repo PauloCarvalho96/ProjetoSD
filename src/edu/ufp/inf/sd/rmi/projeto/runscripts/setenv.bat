@@ -12,11 +12,11 @@
 
 @REM ======================== CHANGE BELOW ACCORDING YOUR PROJECT and PC SETTINGS ========================
 @REM ==== PC STUFF ====
-@Set USERNAME=Paulo
+@Set USERNAME=tmsl9
 
 @Set WORKDRIVE=C
 @REM Set JDK=%WORKDRIVE%:\Programas\Java\jdk1.8.0_60
-@Set JDK="C:\Program Files\JetBrains\IntelliJ IDEA 2019.3.3\jbr"
+@Set JDK="C:\Program Files\JetBrains\IntelliJ IDEA 2019.2.3\jbr"
 @REM These vars will be used to check the output folder (whereto classes are generated)
 @SET NETBEANS=NetBeans
 @SET INTELLIJ=IntelliJ
@@ -25,15 +25,15 @@
 
 @REM ==== JAVA NAMING STUFF ====
 @Set JAVAPROJ_NAME=ProjetoSD
-@set JAVAPROJ=%WORKDRIVE%:\\Users\\%USERNAME%\\IdeaProjects\\%JAVAPROJ_NAME%
+@set JAVAPROJ=%WORKDRIVE%:\\Users\\%USERNAME%\\OneDrive\\Documentos\\GitHub\\%JAVAPROJ_NAME%
 @Set PACKAGE=projeto
 @Set PACKAGE_PREFIX=edu.ufp.inf.sd.rmi
 @Set PACKAGE_PREFIX_FOLDERS=edu/ufp/inf/sd/rmi
 @Set SERVICE_NAME_ON_REGISTRY=ProjetoService
-@Set CLIENT_CLASS_PREFIX=Projeto
-@Set SERVER_CLASS_PREFIX=Projeto
-@Set CLIENT_CLASS_POSTFIX=Client
-@Set SERVER_CLASS_POSTFIX=Server
+@Set CLIENT_CLASS_PREFIX=LoadGUI
+@Set SERVER_CLASS_PREFIX=Server
+@Set CLIENT_CLASS_POSTFIX=
+@Set SERVER_CLASS_POSTFIX=
 @Set SETUP_CLASS_POSTFIX=Setup
 @Set SERVANT_IMPL_CLASS_POSTFIX=Impl
 
@@ -114,4 +114,3 @@ IF "%CURRENT_IDE%"=="%INTELLIJ%" (
 @Set SETUP_SECURITY_POLICY=file:///%JAVAPROJ%\\%JAVAPROJ_SRC%\\%JAVASECURITYPATH%\\setup.policy
 @Set RMID_SECURITY_POLICY=file:///%JAVAPROJ%\\%JAVAPROJ_SRC%\\%JAVASECURITYPATH%\\rmid.policy
 @Set GROUP_SECURITY_POLICY=file:///%JAVAPROJ%\\%JAVAPROJ_SRC%\\%JAVASECURITYPATH%\\group.policy
-
