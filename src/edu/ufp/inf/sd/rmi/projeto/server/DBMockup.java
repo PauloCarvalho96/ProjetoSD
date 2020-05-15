@@ -68,7 +68,7 @@ public class DBMockup implements Serializable {
 
     public TaskSubjectRI getTask(String task) throws RemoteException {
         for (TaskSubjectRI taskSubjectRI:tasks) {
-            if(task.compareTo(taskSubjectRI.getTaskName())==0){
+            if(task.compareTo(taskSubjectRI.getName())==0){
                 return taskSubjectRI;
             }
         }

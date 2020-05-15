@@ -4,6 +4,8 @@ import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ import java.util.Scanner;
 
 public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectRI {
 
-    private String taskName;
+    private String name;
     private String hashType;
     private String hashPass;
     private String creditsPerWord;
@@ -23,7 +25,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
 
     public TaskSubjectImpl(String name, String hashType, String hashPass) throws RemoteException {
         super();
-        this.taskName = taskName;
+        this.name = name;
         this.hashType = hashType;
         this.hashPass = hashPass;
     }
@@ -37,7 +39,6 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.creditsTotal = creditsTotal;
     }*/
 
-    @Override
     public void divideFile(Integer start,Integer delta) throws RemoteException{
 
         try {
@@ -72,7 +73,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
 
     public File createFile(Integer start,Integer delta) {
         try {
-            String filename = taskName+start+delta+"txt";
+            String filename = name+start+delta+"txt";
             File newFile = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\"+filename);
             if (newFile.createNewFile()) {
                 System.out.println("File created");
@@ -122,9 +123,10 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     @Override
-    public String getTaskName() {
-        return taskName;
+    public String getName() throws RemoteException {
+        return name;
     }
+
 
     @Override
     public String getHashType() {
