@@ -20,6 +20,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private String creditsTotal;
     private State subjectState;
     private boolean available;
+    private Integer start = 0;     //linha atual
+    private Integer delta = 1000;     //linha atual
     // array de workers
     private final ArrayList<WorkerObserverRI> workers = new ArrayList<>();
 
@@ -39,28 +41,41 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.creditsTotal = creditsTotal;
     }*/
 
-    public void divideFile(Integer start,Integer delta) throws RemoteException{
-
+    @Override
+    public void divideFile() throws RemoteException{
         try {
             // ficheiro do servidor
             File passwords = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
             Scanner passwordsReader = new Scanner(passwords);
-            // ficheiro para entregar ao cliente
+
             try {
+                // ficheiro para entregar ao cliente
                 File txtToDelivery = createFile(start,delta);
-                FileWriter txtToDeliveryReader = new FileWriter(txtToDelivery);
 
-                for(int i=start;i<start+delta;i++){
-                    String data = passwordsReader.nextLine();
-                    txtToDeliveryReader.write(data+"\n");
+                if(txtToDelivery != null){
+                    FileWriter txtToDeliveryReader = new FileWriter(txtToDelivery);
 
-                    if(passwordsReader.nextLine() == null){
-                        break;
+                    int j = 0;
+                    while(passwordsReader.hasNextLine()){
+                        if(j>=start){
+                            String data = passwordsReader.nextLine();
+                            txtToDeliveryReader.write(data);
+                            if(j < start + delta - 1){
+                                txtToDeliveryReader.write("\n");
+                            }
+                        } else {
+                            passwordsReader.nextLine();
+                        }
+                        j++;
+                        if(j==start+delta){
+                            break;
+                        }
                     }
-                }
+                    txtToDeliveryReader.close();
+                    passwordsReader.close();
 
-                txtToDeliveryReader.close();
-                passwordsReader.close();
+                    start = start + delta;
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -71,7 +86,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
 
     }
 
-    public File createFile(Integer start,Integer delta) {
+    private File createFile(Integer start,Integer delta) {
         try {
             String filename = name+start+delta+"txt";
             File newFile = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\"+filename);
@@ -127,10 +142,16 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         return name;
     }
 
-
     @Override
     public String getHashType() {
         return hashType;
     }
+
+    @Override
+    public String getHashPass() {
+        return hashPass;
+    }
+
+
 
 }
