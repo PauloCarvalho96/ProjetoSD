@@ -30,9 +30,9 @@
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
                         <TextField fx:id="nameTaskTF" layoutX="841.0" layoutY="143.0" />
-                        <Button fx:id="createTaskBut" layoutX="877.0" layoutY="294.0" mnemonicParsing="false" onAction="#handlerCreateTask" text="Create Task" />
                         <ComboBox fx:id="hashTypeCB" layoutX="841.0" layoutY="183.0" prefHeight="26.0" prefWidth="149.0" />
                         <TextField fx:id="hashPassTF" layoutX="842.0" layoutY="224.0" />
+                        <Button fx:id="createTaskBut" layoutX="877.0" layoutY="294.0" mnemonicParsing="false" onAction="#handlerCreateTask" text="Create Task" />
                         <Label layoutX="714.0" layoutY="146.0" prefHeight="18.0" prefWidth="66.0" text="Name" />
                         <Label layoutX="714.0" layoutY="187.0" prefHeight="18.0" prefWidth="69.0" text="Hash type" />
                         <Label layoutX="714.0" layoutY="227.0" prefHeight="18.0" prefWidth="66.0" text="Hash pass" />
@@ -45,13 +45,13 @@
                      <children>
                         <ComboBox fx:id="nameTasksCB" layoutX="817.0" layoutY="128.0" prefHeight="31.0" prefWidth="210.0" />
                         <Button fx:id="jointTaskBut" layoutX="1084.0" layoutY="127.0" mnemonicParsing="false" onAction="#handlerJoinTask" prefHeight="33.0" prefWidth="56.0" text="Join" />
-                    <AnchorPane layoutX="23.0" layoutY="49.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="1820.0" />
-                        <TableView fx:id="tasksTable" layoutX="23.0" layoutY="33.0" prefHeight="682.0" prefWidth="753.0">
+                        <AnchorPane layoutX="23.0" layoutY="49.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="1820.0" />
+                        <TableView fx:id="tasksTable" layoutX="23.0" layoutY="33.0" prefHeight="682.0" prefWidth="735.0">
                            <columns>
                               <TableColumn fx:id="nameCol" prefWidth="145.2000305056572" text="Name" />
-                              <TableColumn fx:id="passHashCol" minWidth="5.20001220703125" prefWidth="167.59999084472656" text="Password (Hash)" />
                               <TableColumn fx:id="hashTypeCol" prefWidth="143.20001220703125" text="Hash Type" />
-                              <TableColumn fx:id="threadsCol" prefWidth="148.199951171875" text="Threads" />
+                              <TableColumn fx:id="creditsPerWordCol" prefWidth="148.199951171875" text="Credits per Word" />
+                              <TableColumn fx:id="creditsCol" prefWidth="148.199951171875" text="Credits" />
                               <TableColumn fx:id="availableCol" prefWidth="148.199951171875" text="Available" />
                            </columns>
                         </TableView>

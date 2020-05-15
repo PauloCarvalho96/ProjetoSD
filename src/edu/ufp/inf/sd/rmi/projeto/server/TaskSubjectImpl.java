@@ -1,7 +1,8 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
+
+import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -9,43 +10,73 @@ import java.util.Scanner;
 
 public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectRI {
 
-    private String name;
+    private String taskName;
     private String hashType;
     private String hashPass;
     private State subjectState;
     // array de workers
     private final ArrayList<WorkerObserverRI> workers = new ArrayList<>();
 
-    public TaskSubjectImpl(String name,String hashType, String hashPass) throws RemoteException {
+    private Integer start = 0;
+    private Integer delta = 1000;
+
+    public TaskSubjectImpl(String taskName,String hashType, String hashPass) throws RemoteException {
         super();
-        this.name = name;
+        this.taskName = taskName;
         this.hashType = hashType;
         this.hashPass = hashPass;
     }
 
     @Override
-    public boolean readFile(String pswtodiscover) throws RemoteException{
+    public void divideFile(Integer start,Integer delta) throws RemoteException{
+
         try {
-            File myObj = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
-            Scanner myReader = new Scanner(myObj);
-//            for(int i=start;i<end;i++){
-            while (myReader.hasNextLine()){
-                String data = myReader.nextLine();
-                if(data.compareTo(pswtodiscover) == 0){
-                    System.out.println("\nDescobri a password\n");
-                    myReader.close();
-                    return true;
+            // ficheiro do servidor
+            File passwords = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
+            Scanner passwordsReader = new Scanner(passwords);
+            // ficheiro para entregar ao cliente
+            try {
+                File txtToDelivery = createFile(start,delta);
+                FileWriter txtToDeliveryReader = new FileWriter(txtToDelivery);
+
+                for(int i=start;i<start+delta;i++){
+                    String data = passwordsReader.nextLine();
+                    txtToDeliveryReader.write(data+"\n");
+
+                    if(passwordsReader.nextLine() == null){
+                        break;
+                    }
                 }
+
+                txtToDeliveryReader.close();
+                passwordsReader.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            System.out.println("\nPassword não descoberta\n");
-            myReader.close();
-            return false;
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        return false;
+
     }
+
+    public File createFile(Integer start,Integer delta) {
+        try {
+            String filename = taskName+start+delta+"txt";
+            File newFile = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\"+filename);
+            if (newFile.createNewFile()) {
+                System.out.println("File created");
+                return newFile;
+            } else {
+                System.out.println("Error!");
+                return null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public void notifyAllObservers(){
         /*for (WorkerObserverRI obs: workers) {
@@ -81,8 +112,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getTaskName() {
+        return taskName;
     }
-
 }

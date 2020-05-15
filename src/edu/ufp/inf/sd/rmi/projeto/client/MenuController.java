@@ -69,7 +69,7 @@ public class MenuController implements Initializable {
     public void initializeTableViewListTasks(){
         //goes to the class and associates de col with the variable
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        passHashCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
+//        passHashCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
         hashTypeCol.setCellValueFactory(new PropertyValueFactory<>("hashPass"));
         //threadsCol.setCellValueFactory(new PropertyValueFactory<>("threads"));
         //availableCol.setCellValueFactory(new PropertyValueFactory<>("available"));
