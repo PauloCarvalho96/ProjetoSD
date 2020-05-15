@@ -38,7 +38,6 @@ public class AuthenticationController implements Initializable {
     public void clientConnection(){
         client = new Client();
         client.lookupService();
-        client.playService();
     }
 
     public void initializeRegisterPassRequisitesLabel(){
