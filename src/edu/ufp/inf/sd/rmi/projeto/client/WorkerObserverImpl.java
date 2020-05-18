@@ -77,9 +77,9 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
         int thread_size=3; //valor que vem do XML, a mudar
 
-        int start = 4;//task.getStart();
+        int start = task.getStart();
 
-        int delta = 20;//task.getDelta();
+        int delta = task.getDelta();
 
         int res = delta % thread_size;
 
@@ -119,7 +119,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         @Override
         public void run() {
             try {
-
                 File file = new File("file.txt");
 
                 int line = 0;
@@ -127,11 +126,11 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 BufferedReader br = new BufferedReader(new FileReader(file));
                 String st;
 
-                while ((st = br.readLine()) != null){
-                    if(line >= start && line < start + delta){
-                        System.out.println("Thread"+id+":"+st); //thread work
+                while ((st = br.readLine()) != null) {
+                    if (line >= start && line < start + delta) {
+                        System.out.println("Thread" + id + ":" + st); //thread work
                     }
-                    if(line == start + delta){
+                    if (line == start + delta) {
                         break;
                     }
                     line++;
@@ -140,26 +139,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } catch (IOException e) {
-            System.out.println("Error");
-        }
-
-        int thread_size=2; //valor que vem do XML, a mudar
-
-        int start = task.getStart();
-
-        int delta = task.getDelta();
-
-        delta = delta / thread_size;
-
-
-        ArrayList<Thread> threads = new ArrayList<>();
-        for(int i = 0; i < thread_size ; i++ , start+=delta){
-            threads.add(new Thread(new myThread(start,delta,i)));
-        }
-
-        for (Thread t:threads) {
-            t.start();
         }
     }
 
@@ -206,45 +185,5 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     @Override
     public String getHashPass() throws RemoteException {
         return this.taskgroup.getHashPass();
-    }
-
-    //Threads
-    public static class myThread implements Runnable {
-
-        int start;
-        int delta;
-        int id;
-
-        public myThread(int start, int delta, int id) {
-            start--;
-            this.start = start;
-            this.delta = delta;
-            this.id = id;
-        }
-
-        @Override
-        public void run() {
-            try {
-                File file = new File("test.txt");
-
-                int line = 0;
-
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String st;
-
-                while ((st = br.readLine()) != null){
-                    if(line >= start && line <= start + delta){
-                        System.out.println("Thread"+id+":"+st);
-                    }
-                    if(line == start + delta){
-                        break;
-                    }
-                    line++;
-                }
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
