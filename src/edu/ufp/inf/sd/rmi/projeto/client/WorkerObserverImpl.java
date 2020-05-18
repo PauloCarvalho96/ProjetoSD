@@ -62,12 +62,8 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     /** thread vai fazer o trabalho */
-    private static void doWork(String task) throws InterruptedException {
-        for (char ch : task.toCharArray()) {
-            if (ch == '.') {
-                Thread.sleep(1000);
-            }
-        }
+    private void doWork(String task) throws InterruptedException {
+
     }
 
     @Override

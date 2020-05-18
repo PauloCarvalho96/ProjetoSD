@@ -7,10 +7,7 @@ import com.rabbitmq.client.MessageProperties;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 import edu.ufp.inf.sd.rmi.util.RabbitUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -29,7 +26,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private State subjectState;
     private boolean available;
     private Integer start = 0;     //linha atual
-    private Integer delta = 500000;     //quantidade de linhas
+    private static final Integer delta = 500000;     //quantidade de linhas
+    private static final String url = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt";
     // array de workers
     private ArrayList<WorkerObserverRI> workers = new ArrayList<>();
     // array tasks
@@ -40,7 +38,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.name = name;
         this.hashType = hashType;
         this.hashPass = hashPass;
-        createTasks();
+        createSubTasks();
     }
 
     /*public TaskSubjectImpl(String name, String hashType, String hashPass, String creditsPerWord, String creditsTotal) throws RemoteException {
@@ -52,26 +50,54 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.creditsTotal = creditsTotal;
     }*/
 
-    /** Em testes */
+    /** Em testes -> para adicionar tasks na fila */
     public void createTasks() throws RemoteException{
 
-        try {
+        /*try {
             Connection connection = RabbitUtils.newConnection2Server("localhost", "guest", "guest");
             Channel channel=RabbitUtils.createChannel2Server(connection);
             boolean durable=true;
             channel.queueDeclare(name, durable, false, false, null);
 
-            String message="Test";
+            String message="url / start / delta";
 
             channel.basicPublish("", name, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
             System.out.println(" [x] Sent '" + message + "'");
 
         } catch (IOException|TimeoutException e) {
             e.printStackTrace();
-        }
-
+        }*/
     }
 
+    /** divide linhas para criar sub tasks */
+    public void createSubTasks(){
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt"));
+            int lines = 0;
+            while (reader.readLine() != null) {
+                if(lines == start + delta - 1){
+                    Task task = new Task(url,start,delta);
+                    tasks.add(task);
+                    start = lines + 1;
+                }
+                lines++;
+            }
+            int lastDelta = delta;
+            lastDelta = lines - start;
+            if(lastDelta != 0){
+                Task task = new Task(url,start,lastDelta);
+                tasks.add(task);
+                reader.close();
+            }
+
+            for (Task task:tasks) {
+                System.out.println("\nStart: "+task.getStart()+"\nDelta: "+task.getDelta()+"\n");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void notifyAllObservers(){
         /*for (WorkerObserverRI obs: workers) {

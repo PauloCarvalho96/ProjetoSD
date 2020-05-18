@@ -133,5 +133,6 @@ public class MenuController implements Initializable {
 
     public void handlerJoinTask(ActionEvent actionEvent) {///comparar threads, etc.....
 //        workerObserverImpl.selectTask(nameTaskSelectedLabel.getValue());
+
     }
 }

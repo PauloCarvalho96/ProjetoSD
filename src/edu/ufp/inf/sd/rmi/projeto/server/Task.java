@@ -12,4 +12,15 @@ public class Task {
         this.delta = delta;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public Integer getStart() {
+        return start;
+    }
+
+    public Integer getDelta() {
+        return delta;
+    }
 }
