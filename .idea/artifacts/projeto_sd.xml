@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="projeto-sd">
-    <output-path>$PROJECT_DIR$/out/artifacts/projeto_sd</output-path>
-    <root id="archive" name="projeto-sd.jar">
-      <element id="module-output" name="projeto-sd" />
-    </root>
-  </artifact>
-</component>
