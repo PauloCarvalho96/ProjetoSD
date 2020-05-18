@@ -9,10 +9,14 @@ import edu.ufp.inf.sd.rmi.projeto.server.Task;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.util.RabbitUtils;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
 public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObserverRI {
@@ -28,7 +32,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.username = username;
         this.taskgroup = taskSubjectRI;
         this.threads = threads;
-        getTask(taskgroup);
     }
 
     /** Em testes */
@@ -62,11 +65,34 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     /** thread vai fazer o trabalho */
-    private static void doWork(String task) throws InterruptedException {
-        for (char ch : task.toCharArray()) {
-            if (ch == '.') {
-                Thread.sleep(1000);
+    public void doWork(){
+        try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
+             FileOutputStream fileOutputStream = new FileOutputStream("test.txt")) {
+            byte dataBuffer[] = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                fileOutputStream.write(dataBuffer, 0, bytesRead);
             }
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+
+        int thread_size=2; //valor que vem do XML, a mudar
+
+        int start = task.getStart();
+
+        int delta = task.getDelta();
+
+        delta = delta / thread_size;
+
+
+        ArrayList<Thread> threads = new ArrayList<>();
+        for(int i = 0; i < thread_size ; i++ , start+=delta){
+            threads.add(new Thread(new myThread(start,delta,i)));
+        }
+
+        for (Thread t:threads) {
+            t.start();
         }
     }
 
@@ -113,5 +139,45 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     @Override
     public String getHashPass() throws RemoteException {
         return this.taskgroup.getHashPass();
+    }
+
+    //Threads
+    public static class myThread implements Runnable {
+
+        int start;
+        int delta;
+        int id;
+
+        public myThread(int start, int delta, int id) {
+            start--;
+            this.start = start;
+            this.delta = delta;
+            this.id = id;
+        }
+
+        @Override
+        public void run() {
+            try {
+                File file = new File("test.txt");
+
+                int line = 0;
+
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String st;
+
+                while ((st = br.readLine()) != null){
+                    if(line >= start && line <= start + delta){
+                        System.out.println("Thread"+id+":"+st);
+                    }
+                    if(line == start + delta){
+                        break;
+                    }
+                    line++;
+                }
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
