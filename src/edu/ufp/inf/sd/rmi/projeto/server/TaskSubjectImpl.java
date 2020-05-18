@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private State subjectState;
     private boolean available;
     private Integer start = 0;     //linha atual
-    private Integer delta = 1000;     //linha atual
+    private Integer delta = 500000;     //quantidade de linhas
     // array de workers
     private final ArrayList<WorkerObserverRI> workers = new ArrayList<>();
 
@@ -30,6 +31,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.name = name;
         this.hashType = hashType;
         this.hashPass = hashPass;
+        createDirectoryToTask();
     }
 
     /*public TaskSubjectImpl(String name, String hashType, String hashPass, String creditsPerWord, String creditsTotal) throws RemoteException {
@@ -41,7 +43,25 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.creditsTotal = creditsTotal;
     }*/
 
-    @Override
+    // cria diretorio para task se nao existir
+    public void createDirectoryToTask() {
+        String pathToDirectory = "C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\tasks\\"+name;
+        File directory = new File(pathToDirectory);
+        if (!directory.exists()){
+            directory.mkdir();
+        }
+
+        File passwords_to_verify = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
+        File passwords_to_task = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\tasks\\"+name+"\\passwords_to_verifiy.txt");
+        try {
+            Files.copy(passwords_to_verify.toPath(),passwords_to_task.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /** Nao usado */
+
     public void divideFile() throws RemoteException{
         try {
             // ficheiro do servidor
@@ -49,34 +69,24 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
             Scanner passwordsReader = new Scanner(passwords);
 
             try {
-                // ficheiro para entregar ao cliente
-                File txtToDelivery = createFile(start,delta);
-
-                if(txtToDelivery != null){
-                    FileWriter txtToDeliveryReader = new FileWriter(txtToDelivery);
-
                     int j = 0;
                     while(passwordsReader.hasNextLine()){
-                        if(j>=start){
+                        // ficheiro para entregar ao cliente
+                        File txtToDelivery = createFile(start,delta);
+
+                        if(txtToDelivery != null){
+                            FileWriter txtToDeliveryReader = new FileWriter(txtToDelivery);
+
+                        while(j!=start+delta && passwordsReader.hasNextLine()){
                             String data = passwordsReader.nextLine();
-                            txtToDeliveryReader.write(data);
-                            if(j < start + delta - 1){
-                                txtToDeliveryReader.write("\n");
-                            }
-                        } else {
-                            passwordsReader.nextLine();
+                            txtToDeliveryReader.write(data+"\n");
+                            j++;
                         }
-                        j++;
-                        if(j==start+delta){
-                            break;
+                            txtToDeliveryReader.close();
                         }
+                            start = start + delta;
                     }
-                    txtToDeliveryReader.close();
-                    passwordsReader.close();
-
-                    start = start + delta;
-                }
-
+                        passwordsReader.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -88,8 +98,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
 
     private File createFile(Integer start,Integer delta) {
         try {
-            String filename = name+start+delta+"txt";
-            File newFile = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\"+filename);
+            String filename = name+start+delta+".txt";
+            File newFile = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\tasks\\"+name+"\\"+filename);
             if (newFile.createNewFile()) {
                 System.out.println("File created");
                 return newFile;
@@ -103,6 +113,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         return null;
     }
 
+    /** */
 
     public void notifyAllObservers(){
         /*for (WorkerObserverRI obs: workers) {
@@ -151,7 +162,5 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     public String getHashPass() {
         return hashPass;
     }
-
-
 
 }
