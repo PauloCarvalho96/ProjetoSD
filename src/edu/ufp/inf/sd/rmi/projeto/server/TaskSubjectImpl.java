@@ -1,6 +1,11 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.MessageProperties;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
+import edu.ufp.inf.sd.rmi.util.RabbitUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,8 +14,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.TimeoutException;
 
 public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectRI {
 
@@ -24,14 +31,16 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private Integer start = 0;     //linha atual
     private Integer delta = 500000;     //quantidade de linhas
     // array de workers
-    private final ArrayList<WorkerObserverRI> workers = new ArrayList<>();
+    private ArrayList<WorkerObserverRI> workers = new ArrayList<>();
+    // array tasks
+    private ArrayList<Task> tasks = new ArrayList<>();
 
     public TaskSubjectImpl(String name, String hashType, String hashPass) throws RemoteException {
         super();
         this.name = name;
         this.hashType = hashType;
         this.hashPass = hashPass;
-        createDirectoryToTask();
+        createTasks();
     }
 
     /*public TaskSubjectImpl(String name, String hashType, String hashPass, String creditsPerWord, String creditsTotal) throws RemoteException {
@@ -43,77 +52,26 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.creditsTotal = creditsTotal;
     }*/
 
-    // cria diretorio para task se nao existir
-    public void createDirectoryToTask() {
-        String pathToDirectory = "C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\tasks\\"+name;
-        File directory = new File(pathToDirectory);
-        if (!directory.exists()){
-            directory.mkdir();
-        }
+    /** Em testes */
+    public void createTasks() throws RemoteException{
 
-        File passwords_to_verify = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
-        File passwords_to_task = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\tasks\\"+name+"\\passwords_to_verifiy.txt");
         try {
-            Files.copy(passwords_to_verify.toPath(),passwords_to_task.toPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+            Connection connection = RabbitUtils.newConnection2Server("localhost", "guest", "guest");
+            Channel channel=RabbitUtils.createChannel2Server(connection);
+            boolean durable=true;
+            channel.queueDeclare(name, durable, false, false, null);
 
-    /** Nao usado */
+            String message="Test";
 
-    public void divideFile() throws RemoteException{
-        try {
-            // ficheiro do servidor
-            File passwords = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
-            Scanner passwordsReader = new Scanner(passwords);
+            channel.basicPublish("", name, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+            System.out.println(" [x] Sent '" + message + "'");
 
-            try {
-                    int j = 0;
-                    while(passwordsReader.hasNextLine()){
-                        // ficheiro para entregar ao cliente
-                        File txtToDelivery = createFile(start,delta);
-
-                        if(txtToDelivery != null){
-                            FileWriter txtToDeliveryReader = new FileWriter(txtToDelivery);
-
-                        while(j!=start+delta && passwordsReader.hasNextLine()){
-                            String data = passwordsReader.nextLine();
-                            txtToDeliveryReader.write(data+"\n");
-                            j++;
-                        }
-                            txtToDeliveryReader.close();
-                        }
-                            start = start + delta;
-                    }
-                        passwordsReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (FileNotFoundException e) {
+        } catch (IOException|TimeoutException e) {
             e.printStackTrace();
         }
 
     }
 
-    private File createFile(Integer start,Integer delta) {
-        try {
-            String filename = name+start+delta+".txt";
-            File newFile = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\tasks\\"+name+"\\"+filename);
-            if (newFile.createNewFile()) {
-                System.out.println("File created");
-                return newFile;
-            } else {
-                System.out.println("Error!");
-                return null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /** */
 
     public void notifyAllObservers(){
         /*for (WorkerObserverRI obs: workers) {

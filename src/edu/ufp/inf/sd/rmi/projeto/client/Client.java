@@ -73,6 +73,17 @@ public class Client {
         return userFactoryRI;
     }
 
+    public WorkerObserverRI createWorker(TaskSubjectRI taskSubjectRI,ArrayList<Thread> threads){
+        try {
+            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(username,taskSubjectRI,threads);
+            workersRI.add(workerObserverRI);
+            return workerObserverRI;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static class myThread implements Runnable {
         WorkerObserverRI worker;
         myThread(WorkerObserverRI w){worker=w;}
