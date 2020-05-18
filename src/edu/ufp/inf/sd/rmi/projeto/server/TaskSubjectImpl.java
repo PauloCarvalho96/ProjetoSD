@@ -1,15 +1,23 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.MessageProperties;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
+import edu.ufp.inf.sd.rmi.util.RabbitUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.TimeoutException;
 
 public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectRI {
 
@@ -21,15 +29,18 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private State subjectState;
     private boolean available;
     private Integer start = 0;     //linha atual
-    private Integer delta = 1000;     //linha atual
+    private Integer delta = 500000;     //quantidade de linhas
     // array de workers
-    private final ArrayList<WorkerObserverRI> workers = new ArrayList<>();
+    private ArrayList<WorkerObserverRI> workers = new ArrayList<>();
+    // array tasks
+    private ArrayList<Task> tasks = new ArrayList<>();
 
     public TaskSubjectImpl(String name, String hashType, String hashPass) throws RemoteException {
         super();
         this.name = name;
         this.hashType = hashType;
         this.hashPass = hashPass;
+        createTasks();
     }
 
     /*public TaskSubjectImpl(String name, String hashType, String hashPass, String creditsPerWord, String creditsTotal) throws RemoteException {
@@ -41,59 +52,24 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.creditsTotal = creditsTotal;
     }*/
 
-    @Override
-    public void divideFile() throws RemoteException{
+    /** Em testes */
+    public void createTasks() throws RemoteException{
+
         try {
-            // ficheiro do servidor
-            File passwords = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
-            Scanner passwordsReader = new Scanner(passwords);
+            Connection connection = RabbitUtils.newConnection2Server("localhost", "guest", "guest");
+            Channel channel=RabbitUtils.createChannel2Server(connection);
+            boolean durable=true;
+            channel.queueDeclare(name, durable, false, false, null);
 
-            try {
-                // ficheiro para entregar ao cliente
-                File txtToDelivery = createFile(start,delta);
+            String message="Test";
 
-                if(txtToDelivery != null){
-                    FileWriter txtToDeliveryReader = new FileWriter(txtToDelivery);
+            channel.basicPublish("", name, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+            System.out.println(" [x] Sent '" + message + "'");
 
-                    for(int i=start;i<start+delta;i++){
-                        String data = passwordsReader.nextLine();
-                        txtToDeliveryReader.write(data+"\n");
-
-                        if(passwordsReader.nextLine() == null){
-                            break;
-                        }
-                    }
-
-                    txtToDeliveryReader.close();
-                    passwordsReader.close();
-
-                    start = start + delta;
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (FileNotFoundException e) {
+        } catch (IOException|TimeoutException e) {
             e.printStackTrace();
         }
 
-    }
-
-    private File createFile(Integer start,Integer delta) {
-        try {
-            String filename = name+start+delta+"txt";
-            File newFile = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\"+filename);
-            if (newFile.createNewFile()) {
-                System.out.println("File created");
-                return newFile;
-            } else {
-                System.out.println("Error!");
-                return null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
 
@@ -144,7 +120,5 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     public String getHashPass() {
         return hashPass;
     }
-
-
 
 }

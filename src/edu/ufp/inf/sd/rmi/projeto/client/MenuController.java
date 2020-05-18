@@ -117,7 +117,6 @@ public class MenuController implements Initializable {
         if(!name.isEmpty() && !hashPass.isEmpty()){
             TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass);
             if(taskSubjectRI != null){
-                taskSubjectRI.divideFile();
                 this.client.tasksRI.add(taskSubjectRI);
                 nameTaskTF.clear();
                 hashPassTA.clear();

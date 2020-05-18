@@ -13,5 +13,4 @@ public interface TaskSubjectRI extends Remote {
     public void setState(State state) throws RemoteException;
     public String getName() throws RemoteException;
     public String getHashPass() throws RemoteException;
-    public void divideFile() throws RemoteException;
 }
