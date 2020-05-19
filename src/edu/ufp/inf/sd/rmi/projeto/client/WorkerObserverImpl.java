@@ -127,27 +127,19 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 MessageDigest hashFunction;
 
                 while ((st = br.readLine()) != null) {
-                    if (line >= start && line < 14) {
+                    if (line >= start && line < start + delta) {
                         switch (hashType) {
                             case "SHA-512":
                                 hashFunction = MessageDigest.getInstance("SHA-512");
                                 hashFunction.reset();
                                 hashFunction.update(st.getBytes("utf8"));
                                 result = String.format("%0128x", new BigInteger(1, hashFunction.digest()));
-                                //mandar receivedpass
-                                //receber no newHash
                                 break;
                             case "PBKDF2":
-                                //mandar receivedpass
-                                //receber no newHash
                                 break;
                             case "BCrypt":
-                                //mandar receivedpass
-                                //receber no newHash
                                 break;
                             case "SCrypt":
-                                //mandar receivedpass
-                                // receber no newHash
                                 break;
                             default:
                                 System.out.println("Method not recognized");
