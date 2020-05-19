@@ -127,7 +127,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 MessageDigest hashFunction;
 
                 while ((st = br.readLine()) != null) {
-                    if (line >= start && line < 14) {
+                    if (line >= start && line < start + delta) {
                         switch (hashType) {
                             case "SHA-512":
                                 hashFunction = MessageDigest.getInstance("SHA-512");
