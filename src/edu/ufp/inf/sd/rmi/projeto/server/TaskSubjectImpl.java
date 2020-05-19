@@ -63,7 +63,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     /** divide linhas para criar sub tasks */
     public void createSubTasks(){
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\passwords_to_verify.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\tmsl9\\OneDrive\\Documentos\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt"));
             int lines = 0;
             while (reader.readLine() != null) {
                 if(lines == start + delta - 1){

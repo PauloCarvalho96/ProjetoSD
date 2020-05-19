@@ -15,6 +15,7 @@ public interface WorkerObserverRI extends Remote {
     public void removeWorker() throws RemoteException;
     public void  setStateWorker(State state) throws RemoteException;
     public State  getStateWorker() throws RemoteException;
+    public Integer getId() throws RemoteException;
     public String getHashType() throws RemoteException;
     public ArrayList<String> getHashPass() throws RemoteException;
 }

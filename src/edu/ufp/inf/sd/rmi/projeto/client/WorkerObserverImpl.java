@@ -17,14 +17,20 @@ import java.util.ArrayList;
 public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObserverRI {
 
     private State lastObserverState;
+    private int id;
     private String username;    // username do user
     private Integer n_threads;      // nº de threads para trabalharem na task
+    private String taskName;
     private Task task;      //tarefa
+    private int wordsSize;
+    private int creditsWon;
 
-    protected WorkerObserverImpl(String username,Task task,Integer n_threads) throws RemoteException {
+    protected WorkerObserverImpl(int id, String username,Task task,Integer n_threads) throws RemoteException {
         super();
+        this.id = id;
         this.username = username;
         this.task = task;
+        this.taskName = task.getTaskSubjectRI().getName();
         this.n_threads = n_threads;
         doWork();
     }
@@ -199,6 +205,11 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     @Override
     public State getStateWorker() throws RemoteException {
         return null;
+    }
+
+    @Override
+    public Integer getId() throws RemoteException {
+        return this.id;
     }
 
     @Override
