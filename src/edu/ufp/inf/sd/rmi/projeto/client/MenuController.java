@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class MenuController implements Initializable {
@@ -116,7 +117,7 @@ public class MenuController implements Initializable {
     public void handlerCreateTask(ActionEvent actionEvent) throws RemoteException {
         String name = nameTaskTF.getText();
         String typeHash = hashTypeCB.getValue();
-        String hashPass = hashPassTA.getText();
+        ArrayList<String> hashPass = new ArrayList<>(Arrays.asList(hashPassTA.getText().split(";")));
         Integer delta = Integer.parseInt(deltaTaskTF.getText());
 
         if(!name.isEmpty() && !hashPass.isEmpty()){

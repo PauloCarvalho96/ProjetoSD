@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import edu.ufp.inf.sd.rmi.projeto.server.Task;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
@@ -73,9 +74,9 @@ public class Client {
         return userFactoryRI;
     }
 
-    public WorkerObserverRI createWorker(TaskSubjectRI taskSubjectRI,ArrayList<Thread> threads){
+    public WorkerObserverRI createWorker(Task task, ArrayList<Thread> threads){
         try {
-            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(username,taskSubjectRI,threads);
+            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(username,task,threads);
             workersRI.add(workerObserverRI);
             return workerObserverRI;
         } catch (RemoteException e) {
@@ -83,64 +84,5 @@ public class Client {
         }
         return null;
     }
-
-    public static class myThread implements Runnable {
-        WorkerObserverRI worker;
-        myThread(WorkerObserverRI w){worker=w;}
-        public void run() {
-            File file= new File("");
-            Scanner textToHash = null;
-            try {
-                textToHash = new Scanner(file);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            while(textToHash.hasNextLine()){
-                String receivedpass = textToHash.nextLine();
-                String newHash= "";
-                try {
-                    String type= worker.getHashType();
-                    String hashTocompare=worker.getHashPass();
-                    switch (type) {
-                        case "SHA-512":
-                            //mandar receivedpass
-                            //receber no newHash
-                            break;
-                        case "PBKDF2":
-                            //mandar receivedpass
-                            //receber no newHash
-                            break;
-                        case "BCrypt":
-                            //mandar receivedpass
-                            //receber no newHash
-                            break;
-                        case "SCrypt":
-                            //mandar receivedpass
-                            // receber no newHash
-                            break;
-
-                        default:
-                            System.out.println("Method not recognized");
-                    }
-                    if(!worker.match(hashTocompare,newHash)){
-                       break;
-                    }
-                    else{
-                        //update state
-                    }
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public void ReceiveWorker(WorkerObserverRI worker){
-        Thread t1= new Thread(new myThread(worker));
-        t1.start();
-    }
-
-    // para fazer testes as funçoes
-    public void playService() { }
 
 }

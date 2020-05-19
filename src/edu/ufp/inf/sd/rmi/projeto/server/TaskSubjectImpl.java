@@ -77,7 +77,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
             int lines = 0;
             while (reader.readLine() != null) {
                 if(lines == start + delta - 1){
-                    Task task = new Task(url,start,delta);
+                    Task task = new Task(url,start,delta,this);
                     tasks.add(task);
                     start = lines + 1;
                 }
@@ -86,7 +86,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
             int lastDelta = delta;
             lastDelta = lines - start;
             if(lastDelta != 0){
-                Task task = new Task(url,start,lastDelta);
+                Task task = new Task(url,start,lastDelta,this);
                 tasks.add(task);
                 reader.close();
             }
