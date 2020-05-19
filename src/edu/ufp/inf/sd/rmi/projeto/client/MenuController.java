@@ -103,11 +103,14 @@ public class MenuController implements Initializable {
         creditsPerWordCol.setCellValueFactory(new PropertyValueFactory<>("creditsPerWord"));
         creditsTotalCol.setCellValueFactory(new PropertyValueFactory<>("creditsTotal"));
         availableCol.setCellValueFactory(new PropertyValueFactory<>("available"));
+
         tasksTable.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 try {
-                    nameTaskSelectedLabel.setText(tasksTable.getSelectionModel().getSelectedItem().getName());
+                    if(tasksTable.getSelectionModel().getSelectedItem().isAvailable()){
+                        nameTaskSelectedLabel.setText(tasksTable.getSelectionModel().getSelectedItem().getName());
+                    }
                 } catch (Exception ignored) { }
             }
         });
@@ -210,6 +213,12 @@ public class MenuController implements Initializable {
     }
 
     public void handlerPauseTask(ActionEvent actionEvent) {
+        if(taskSubjectRI.isAvailable()){
+            Task task = taskSubjectRI.getTaskFromArray();
+            int n_threads = numberThreadsSpinner.getValue();
+            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.username,task,n_threads);
+            client.workersRI.add(workerObserverRI);
+        }
     }
 
     public void handlerStopTask(ActionEvent actionEvent) {

@@ -19,6 +19,7 @@ public class DBMockup implements Serializable {
         users = new ArrayList<>();
         sessions = new HashMap<>();
         tasks = new ArrayList<>();
+        users.add(new User("1","1"));
     }
 
     // registo

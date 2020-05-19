@@ -15,7 +15,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private Integer creditsPerWord;
     private Integer creditsTotal;
     private State subjectState;
-    private boolean available;
+    private boolean available = true;
     private Integer start = 0;     //linha atual
     private Integer delta;     //quantidade de linhas
     private static final String url = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt";
@@ -139,11 +139,22 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     @Override
+    public boolean isAvailable() throws RemoteException {
+        return available;
+    }
+
+    @Override
     public Task getTaskFromArray() throws RemoteException {
-        if(this.tasks.get(0) != null){
-            return this.tasks.get(0);
+        Task task = this.tasks.get(0);
+        if(task != null && this.tasks.size() == 1){
+            this.tasks.remove(0);
+            this.available = false;
+            return task;
+        }
+        if(task != null) {
+            this.tasks.remove(0);
+            return task;
         }
         return null;
     }
-
 }
