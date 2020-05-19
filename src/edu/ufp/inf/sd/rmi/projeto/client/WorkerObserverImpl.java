@@ -19,22 +19,20 @@ import java.util.concurrent.TimeoutException;
 public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObserverRI {
 
     private State lastObserverState;
-    private TaskSubjectRI taskgroup;     // taskgroup em que está
     private String username;    // username do user
     private ArrayList<Thread> threads;      // array de threads para trabalharem na task
     private Task task;      //tarefa
 
-    protected WorkerObserverImpl(String username,TaskSubjectRI taskSubjectRI,ArrayList<Thread> threads) throws RemoteException {
+    protected WorkerObserverImpl(String username,Task task,ArrayList<Thread> threads) throws RemoteException {
         super();
         this.username = username;
-        this.taskgroup = taskSubjectRI;
+        this.task = task;
         this.threads = threads;
-        getTask(taskgroup);
     }
 
     /** Em testes */
     public void getTask(TaskSubjectRI taskSubjectRI) throws RemoteException{
-        try {
+        /*try {
             Connection connection = RabbitUtils.newConnection2Server("localhost","guest", "guest");
             Channel channel=RabbitUtils.createChannel2Server(connection);
             boolean durable = true;
@@ -59,7 +57,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
         } catch (IOException|TimeoutException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     /** thread vai fazer o trabalho */
@@ -74,7 +72,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         } catch (IOException e) {
             System.out.println("Error");
         }
-
         int thread_size=3; //valor que vem do XML, a mudar
 
         int start = 4;//task.getStart();
@@ -103,7 +100,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             t.start();
         }
     }
-
 
     public static class myThread implements Runnable {
         int start;
@@ -145,7 +141,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void update(State stateTask) throws RemoteException {
-        this.lastObserverState = taskgroup.getState();
+//        this.lastObserverState = task.getState();
     }
 
     @Override
@@ -180,11 +176,11 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public String getHashType() throws RemoteException {
-       return this.taskgroup.getHashType();
+//       return this.task.getHashType();
     }
 
     @Override
     public String getHashPass() throws RemoteException {
-        return this.taskgroup.getHashPass();
+//        return this.task.getHashPass();
     }
 }
