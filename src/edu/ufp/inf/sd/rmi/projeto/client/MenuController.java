@@ -1,5 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import edu.ufp.inf.sd.rmi.projeto.server.Task;
+import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectImpl;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -12,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class MenuController implements Initializable {
@@ -23,6 +26,7 @@ public class MenuController implements Initializable {
     public TextField deltaTaskTF;
     public Button createTaskBut;
     public Label messageCreateTask;
+
     /** List tasks **/
     public TableView<TaskSubjectRI> tasksTable;
     public TableColumn<TaskSubjectRI, String> nameCol;
@@ -31,6 +35,7 @@ public class MenuController implements Initializable {
     public TableColumn<TaskSubjectRI, String> creditsTotalCol;
     public TableColumn<TaskSubjectRI, String> availableCol;
     public Pagination listTasksPagination;
+
     /** Join task **/
     public Tab listTasksTab;
     public Label nameTaskSelectedLabel;
@@ -114,10 +119,11 @@ public class MenuController implements Initializable {
     public void handlerCreateTask(ActionEvent actionEvent) throws RemoteException {
         String name = nameTaskTF.getText();
         String typeHash = hashTypeCB.getValue();
-        String hashPass = hashPassTA.getText();
+        ArrayList<String> hashPass = new ArrayList<>(Arrays.asList(hashPassTA.getText().split(";")));
+        Integer delta = Integer.parseInt(deltaTaskTF.getText());
 
         if(!name.isEmpty() && !hashPass.isEmpty()){
-            TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass);
+            TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass,delta);
             if(taskSubjectRI != null){
                 this.client.tasksRI.add(taskSubjectRI);
                 nameTaskTF.clear();
@@ -133,8 +139,12 @@ public class MenuController implements Initializable {
         }
     }
 
-    public void handlerJoinTask(ActionEvent actionEvent) {///comparar threads, etc.....
-//        workerObserverImpl.selectTask(nameTaskSelectedLabel.getValue());
+    /** associar worker a um taskgroup */
+    public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {
+        TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
+        Task task = taskSubjectRI.getTaskFromArray();
+        int n_threads = numberThreadsSpinner.getValue();
+        WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.username,task,n_threads);
     }
 
     public void handlerListOwnTasks(Event event) {
