@@ -1,5 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import edu.ufp.inf.sd.rmi.projeto.server.Task;
+import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectImpl;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import javafx.event.ActionEvent;
@@ -126,6 +128,7 @@ public class MenuController implements Initializable {
                 this.client.tasksRI.add(taskSubjectRI);
                 nameTaskTF.clear();
                 hashPassTA.clear();
+                deltaTaskTF.clear();
                 initializeHashTypeCombBox();
                 messageCreateTask.setWrapText(true);
                 messageCreateTask.setText("Task was created successfully.");
@@ -137,7 +140,13 @@ public class MenuController implements Initializable {
         }
     }
 
-    public void handlerJoinTask(ActionEvent actionEvent) {///comparar threads, etc.....
-//        workerObserverImpl.selectTask(nameTaskSelectedLabel.getValue());
+    /** associar worker a um taskgroup */
+    public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {
+        TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
+        Task task = taskSubjectRI.getTaskFromArray();
+        int n_threads = numberThreadsSpinner.getValue();
+        WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.username,task,n_threads);
+        client.workersRI.add(workerObserverRI);
     }
+
 }

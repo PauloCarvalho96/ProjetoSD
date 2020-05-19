@@ -1,28 +1,19 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.MessageProperties;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
-import edu.ufp.inf.sd.rmi.util.RabbitUtils;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.concurrent.TimeoutException;
 
 public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectRI {
 
     private String name;
     private String hashType;
     private ArrayList<String> hashPass;
-    private String creditsPerWord;
-    private String creditsTotal;
+    private Integer creditsPerWord;
+    private Integer creditsTotal;
     private State subjectState;
     private boolean available;
     private Integer start = 0;     //linha atual
@@ -40,7 +31,6 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.hashPass = hashPass;
         this.delta = delta;
         createSubTasks();
-//        sendToQueue();
     }
 
     /*public TaskSubjectImpl(String name, String hashType, String hashPass, String creditsPerWord, String creditsTotal) throws RemoteException {
@@ -146,6 +136,14 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     @Override
     public ArrayList<String> getHashPass() {
         return hashPass;
+    }
+
+    @Override
+    public Task getTaskFromArray() throws RemoteException {
+        if(this.tasks.get(0) != null){
+            return this.tasks.get(0);
+        }
+        return null;
     }
 
 }

@@ -74,15 +74,4 @@ public class Client {
         return userFactoryRI;
     }
 
-    public WorkerObserverRI createWorker(Task task, ArrayList<Thread> threads){
-        try {
-            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(username,task,threads);
-            workersRI.add(workerObserverRI);
-            return workerObserverRI;
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 }
