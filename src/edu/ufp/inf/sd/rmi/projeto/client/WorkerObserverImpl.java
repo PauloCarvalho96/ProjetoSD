@@ -10,6 +10,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.DigestException;
 import java.util.ArrayList;
 import com.google.common.hash.*;
 import java.util.concurrent.TimeoutException;
@@ -129,7 +130,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                         System.out.println("Thread" + id + ":" + st); //thread work
                         switch (hashType) {
                             case "SHA-512":
-                                HashFunction hashFunction=Hashing.sha256();
+                                HashFunction hashFunction = Hashing.sha256();
                                 result = hashFunction.hashString(st, Charset.defaultCharset()).toString();
                                 //mandar receivedpass
                                 //receber no newHash
