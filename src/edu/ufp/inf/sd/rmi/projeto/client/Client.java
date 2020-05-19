@@ -73,7 +73,7 @@ public class Client {
         }
         return userFactoryRI;
     }
-
+/*
     public WorkerObserverRI createWorker(Task task, ArrayList<Thread> threads){
         try {
             WorkerObserverRI workerObserverRI = new WorkerObserverImpl(username,task,threads);
@@ -84,5 +84,6 @@ public class Client {
         }
         return null;
     }
+*/
 
 }

@@ -1,14 +1,9 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
-import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.DeliverCallback;
 import edu.ufp.inf.sd.rmi.projeto.server.State;
 import edu.ufp.inf.sd.rmi.projeto.server.Task;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
-import edu.ufp.inf.sd.rmi.util.RabbitUtils;
 
 import java.io.*;
 import java.net.URL;
@@ -23,14 +18,15 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     private State lastObserverState;
     private String username;    // username do user
-    private ArrayList<Thread> threads;      // array de threads para trabalharem na task
+    private Integer n_threads;      // nº de threads para trabalharem na task
     private Task task;      //tarefa
 
-    protected WorkerObserverImpl(String username,Task task,ArrayList<Thread> threads) throws RemoteException {
+    protected WorkerObserverImpl(String username,Task task,Integer n_threads) throws RemoteException {
         super();
         this.username = username;
         this.task = task;
-        this.threads = threads;
+        this.n_threads = n_threads;
+        doWork();
     }
 
     /** Em testes
@@ -60,11 +56,10 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
         } catch (IOException|TimeoutException e) {
             e.printStackTrace();
-        }*/
-    }
-     */
+        }
+     }*/
 
-    /** thread vai fazer o trabalho */
+    /** threads vao fazer o trabalho */
     public void doWork() throws RemoteException {
         try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
              FileOutputStream fileOutputStream = new FileOutputStream("file.txt")) {
@@ -77,7 +72,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             System.out.println("Error");
         }
 
-        int thread_size=threads.size();
+        int thread_size=n_threads;
 
         int start = task.getStart();
 
@@ -136,7 +131,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                         switch (hashType) {
                             case "SHA-512":
                                 hashFunction=Hashing.sha256();
-                                result = hashFunction.hashString(st, Charset.defaultCharset()).toString();
+                                result = hashFunction.hashString(st.toLowerCase(), Charset.defaultCharset()).toString();
                                 //mandar receivedpass
                                 //receber no newHash
                                 break;
@@ -156,7 +151,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                                 System.out.println("Method not recognized");
                         }
                         for (String s:hasPass) {
-                            if(workerObserverRI.match(s,result)){
+                            if(workerObserverRI.match(s.toLowerCase(),result)){
                                 System.out.println("top chucha");
                             }
                         }

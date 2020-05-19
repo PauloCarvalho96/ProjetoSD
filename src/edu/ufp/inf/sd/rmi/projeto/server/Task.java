@@ -1,8 +1,9 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Task {
+public class Task implements Serializable {
 
     private String url;
     private Integer start;

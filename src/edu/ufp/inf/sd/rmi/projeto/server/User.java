@@ -2,9 +2,10 @@ package edu.ufp.inf.sd.rmi.projeto.server;
 
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverImpl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User {
+public class User implements Serializable {
 
     private String uname;
     private String pword;
