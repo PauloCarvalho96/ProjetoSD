@@ -9,12 +9,14 @@ public class Task implements Serializable {
     private Integer start;
     private Integer delta;
     private TaskSubjectRI taskSubjectRI;
+    private State state;
 
     public Task(String url, Integer start, Integer delta, TaskSubjectRI taskSubjectRI) {
         this.url = url;
         this.start = start;
         this.delta = delta;
         this.taskSubjectRI = taskSubjectRI;
+        this.state = new State("Avalible"); // passwords por encontrar
     }
 
     public String getUrl() {
@@ -32,4 +34,6 @@ public class Task implements Serializable {
     public TaskSubjectRI getTaskSubjectRI() {
         return taskSubjectRI;
     }
+
+
 }

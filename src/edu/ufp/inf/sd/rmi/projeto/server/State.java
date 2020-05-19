@@ -8,9 +8,29 @@ public class State implements Serializable {
     
     private String msg;
 
+    //TASK & WORKER
+    public final String PAUSED = "Paused";
+    public final String COMPLETED = "Completed";
+    public final String WORKING = "Working";
+
+    //TASK
+    public final String AVAILABLE = "Available";
+    public final String FULL = "Full";
+
+    //WORKER
+    public final String FOUND = "Found";
+    public final String NOT_FOUND = "Not Found";
+
     public State(String id, String msg) {
         this.id = id;
         this.msg = msg;
+    }
+
+    public State(String msg) {
+        this.msg = msg;
+    }
+
+    public State() {
     }
 
     public String getmsg() {

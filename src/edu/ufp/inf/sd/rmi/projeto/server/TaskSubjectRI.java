@@ -16,4 +16,5 @@ public interface TaskSubjectRI extends Remote {
     public ArrayList<String> getHashPass() throws RemoteException;
     public Task getTaskFromArray() throws RemoteException;
     public boolean isAvailable() throws RemoteException;
+    public void changeWorkerState(State state, String hashPass,String pass) throws RemoteException;
 }
