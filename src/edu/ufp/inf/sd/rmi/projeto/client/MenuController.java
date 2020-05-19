@@ -27,8 +27,10 @@ public class MenuController implements Initializable {
     public TextField nameTaskTF;
     public ComboBox<String> hashTypeCB;
     public TextArea hashPassTA;
+    public TextField deltaTaskTF;
     public Button createTaskBut;
     public Label messageCreateTask;
+
     /** List tasks **/
     public TableView<TaskSubjectRI> tasksTable;
     public TableColumn<TaskSubjectRI, String> nameCol;
@@ -37,9 +39,11 @@ public class MenuController implements Initializable {
     public TableColumn<TaskSubjectRI, String> creditsTotalCol;
     public TableColumn<TaskSubjectRI, String> availableCol;
     public Pagination listTasksPagination;
+
     /** Join task **/
     public Tab listTasksTab;
     public Label nameTaskSelectedLabel;
+    public Spinner<Integer> numberThreadsSpinner;
     public Button jointTaskBut;
     public Label messageJoinTask;
 
@@ -113,9 +117,10 @@ public class MenuController implements Initializable {
         String name = nameTaskTF.getText();
         String typeHash = hashTypeCB.getValue();
         String hashPass = hashPassTA.getText();
+        Integer delta = Integer.parseInt(deltaTaskTF.getText());
 
         if(!name.isEmpty() && !hashPass.isEmpty()){
-            TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass);
+            TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass,delta);
             if(taskSubjectRI != null){
                 this.client.tasksRI.add(taskSubjectRI);
                 nameTaskTF.clear();
@@ -133,6 +138,5 @@ public class MenuController implements Initializable {
 
     public void handlerJoinTask(ActionEvent actionEvent) {///comparar threads, etc.....
 //        workerObserverImpl.selectTask(nameTaskSelectedLabel.getValue());
-
     }
 }

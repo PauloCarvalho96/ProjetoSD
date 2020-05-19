@@ -26,19 +26,21 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private State subjectState;
     private boolean available;
     private Integer start = 0;     //linha atual
-    private static final Integer delta = 500000;     //quantidade de linhas
+    private Integer delta;     //quantidade de linhas
     private static final String url = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt";
     // array de workers
     private ArrayList<WorkerObserverRI> workers = new ArrayList<>();
     // array tasks
     private ArrayList<Task> tasks = new ArrayList<>();
 
-    public TaskSubjectImpl(String name, String hashType, String hashPass) throws RemoteException {
+    public TaskSubjectImpl(String name, String hashType, String hashPass,Integer delta) throws RemoteException {
         super();
         this.name = name;
         this.hashType = hashType;
         this.hashPass = hashPass;
+        this.delta = delta;
         createSubTasks();
+//        sendToQueue();
     }
 
     /*public TaskSubjectImpl(String name, String hashType, String hashPass, String creditsPerWord, String creditsTotal) throws RemoteException {
@@ -51,8 +53,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }*/
 
     /** Em testes -> para adicionar tasks na fila */
-    public void createTasks() throws RemoteException{
-
+    public void sendToQueue() throws RemoteException{
         /*try {
             Connection connection = RabbitUtils.newConnection2Server("localhost", "guest", "guest");
             Channel channel=RabbitUtils.createChannel2Server(connection);
