@@ -20,7 +20,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
 
     private String name;
     private String hashType;
-    private String hashPass;
+    private ArrayList<String> hashPass;
     private String creditsPerWord;
     private String creditsTotal;
     private State subjectState;
@@ -33,7 +33,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     // array tasks
     private ArrayList<Task> tasks = new ArrayList<>();
 
-    public TaskSubjectImpl(String name, String hashType, String hashPass,Integer delta) throws RemoteException {
+    public TaskSubjectImpl(String name, String hashType, ArrayList<String> hashPass,Integer delta) throws RemoteException {
         super();
         this.name = name;
         this.hashType = hashType;
@@ -144,7 +144,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     @Override
-    public String getHashPass() {
+    public ArrayList<String> getHashPass() {
         return hashPass;
     }
 

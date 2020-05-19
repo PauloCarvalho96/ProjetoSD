@@ -2,7 +2,6 @@ package edu.ufp.inf.sd.rmi.projeto.client;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import edu.ufp.inf.sd.rmi.projeto.server.State;
 import edu.ufp.inf.sd.rmi.projeto.server.Task;
@@ -14,21 +13,19 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
 public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObserverRI {
 
     private State lastObserverState;
-    private TaskSubjectRI taskgroup;     // taskgroup em que está
     private String username;    // username do user
     private ArrayList<Thread> threads;      // array de threads para trabalharem na task
     private Task task;      //tarefa
 
-    protected WorkerObserverImpl(String username,TaskSubjectRI taskSubjectRI,ArrayList<Thread> threads) throws RemoteException {
+    protected WorkerObserverImpl(String username,Task task,ArrayList<Thread> threads) throws RemoteException {
         super();
         this.username = username;
-        this.taskgroup = taskSubjectRI;
+        this.task = task;
         this.threads = threads;
     }
 
@@ -75,7 +72,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             System.out.println("Error");
         }
 
-        int thread_size=3; //valor que vem do XML, a mudar
+        int thread_size=threads.size();
 
         int start = task.getStart();
 
@@ -85,13 +82,8 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
         delta = delta / thread_size;
 
-        System.out.println(delta);
-
-
         ArrayList<Thread> threads = new ArrayList<>();
 
-
-        System.out.println(res);
         for(int i = 0; i < thread_size ; i++ , start+=delta){
             if(i==thread_size-1 && res!=0){
                 delta+=res;
@@ -144,7 +136,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void update(State stateTask) throws RemoteException {
-        this.lastObserverState = taskgroup.getState();
+        this.lastObserverState = task.getTaskSubjectRI().getState();
     }
 
     @Override
@@ -179,11 +171,11 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public String getHashType() throws RemoteException {
-       return this.taskgroup.getHashType();
+       return this.task.getHashType();
     }
 
     @Override
-    public String getHashPass() throws RemoteException {
-        return this.taskgroup.getHashPass();
+    public ArrayList<String> getHashPass() throws RemoteException {
+        return this.task.getHashPass();
     }
 }
