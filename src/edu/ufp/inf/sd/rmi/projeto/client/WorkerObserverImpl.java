@@ -11,7 +11,7 @@ import java.nio.charset.Charset;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import com.google.common.hash.Hashing;
+import com.google.common.hash.*;
 import java.util.concurrent.TimeoutException;
 
 public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObserverRI {
@@ -123,15 +123,14 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 BufferedReader br = new BufferedReader(new FileReader(file));
                 String st;
                 String result = null;
-                HashFunction hashFunction;
 
                 while ((st = br.readLine()) != null) {
                     if (line >= start && line < start + delta) {
                         System.out.println("Thread" + id + ":" + st); //thread work
                         switch (hashType) {
                             case "SHA-512":
-                                hashFunction=Hashing.sha256();
-                                result = hashFunction.hashString(st.toLowerCase(), Charset.defaultCharset()).toString();
+                                HashFunction hashFunction=Hashing.sha256();
+                                result = hashFunction.hashString(st, Charset.defaultCharset()).toString();
                                 //mandar receivedpass
                                 //receber no newHash
                                 break;

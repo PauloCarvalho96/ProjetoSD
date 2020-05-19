@@ -128,6 +128,7 @@ public class MenuController implements Initializable {
                 this.client.tasksRI.add(taskSubjectRI);
                 nameTaskTF.clear();
                 hashPassTA.clear();
+                deltaTaskTF.clear();
                 initializeHashTypeCombBox();
                 messageCreateTask.setWrapText(true);
                 messageCreateTask.setText("Task was created successfully.");
@@ -145,6 +146,7 @@ public class MenuController implements Initializable {
         Task task = taskSubjectRI.getTaskFromArray();
         int n_threads = numberThreadsSpinner.getValue();
         WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.username,task,n_threads);
+        client.workersRI.add(workerObserverRI);
     }
 
 }

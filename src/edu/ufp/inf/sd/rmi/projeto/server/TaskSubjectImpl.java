@@ -12,8 +12,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private String name;
     private String hashType;
     private ArrayList<String> hashPass;
-    private String creditsPerWord;
-    private String creditsTotal;
+    private Integer creditsPerWord;
+    private Integer creditsTotal;
     private State subjectState;
     private boolean available;
     private Integer start = 0;     //linha atual
@@ -31,7 +31,6 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.hashPass = hashPass;
         this.delta = delta;
         createSubTasks();
-//        sendToQueue();
     }
 
     /*public TaskSubjectImpl(String name, String hashType, String hashPass, String creditsPerWord, String creditsTotal) throws RemoteException {
