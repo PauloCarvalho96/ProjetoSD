@@ -9,7 +9,8 @@ import edu.ufp.inf.sd.rmi.projeto.server.Task;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.util.RabbitUtils;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -45,8 +46,8 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 String message = new String(delivery.getBody(), "UTF-8");
                 System.out.println(" [x] Received '" + message + "'");
                 try {
-                    doWork(message);
-                } catch (InterruptedException e) {
+                    doWork();
+                } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
                     System.out.println(" [x] Done processing task");
@@ -62,8 +63,84 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     /** thread vai fazer o trabalho */
-    private void doWork(String task) throws InterruptedException {
+    public void doWork(){
+        try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
+             FileOutputStream fileOutputStream = new FileOutputStream("file.txt")) {
+            byte dataBuffer[] = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                fileOutputStream.write(dataBuffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
 
+        int thread_size=3; //valor que vem do XML, a mudar
+
+        int start = 4;//task.getStart();
+
+        int delta = 20;//task.getDelta();
+
+        int res = delta % thread_size;
+
+        delta = delta / thread_size;
+
+        System.out.println(delta);
+
+
+        ArrayList<Thread> threads = new ArrayList<>();
+
+
+        System.out.println(res);
+        for(int i = 0; i < thread_size ; i++ , start+=delta){
+            if(i==thread_size-1 && res!=0){
+                delta+=res;
+            }
+            threads.add(new Thread(new myThread(start-1,delta,i)));
+        }
+
+        for (Thread t:threads) {
+            t.start();
+        }
+    }
+
+
+    public static class myThread implements Runnable {
+        int start;
+        int delta;
+        int id;
+
+        public myThread(int start, int delta, int id) {
+            this.start = start;
+            this.delta = delta;
+            this.id = id;
+        }
+
+        @Override
+        public void run() {
+            try {
+
+                File file = new File("file.txt");
+
+                int line = 0;
+
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String st;
+
+                while ((st = br.readLine()) != null){
+                    if(line >= start && line < start + delta){
+                        System.out.println("Thread"+id+":"+st); //thread work
+                    }
+                    if(line == start + delta){
+                        break;
+                    }
+                    line++;
+                }
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
