@@ -14,7 +14,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private ArrayList<String> hashPass;
     private Integer creditsPerWord;
     private Integer creditsTotal;
-    private State subjectState;
+    private State subjectState = new State();
     private boolean available = true;
     private Integer start = 0;     //linha atual
     private Integer delta;     //quantidade de linhas
@@ -30,6 +30,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.hashType = hashType;
         this.hashPass = hashPass;
         this.delta = delta;
+        this.subjectState.setmsg("Available");
         createSubTasks();
     }
 
@@ -63,7 +64,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     /** divide linhas para criar sub tasks */
     public void createSubTasks(){
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\tmsl9\\OneDrive\\Documentos\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\Rui\\Documents\\ProjetoSD\\passwords_to_verify.txt"));
             int lines = 0;
             while (reader.readLine() != null) {
                 if(lines == start + delta - 1){
@@ -91,13 +92,19 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     public void notifyAllObservers(){
-        /*for (WorkerObserverRI obs: workers) {
+        switch (this.subjectState.getmsg()) {
+            case "Completed":
+                //função para parar todos os threads de todos os workers, função a criar no WorkerObserverImpl
+            case "Found":
+                this.subjectState.setmsg(this.subjectState.WORKING);
+        }
+        for (WorkerObserverRI obs: workers) {
             try {
-//                obs.update();
+                obs.taskUpdated();
             } catch (RemoteException ex) {
-                Logger.getLogger(TaskSubjectImpl.class.getName()).log(Level.SEVERE,null,ex);
+                ex.printStackTrace();
             }
-        }*/
+        }
     }
 
     @Override
@@ -118,9 +125,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     @Override
-    public void setState(State state) throws RemoteException {
+    public void setState(State state){
         this.subjectState = state;
-        this.notifyAllObservers();
     }
 
     @Override
@@ -141,6 +147,26 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     @Override
     public boolean isAvailable() throws RemoteException {
         return available;
+    }
+
+    @Override
+    public void changeWorkerState(State state, String hash, String pass) throws RemoteException {
+
+        switch (state.getmsg()){
+            case "Found":
+                for (int i = 0; i < this.hashPass.size() ; i ++){
+                    if(this.hashPass.get(i).compareTo(hash)==0){
+                        this.hashPass.remove(i);
+                        break;
+                    }
+                }
+                if(this.hashPass.isEmpty()){
+                    this.subjectState.setmsg("Completed");
+                }else{
+                    this.subjectState.setmsg(state.getmsg());
+                }
+                this.notifyAllObservers();
+        }
     }
 
     @Override
