@@ -134,8 +134,8 @@ public class MenuController implements Initializable {
 
     public void initializeTableViewListOwnWorkers(){
         //goes to the class and associates de col with the variable
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("taskName"));
-        hashTypeCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
+        nameTaskWOwnCol.setCellValueFactory(new PropertyValueFactory<>("taskName"));
+        hashTypeWOwnCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
         threadsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("n_threads"));
         wordsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("wordsSize"));
         creditsWonWOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsWon"));
@@ -214,7 +214,6 @@ public class MenuController implements Initializable {
     }
 
     public void handlerPauseTask(ActionEvent actionEvent) {
-
     }
 
     public void handlerStopTask(ActionEvent actionEvent) {
