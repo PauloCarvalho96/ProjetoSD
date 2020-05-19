@@ -103,7 +103,6 @@ public class MenuController implements Initializable {
         creditsPerWordCol.setCellValueFactory(new PropertyValueFactory<>("creditsPerWord"));
         creditsTotalCol.setCellValueFactory(new PropertyValueFactory<>("creditsTotal"));
         availableCol.setCellValueFactory(new PropertyValueFactory<>("available"));
-
         tasksTable.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -201,10 +200,12 @@ public class MenuController implements Initializable {
     /** associar worker a um taskgroup */
     public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {
         TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
-        Task task = taskSubjectRI.getTaskFromArray();
-        int n_threads = numberThreadsSpinner.getValue();
-        WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.workersRI.size()+1, client.username,task, n_threads);
-        client.workersRI.add(workerObserverRI);
+        if(taskSubjectRI.isAvailable()){
+            Task task = taskSubjectRI.getTaskFromArray();
+            int n_threads = numberThreadsSpinner.getValue();
+            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.workersRI.size()+1, client.username,task, n_threads);
+            client.workersRI.add(workerObserverRI);
+        }
     }
 
     public void handlerListOwnTasks(Event event) {
@@ -213,12 +214,7 @@ public class MenuController implements Initializable {
     }
 
     public void handlerPauseTask(ActionEvent actionEvent) {
-        if(taskSubjectRI.isAvailable()){
-            Task task = taskSubjectRI.getTaskFromArray();
-            int n_threads = numberThreadsSpinner.getValue();
-            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.username,task,n_threads);
-            client.workersRI.add(workerObserverRI);
-        }
+
     }
 
     public void handlerStopTask(ActionEvent actionEvent) {
