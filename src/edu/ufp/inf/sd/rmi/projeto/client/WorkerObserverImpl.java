@@ -1,5 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import com.google.common.hash.HashCode;
+import com.google.common.hash.HashFunction;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.DeliverCallback;
@@ -10,9 +12,11 @@ import edu.ufp.inf.sd.rmi.util.RabbitUtils;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import com.google.common.hash.Hashing;
 import java.util.concurrent.TimeoutException;
 
 public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObserverRI {
@@ -29,7 +33,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.threads = threads;
     }
 
-    /** Em testes */
+    /** Em testes
     public void getTask(TaskSubjectRI taskSubjectRI) throws RemoteException{
         /*try {
             Connection connection = RabbitUtils.newConnection2Server("localhost","guest", "guest");
@@ -58,9 +62,10 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             e.printStackTrace();
         }*/
     }
+     */
 
     /** thread vai fazer o trabalho */
-    public void doWork(){
+    public void doWork() throws RemoteException {
         try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
              FileOutputStream fileOutputStream = new FileOutputStream("file.txt")) {
             byte dataBuffer[] = new byte[1024];
@@ -88,7 +93,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             if(i==thread_size-1 && res!=0){
                 delta+=res;
             }
-            threads.add(new Thread(new myThread(start-1,delta,i)));
+            threads.add(new Thread(new myThread(start-1,delta,i,task.getTaskSubjectRI().getHashType(),task.getTaskSubjectRI().getHashPass(),this)));
         }
 
         for (Thread t:threads) {
@@ -100,11 +105,17 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         int start;
         int delta;
         int id;
+        String hashType;
+        ArrayList<String> hasPass;
+        WorkerObserverRI workerObserverRI;
 
-        public myThread(int start, int delta, int id) {
+        public myThread(int start, int delta, int id,String hashType, ArrayList<String> hasPass, WorkerObserverRI workerObserverRI) {
             this.start = start;
             this.delta = delta;
             this.id = id;
+            this.hashType = hashType;
+            this.hasPass = hasPass;
+            this.workerObserverRI = workerObserverRI;
         }
 
         @Override
@@ -116,10 +127,40 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
                 BufferedReader br = new BufferedReader(new FileReader(file));
                 String st;
+                String result = null;
+                HashFunction hashFunction;
 
                 while ((st = br.readLine()) != null) {
                     if (line >= start && line < start + delta) {
                         System.out.println("Thread" + id + ":" + st); //thread work
+                        switch (hashType) {
+                            case "SHA-512":
+                                hashFunction=Hashing.sha256();
+                                result = hashFunction.hashString(st, Charset.defaultCharset()).toString();
+                                //mandar receivedpass
+                                //receber no newHash
+                                break;
+                            case "PBKDF2":
+                                //mandar receivedpass
+                                //receber no newHash
+                                break;
+                            case "BCrypt":
+                                //mandar receivedpass
+                                //receber no newHash
+                                break;
+                            case "SCrypt":
+                                //mandar receivedpass
+                                // receber no newHash
+                                break;
+                            default:
+                                System.out.println("Method not recognized");
+                        }
+                        for (String s:hasPass) {
+                            if(workerObserverRI.match(s,result)){
+                                System.out.println("top chucha");
+                            }
+                        }
+
                     }
                     if (line == start + delta) {
                         break;
@@ -170,11 +211,11 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public String getHashType() throws RemoteException {
-       return this.task.getHashType();
+       return this.task.getTaskSubjectRI().getHashType();
     }
 
     @Override
     public ArrayList<String> getHashPass() throws RemoteException {
-        return this.task.getHashPass();
+        return this.task.getTaskSubjectRI().getHashPass();
     }
 }

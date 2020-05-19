@@ -8,8 +8,6 @@ public class Task {
     private Integer start;
     private Integer delta;
     private TaskSubjectRI taskSubjectRI;
-    private String hashType;
-    private ArrayList<String> hashPass;
 
     public Task(String url, Integer start, Integer delta, TaskSubjectRI taskSubjectRI) {
         this.url = url;
@@ -28,14 +26,6 @@ public class Task {
 
     public Integer getDelta() {
         return delta;
-    }
-
-    public String getHashType() {
-        return hashType;
-    }
-
-    public ArrayList<String> getHashPass() {
-        return hashPass;
     }
 
     public TaskSubjectRI getTaskSubjectRI() {
