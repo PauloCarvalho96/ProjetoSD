@@ -1,21 +1,14 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
-import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -27,6 +20,7 @@ public class MenuController implements Initializable {
     public TextField nameTaskTF;
     public ComboBox<String> hashTypeCB;
     public TextArea hashPassTA;
+    public TextField deltaTaskTF;
     public Button createTaskBut;
     public Label messageCreateTask;
     /** List tasks **/
@@ -40,8 +34,16 @@ public class MenuController implements Initializable {
     /** Join task **/
     public Tab listTasksTab;
     public Label nameTaskSelectedLabel;
+    public Spinner<Integer> numberThreadsSpinner;
     public Button jointTaskBut;
     public Label messageJoinTask;
+    /** List own asks **/
+    public Tab listOwnTasksTab;
+    public TableView<TaskSubjectRI> tasksOwnTable;
+    public TableColumn<TaskSubjectRI, String> nameOwnCol;
+    public TableColumn<TaskSubjectRI, String> hashTypeOwnCol;
+    public TableColumn<TaskSubjectRI, String> statusOwnCol;
+    public Pagination listTasksOwnPagination;
 
     private Client client;
 
@@ -133,5 +135,8 @@ public class MenuController implements Initializable {
 
     public void handlerJoinTask(ActionEvent actionEvent) {///comparar threads, etc.....
 //        workerObserverImpl.selectTask(nameTaskSelectedLabel.getValue());
+    }
+
+    public void handlerListOwnTasks(Event event) {
     }
 }
