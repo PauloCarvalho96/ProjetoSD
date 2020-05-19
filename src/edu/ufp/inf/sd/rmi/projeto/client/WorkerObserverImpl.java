@@ -1,18 +1,18 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
-import com.google.common.hash.HashFunction;
 import edu.ufp.inf.sd.rmi.projeto.server.State;
 import edu.ufp.inf.sd.rmi.projeto.server.Task;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import com.google.common.hash.*;
-import java.util.concurrent.TimeoutException;
+
 
 public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObserverRI {
 
@@ -101,15 +101,15 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         int delta;
         int id;
         String hashType;
-        ArrayList<String> hasPass;
+        ArrayList<String> hashPass;
         WorkerObserverRI workerObserverRI;
 
-        public myThread(int start, int delta, int id,String hashType, ArrayList<String> hasPass, WorkerObserverRI workerObserverRI) {
+        public myThread(int start, int delta, int id,String hashType, ArrayList<String> hashPass, WorkerObserverRI workerObserverRI) {
             this.start = start;
             this.delta = delta;
             this.id = id;
             this.hashType = hashType;
-            this.hasPass = hasPass;
+            this.hashPass = hashPass;
             this.workerObserverRI = workerObserverRI;
         }
 
@@ -124,13 +124,16 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 String st;
                 String result = null;
 
+                MessageDigest hashFunction;
+
                 while ((st = br.readLine()) != null) {
-                    if (line >= start && line < start + delta) {
-                        System.out.println("Thread" + id + ":" + st); //thread work
+                    if (line >= start && line < 14) {
                         switch (hashType) {
                             case "SHA-512":
-                                HashFunction hashFunction=Hashing.sha256();
-                                result = hashFunction.hashString(st, Charset.defaultCharset()).toString();
+                                hashFunction = MessageDigest.getInstance("SHA-512");
+                                hashFunction.reset();
+                                hashFunction.update(st.getBytes("utf8"));
+                                result = String.format("%0128x", new BigInteger(1, hashFunction.digest()));
                                 //mandar receivedpass
                                 //receber no newHash
                                 break;
@@ -149,9 +152,12 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                             default:
                                 System.out.println("Method not recognized");
                         }
-                        for (String s:hasPass) {
-                            if(workerObserverRI.match(s.toLowerCase(),result)){
-                                System.out.println("top chucha");
+                        for (String s:hashPass) {
+                            if(workerObserverRI.match(s,result)){
+                                System.out.println("\n\nPassword Encontrada!");
+                                System.out.println("hashPass:"+s);
+                                System.out.println("Password:"+st);
+                                return;
                             }
                         }
 
@@ -162,7 +168,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                     line++;
                 }
                 br.close();
-            } catch (IOException e) {
+            } catch (IOException|NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
         }
