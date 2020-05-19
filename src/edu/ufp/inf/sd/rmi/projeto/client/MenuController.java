@@ -117,12 +117,12 @@ public class MenuController implements Initializable {
 
     public void initializeTableViewListOwnTasks(){
         //goes to the class and associates de col with the variable
-        nameTOwnCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        hashTypeTOwnCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
+        nameTaskWOwnCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        hashTypeWOwnCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
         creditsPerWordTOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsPerWord"));
         creditsTotalTOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsTotal"));
         statusTOwnCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-        tasksOwnTable.setOnMousePressed(new EventHandler<MouseEvent>() {////////////
+        tasksOwnTable.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 try {
@@ -134,8 +134,8 @@ public class MenuController implements Initializable {
 
     public void initializeTableViewListOwnWorkers(){
         //goes to the class and associates de col with the variable
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("taskName"));
-        hashTypeCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
+        nameTaskWOwnCol.setCellValueFactory(new PropertyValueFactory<>("taskName"));
+        hashTypeWOwnCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
         threadsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("n_threads"));
         wordsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("wordsSize"));
         creditsWonWOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsWon"));
@@ -206,6 +206,7 @@ public class MenuController implements Initializable {
             WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.workersRI.size()+1, client.username,task, n_threads);
             client.workersRI.add(workerObserverRI);
         }
+        initializeTableViewListTasks();
     }
 
     public void handlerListOwnTasks(Event event) {
