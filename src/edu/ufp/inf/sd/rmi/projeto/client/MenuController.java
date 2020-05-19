@@ -199,8 +199,8 @@ public class MenuController implements Initializable {
 
     /** associar worker a um taskgroup */
     public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {
-        TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
         if(taskSubjectRI.isAvailable()){
+            TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
             Task task = taskSubjectRI.getTaskFromArray();
             int n_threads = numberThreadsSpinner.getValue();
             WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.workersRI.size()+1, client.username,task, n_threads);
