@@ -4,6 +4,7 @@ import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public interface TaskSubjectRI extends Remote {
     public void attach(WorkerObserverRI obsRI) throws RemoteException;
@@ -12,5 +13,5 @@ public interface TaskSubjectRI extends Remote {
     public String getHashType() throws RemoteException;
     public void setState(State state) throws RemoteException;
     public String getName() throws RemoteException;
-    public String getHashPass() throws RemoteException;
+    public ArrayList<String> getHashPass() throws RemoteException;
 }

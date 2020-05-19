@@ -2,7 +2,6 @@ package edu.ufp.inf.sd.rmi.projeto.client;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import edu.ufp.inf.sd.rmi.projeto.server.State;
 import edu.ufp.inf.sd.rmi.projeto.server.Task;
@@ -72,23 +71,19 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         } catch (IOException e) {
             System.out.println("Error");
         }
-        int thread_size=3; //valor que vem do XML, a mudar
 
-        int start = 4;//task.getStart();
+        int thread_size=threads.size();
 
-        int delta = 20;//task.getDelta();
+        int start = task.getStart();
+
+        int delta = task.getDelta();
 
         int res = delta % thread_size;
 
         delta = delta / thread_size;
 
-        System.out.println(delta);
-
-
         ArrayList<Thread> threads = new ArrayList<>();
 
-
-        System.out.println(res);
         for(int i = 0; i < thread_size ; i++ , start+=delta){
             if(i==thread_size-1 && res!=0){
                 delta+=res;
@@ -115,7 +110,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         @Override
         public void run() {
             try {
-
                 File file = new File("file.txt");
 
                 int line = 0;
@@ -123,11 +117,11 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 BufferedReader br = new BufferedReader(new FileReader(file));
                 String st;
 
-                while ((st = br.readLine()) != null){
-                    if(line >= start && line < start + delta){
-                        System.out.println("Thread"+id+":"+st); //thread work
+                while ((st = br.readLine()) != null) {
+                    if (line >= start && line < start + delta) {
+                        System.out.println("Thread" + id + ":" + st); //thread work
                     }
-                    if(line == start + delta){
+                    if (line == start + delta) {
                         break;
                     }
                     line++;
@@ -141,7 +135,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void update(State stateTask) throws RemoteException {
-//        this.lastObserverState = task.getState();
+        this.lastObserverState = task.getTaskSubjectRI().getState();
     }
 
     @Override
@@ -176,11 +170,11 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public String getHashType() throws RemoteException {
-//       return this.task.getHashType();
+       return this.task.getHashType();
     }
 
     @Override
-    public String getHashPass() throws RemoteException {
-//        return this.task.getHashPass();
+    public ArrayList<String> getHashPass() throws RemoteException {
+        return this.task.getHashPass();
     }
 }
