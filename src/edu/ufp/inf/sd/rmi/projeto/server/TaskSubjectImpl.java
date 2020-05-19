@@ -12,8 +12,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private String name;
     private String hashType;
     private ArrayList<String> hashPass;
-    private String creditsPerWord;
-    private String creditsTotal;
+    private Integer creditsPerWord;
+    private Integer creditsTotal;
     private State subjectState;
     private boolean available;
     private Integer start = 0;     //linha atual
@@ -31,7 +31,6 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.hashPass = hashPass;
         this.delta = delta;
         createSubTasks();
-//        sendToQueue();
     }
 
     /*public TaskSubjectImpl(String name, String hashType, String hashPass, String creditsPerWord, String creditsTotal) throws RemoteException {
@@ -64,7 +63,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     /** divide linhas para criar sub tasks */
     public void createSubTasks(){
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\tmsl9\\OneDrive\\Documentos\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt"));
             int lines = 0;
             while (reader.readLine() != null) {
                 if(lines == start + delta - 1){
