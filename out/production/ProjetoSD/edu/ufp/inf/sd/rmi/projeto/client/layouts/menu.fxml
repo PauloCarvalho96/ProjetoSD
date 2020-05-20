@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane prefHeight="1080.0" prefWidth="1820.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ufp.inf.sd.rmi.projeto.client.MenuController">
@@ -124,5 +125,14 @@
             </Tab>
          </tabs>
       </TabPane>
+      <Button fx:id="updateBut" layoutX="1780.0" layoutY="80.0" mnemonicParsing="false" onAction="#handlerUpdate" prefHeight="35.0" prefWidth="26.0">
+         <graphic>
+            <ImageView fitHeight="27.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="https://icons-for-free.com/iconfiles/png/512/refresh+reload+update+icon-1320191166843452904.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
    </children>
 </AnchorPane>
