@@ -9,10 +9,12 @@ import java.util.ArrayList;
 public class UserSessionImpl extends UnicastRemoteObject implements UserSessionRI{
 
     private DBMockup db;
+    private User user;
 
-    public UserSessionImpl(DBMockup db) throws RemoteException {
+    public UserSessionImpl(DBMockup db,User user) throws RemoteException {
         super();
         this.db = db;
+        this.user = user;
     }
 
     @Override
@@ -34,10 +36,15 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
                 return null;
             }
         }
-
         TaskSubjectRI taskSubjectRI = new TaskSubjectImpl(name, hashType, hashPass,delta);
         db.addTask(taskSubjectRI);  // adiciona task a DB
+        user.getTasksRI().add(taskSubjectRI);
         return taskSubjectRI;
+    }
+
+    @Override
+    public User getUser() throws RemoteException {
+        return user;
     }
 
     @Override
