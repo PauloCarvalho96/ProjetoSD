@@ -133,6 +133,8 @@ public class MenuController implements Initializable {
             public void handle(MouseEvent event) {
                 try {
                     nameOwnTaskSelectedLabel.setText(tasksOwnTable.getSelectionModel().getSelectedItem().getName());
+                    infoOwnTaskTable.getItems().clear();
+                    System.out.println("--> "+tasksOwnTable.getSelectionModel().getSelectedItem().getResult().size());
                     infoOwnTaskTable.getItems().addAll(tasksOwnTable.getSelectionModel().getSelectedItem().getResult());
                 } catch (Exception ignored) { }
             }
@@ -214,15 +216,28 @@ public class MenuController implements Initializable {
         if(taskSubjectRI.isAvailable()){
             Task task = taskSubjectRI.getTaskFromArray();
             int n_threads = numberThreadsSpinner.getValue();
-            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.getWorkersRI().size()+1, client.username,task, n_threads);
-            client.getWorkersRI().add(workerObserverRI);
+            WorkerObserverRI workerObserverRI = this.client.userSessionRI.createWorker(task, n_threads);
+            if(workerObserverRI != null){
+                initializeTableViewListTasks();
+                initializeTableViewListOwnWorkers();
+                messageJoinTask.setWrapText(true);
+                messageJoinTask.setText("Worker was created with success!");
+            }else{
+                messageJoinTask.setText("Worker was not created!");
+            }
         }
-        initializeTableViewListTasks();
     }
 
-    public void handlerListOwnTasks(Event event) {
+    public void handlerListOwnTasks(Event event) throws RemoteException {
         tasksOwnTable.getItems().clear();
         tasksOwnTable.getItems().addAll(this.client.getTasksRI());
+        for(TaskSubjectRI t: this.client.getTasksRI()){
+            System.out.println("* "+t.getName());
+            System.out.println(t.getState().getmsg());
+            if(t.getState().getmsg().equals("Completed") && t.getResult() != null){
+                System.out.println("-> "+t.getResult().size());///////error invocation targe exception
+            }
+        }
     }
 
     public void handlerPauseTask(ActionEvent actionEvent) {
@@ -231,7 +246,7 @@ public class MenuController implements Initializable {
     public void handlerStopTask(ActionEvent actionEvent) {
     }
 
-    public void handlerListOwnWorkers(Event event) {
+    public void handlerListOwnWorkers(Event event) throws RemoteException{
         workersOwnTable.getItems().clear();
         workersOwnTable.getItems().addAll(this.client.getWorkersRI());
     }

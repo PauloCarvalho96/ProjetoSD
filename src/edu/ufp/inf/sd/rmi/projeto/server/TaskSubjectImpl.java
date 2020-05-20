@@ -20,11 +20,9 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private Integer start = 0;     //linha atual
     private Integer delta;     //quantidade de linhas
     private static final String url = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt";
-    // array de workers
-    private ArrayList<WorkerObserverRI> workers = new ArrayList<>();
-    // array tasks
-    private ArrayList<Task> tasks = new ArrayList<>();
-    private ArrayList<Result> result = new ArrayList<>();
+    private ArrayList<WorkerObserverRI> workers = new ArrayList<>();// array de workers
+    private ArrayList<Task> tasks = new ArrayList<>();// array tasks
+    private ArrayList<Result> result = new ArrayList<>();//array pass found
 
     public TaskSubjectImpl(String name, String hashType, ArrayList<String> hashPass,Integer delta) throws RemoteException {
         super();
@@ -98,7 +96,6 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
             case "Completed":
                 //função para parar todos os threads de todos os workers, função a criar no WorkerObserverImpl
             case "Found":
-                this.subjectState.setmsg(this.subjectState.WORKING);
         }
         for (WorkerObserverRI obs: workers) {
             try {
@@ -159,13 +156,19 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
                 for (int i = 0; i < this.hashPass.size() ; i ++){
                     if(this.hashPass.get(i).compareTo(hash)==0){
                         result.add(new Result(hash,pass));
+                        System.out.println(result.size());
+                        System.out.println(result.get(0).getHash());
+                        System.out.println(result.get(0).getResult());
                         this.hashPass.remove(i);
                         break;
                     }
                 }
+                System.out.println("FOUND");
                 if(this.hashPass.isEmpty()){
+                    System.out.println("COMPLETE");
                     this.subjectState.setmsg("Completed");
                 }else{
+                    System.out.println("NOT COMPLETE"+state.getmsg());
                     this.subjectState.setmsg(state.getmsg());
                 }
                 this.notifyAllObservers();

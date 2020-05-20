@@ -27,7 +27,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private int creditsWon;
     private ArrayList<Thread> threads = new ArrayList<>();
 
-    protected WorkerObserverImpl(int id, String username,Task task,Integer n_threads) throws RemoteException {
+    public WorkerObserverImpl(int id, String username, Task task, Integer n_threads) throws RemoteException {
         super();
         this.id = id;
         this.username = username;
@@ -215,6 +215,11 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     @Override
     public Integer getId() throws RemoteException {
         return this.id;
+    }
+
+    @Override
+    public String getTaskName() throws RemoteException {
+        return this.taskName;
     }
 
     @Override
