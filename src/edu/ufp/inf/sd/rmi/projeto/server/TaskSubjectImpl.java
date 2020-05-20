@@ -6,6 +6,7 @@ import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectRI {
 
@@ -23,6 +24,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private ArrayList<WorkerObserverRI> workers = new ArrayList<>();
     // array tasks
     private ArrayList<Task> tasks = new ArrayList<>();
+    private ArrayList<Result> result = new ArrayList<>();
 
     public TaskSubjectImpl(String name, String hashType, ArrayList<String> hashPass,Integer delta) throws RemoteException {
         super();
@@ -156,6 +158,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
             case "Found":
                 for (int i = 0; i < this.hashPass.size() ; i ++){
                     if(this.hashPass.get(i).compareTo(hash)==0){
+                        result.add(new Result(hash,pass));
                         this.hashPass.remove(i);
                         break;
                     }
@@ -182,5 +185,10 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
             return task;
         }
         return null;
+    }
+
+    @Override
+    public ArrayList<Result> getResult() throws RemoteException {
+        return result;
     }
 }

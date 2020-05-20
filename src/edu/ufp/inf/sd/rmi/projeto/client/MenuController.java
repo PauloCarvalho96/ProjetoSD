@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import edu.ufp.inf.sd.rmi.projeto.server.Result;
 import edu.ufp.inf.sd.rmi.projeto.server.Task;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectImpl;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
@@ -13,7 +14,10 @@ import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.ResourceBundle;
 
 public class MenuController implements Initializable {
     /** Create task **/
@@ -52,6 +56,9 @@ public class MenuController implements Initializable {
     public Label nameOwnTaskSelectedLabel;
     public Button pauseTaskBut;
     public Button stopTaskBut;
+    public TableView<Result> infoOwnTaskTable;
+    public TableColumn<Result, String> hashPassTOwnCol;
+    public TableColumn<Result, String> resultTOwnCol;
     /** List own workers **/
     public Tab listOwnWorkersTab;
     public TableView<WorkerObserverRI> workersOwnTable;
@@ -83,6 +90,7 @@ public class MenuController implements Initializable {
         initializeTableViewListTasks();
         initializeTableViewListOwnTasks();
         initializeTableViewListOwnWorkers();
+        initializeTableViewListInfoTask();
     }
 
     public void initializeHashTypeCombBox(){
@@ -115,25 +123,31 @@ public class MenuController implements Initializable {
 
     public void initializeTableViewListOwnTasks(){
         //goes to the class and associates de col with the variable
-        nameTOwnCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        hashTypeTOwnCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
+        nameTaskWOwnCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        hashTypeWOwnCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
         creditsPerWordTOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsPerWord"));
         creditsTotalTOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsTotal"));
         statusTOwnCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-        tasksOwnTable.setOnMousePressed(new EventHandler<MouseEvent>() {////////////
+        tasksOwnTable.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 try {
-                    nameOwnTaskSelectedLabel.setText(tasksTable.getSelectionModel().getSelectedItem().getName());
+                    nameOwnTaskSelectedLabel.setText(tasksOwnTable.getSelectionModel().getSelectedItem().getName());
+                    infoOwnTaskTable.getItems().addAll(tasksOwnTable.getSelectionModel().getSelectedItem().getResult());
                 } catch (Exception ignored) { }
             }
         });
     }
 
+    public void initializeTableViewListInfoTask(){
+        hashPassTOwnCol.setCellValueFactory(new PropertyValueFactory<>("hash"));
+        resultTOwnCol.setCellValueFactory(new PropertyValueFactory<>("result"));
+    }
+
     public void initializeTableViewListOwnWorkers(){
         //goes to the class and associates de col with the variable
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("taskName"));
-        hashTypeCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
+        nameTaskWOwnCol.setCellValueFactory(new PropertyValueFactory<>("taskName"));
+        hashTypeWOwnCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
         threadsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("n_threads"));
         wordsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("wordsSize"));
         creditsWonWOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsWon"));
@@ -204,6 +218,7 @@ public class MenuController implements Initializable {
             WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.workersRI.size()+1, client.username,task, n_threads);
             client.workersRI.add(workerObserverRI);
         }
+        initializeTableViewListTasks();
     }
 
     public void handlerListOwnTasks(Event event) {
