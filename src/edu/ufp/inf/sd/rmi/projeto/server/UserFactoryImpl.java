@@ -30,7 +30,7 @@ public class UserFactoryImpl extends UnicastRemoteObject implements UserFactoryR
             if(!this.db.getSessions().containsKey(uname)){
                 for (User user:db.getUsers()) {
                     if(user.getUname().equals(uname)){
-                        UserSessionRI userSessionRI = new UserSessionImpl(db,user);
+                        UserSessionRI userSessionRI = new UserSessionImpl(db);
                         this.db.addSession(uname,userSessionRI);     // insere no hashmap de sessoes
                         return userSessionRI;
                     }

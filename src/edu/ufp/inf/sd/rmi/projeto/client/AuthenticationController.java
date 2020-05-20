@@ -99,6 +99,7 @@ public class AuthenticationController implements Initializable {
 
         if(!username.isEmpty() && !password.isEmpty()) {
             UserSessionRI sessionRI = this.client.userFactoryRI.login(username, password);
+            this.client.username = username;
             if (sessionRI != null) {
                 this.client.userSessionRI = sessionRI;
                 goToMenuScene(actionEvent);

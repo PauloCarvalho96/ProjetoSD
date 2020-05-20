@@ -33,8 +33,6 @@ public class Client {
 
     public String username;
 
-
-
     public Client() {
         try {
             //List ans set args
@@ -72,7 +70,7 @@ public class Client {
 
     public ArrayList<WorkerObserverRI> getWorkersRI() {
         try {
-            return userSessionRI.getUser().getWorkersRI();
+            return userSessionRI.getWorkersRI(this.username);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -81,7 +79,7 @@ public class Client {
 
     public ArrayList<TaskSubjectRI> getTasksRI() {
         try {
-            return userSessionRI.getUser().getTasksRI();
+            return userSessionRI.getTasksRI(this.username);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

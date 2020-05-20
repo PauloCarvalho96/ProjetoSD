@@ -91,6 +91,31 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         }
     }
 
+    @Override
+    public void changeWorkerState(State state, String hash, String pass) throws RemoteException {
+        switch (state.getmsg()){
+            case "Found":
+                for (int i = 0; i < this.hashPass.size() ; i ++){
+                    if(this.hashPass.get(i).compareTo(hash)==0){
+                        this.result.add(new Result(hash,pass));
+                        this.hashPass.remove(i);
+                        System.out.println(this.result.size());
+                        System.out.println(this.hashPass.size());
+                        break;
+                    }
+                }
+                System.out.println("FOUND");
+                if(this.hashPass.isEmpty()){
+                    System.out.println("COMPLETE");
+                    this.subjectState.setmsg("Completed");
+                }else{
+                    System.out.println("NOT COMPLETE"+state.getmsg());
+                    this.subjectState.setmsg(state.getmsg());
+                }
+                this.notifyAllObservers();
+        }
+    }
+
     public void notifyAllObservers(){
         switch (this.subjectState.getmsg()) {
             case "Completed":
@@ -146,33 +171,6 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     @Override
     public boolean isAvailable() throws RemoteException {
         return available;
-    }
-
-    @Override
-    public void changeWorkerState(State state, String hash, String pass) throws RemoteException {
-
-        switch (state.getmsg()){
-            case "Found":
-                for (int i = 0; i < this.hashPass.size() ; i ++){
-                    if(this.hashPass.get(i).compareTo(hash)==0){
-                        result.add(new Result(hash,pass));
-                        System.out.println(result.size());
-                        System.out.println(result.get(0).getHash());
-                        System.out.println(result.get(0).getResult());
-                        this.hashPass.remove(i);
-                        break;
-                    }
-                }
-                System.out.println("FOUND");
-                if(this.hashPass.isEmpty()){
-                    System.out.println("COMPLETE");
-                    this.subjectState.setmsg("Completed");
-                }else{
-                    System.out.println("NOT COMPLETE"+state.getmsg());
-                    this.subjectState.setmsg(state.getmsg());
-                }
-                this.notifyAllObservers();
-        }
     }
 
     @Override
