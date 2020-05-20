@@ -28,7 +28,6 @@ public class MenuController implements Initializable {
     public TextField deltaTaskTF;
     public Button createTaskBut;
     public Label messageCreateTask;
-
     /** List tasks **/
     public TableView<TaskSubjectRI> tasksTable;
     public TableColumn<TaskSubjectRI, String> nameCol;
@@ -194,7 +193,7 @@ public class MenuController implements Initializable {
         Integer delta = Integer.parseInt(deltaTaskTF.getText());
 
         if(!name.isEmpty() && !hashPass.isEmpty()){
-            TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass,delta);
+            TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, delta, client.username);
             if(taskSubjectRI != null){
                 nameTaskTF.clear();
                 hashPassTA.clear();
@@ -216,7 +215,7 @@ public class MenuController implements Initializable {
         if(taskSubjectRI.isAvailable()){
             Task task = taskSubjectRI.getTaskFromArray();
             int n_threads = numberThreadsSpinner.getValue();
-            WorkerObserverRI workerObserverRI = this.client.userSessionRI.createWorker(task, n_threads);
+            WorkerObserverRI workerObserverRI = this.client.userSessionRI.createWorker(task, n_threads, client.username);
             if(workerObserverRI != null){
                 initializeTableViewListTasks();
                 initializeTableViewListOwnWorkers();
@@ -231,9 +230,7 @@ public class MenuController implements Initializable {
     public void handlerListOwnTasks(Event event) throws RemoteException {
         tasksOwnTable.getItems().clear();
         tasksOwnTable.getItems().addAll(this.client.getTasksRI());
-        for(TaskSubjectRI t: this.client.getTasksRI()){
-            System.out.println("* "+t.getName());
-            System.out.println(t.getState().getmsg());
+        for(TaskSubjectRI t: this.client.userSessionRI.getTasksRI(this.client.username)){
             if(t.getState().getmsg().equals("Completed") && t.getResult() != null){
                 System.out.println("-> "+t.getResult().size());///////error invocation targe exception
             }

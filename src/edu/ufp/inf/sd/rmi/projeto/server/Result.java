@@ -1,6 +1,8 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
-public class Result {
+import java.io.Serializable;
+
+public class Result implements Serializable {
 
     private String hash;
     private String result;

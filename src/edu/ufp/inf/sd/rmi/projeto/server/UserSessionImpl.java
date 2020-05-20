@@ -10,12 +10,10 @@ import java.util.ArrayList;
 public class UserSessionImpl extends UnicastRemoteObject implements UserSessionRI{
 
     private DBMockup db;
-    private User user;
 
-    public UserSessionImpl(DBMockup db,User user) throws RemoteException {
+    public UserSessionImpl(DBMockup db) throws RemoteException {
         super();
         this.db = db;
-        this.user = user;
     }
 
     @Override
@@ -30,31 +28,21 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
 
     // cria nova task
     @Override
-    public TaskSubjectRI createTask(String name, String hashType, ArrayList<String> hashPass,Integer delta) throws RemoteException {
+    public TaskSubjectRI createTask(String name, String hashType, ArrayList<String> hashPass,Integer delta, String uname) throws RemoteException {
         /** verifica se existe taskgroup com nome dado */
-        for (TaskSubjectRI taskSubjectRI:db.allTasks()) {
-            if(taskSubjectRI.getName().equals(name)){
-                return null;
-            }
+        if(db.getTask(name) != null){
+            return null;
         }
         TaskSubjectRI taskSubjectRI = new TaskSubjectImpl(name, hashType, hashPass,delta);
-        db.addTask(taskSubjectRI);  // adiciona task a DB
-        user.getTasksRI().add(taskSubjectRI);
+        db.assocTaskToUser(uname, taskSubjectRI);  // adiciona task a DB
         return taskSubjectRI;
     }
 
     @Override
-    public WorkerObserverRI createWorker(Task task, int n_threads) throws RemoteException {
-        WorkerObserverRI workerObserverRI = new WorkerObserverImpl(this.user.getWorkersRI().size()+1, this.user.getUname(), task, n_threads);
-        if(!this.user.getWorkersRI().contains(workerObserverRI)){
-            this.user.getWorkersRI().add(workerObserverRI);
-        }
+    public WorkerObserverRI createWorker(Task task, int n_threads, String uname) throws RemoteException {
+        WorkerObserverRI workerObserverRI = new WorkerObserverImpl(db.allWorkers().size()+1, uname, task, n_threads);
+        db.assocWorkerToUser(uname, workerObserverRI);
         return workerObserverRI;
-    }
-
-    @Override
-    public User getUser() throws RemoteException {
-        return user;
     }
 
     @Override
@@ -73,4 +61,14 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
 
     }
 
+    @Override
+    public ArrayList<WorkerObserverRI> getWorkersRI(String uname) throws RemoteException {
+        return db.getWorkersFromUser(uname);
+    }
+
+    @Override
+    public ArrayList<TaskSubjectRI> getTasksRI(String uname) throws RemoteException {
+        return db.getTasksFromUser(uname);
+
+    }
 }
