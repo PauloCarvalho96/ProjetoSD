@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import edu.ufp.inf.sd.rmi.projeto.server.Result;
 import edu.ufp.inf.sd.rmi.projeto.server.Task;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectImpl;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
@@ -15,6 +16,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class MenuController implements Initializable {
@@ -54,6 +56,9 @@ public class MenuController implements Initializable {
     public Label nameOwnTaskSelectedLabel;
     public Button pauseTaskBut;
     public Button stopTaskBut;
+    public TableView<Result> infoOwnTaskTable;
+    public TableColumn<Result, String> hashPassTOwnCol;
+    public TableColumn<Result, String> resultTOwnCol;
     /** List own workers **/
     public Tab listOwnWorkersTab;
     public TableView<WorkerObserverRI> workersOwnTable;
@@ -85,6 +90,7 @@ public class MenuController implements Initializable {
         initializeTableViewListTasks();
         initializeTableViewListOwnTasks();
         initializeTableViewListOwnWorkers();
+        initializeTableViewListInfoTask();
     }
 
     public void initializeHashTypeCombBox(){
@@ -126,10 +132,16 @@ public class MenuController implements Initializable {
             @Override
             public void handle(MouseEvent event) {
                 try {
-                    nameOwnTaskSelectedLabel.setText(tasksTable.getSelectionModel().getSelectedItem().getName());
+                    nameOwnTaskSelectedLabel.setText(tasksOwnTable.getSelectionModel().getSelectedItem().getName());
+                    infoOwnTaskTable.getItems().addAll(tasksOwnTable.getSelectionModel().getSelectedItem().getResult());
                 } catch (Exception ignored) { }
             }
         });
+    }
+
+    public void initializeTableViewListInfoTask(){
+        hashPassTOwnCol.setCellValueFactory(new PropertyValueFactory<>("hash"));
+        resultTOwnCol.setCellValueFactory(new PropertyValueFactory<>("result"));
     }
 
     public void initializeTableViewListOwnWorkers(){

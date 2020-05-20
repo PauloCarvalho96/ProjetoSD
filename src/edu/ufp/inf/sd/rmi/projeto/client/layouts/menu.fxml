@@ -88,6 +88,12 @@
                         <Label fx:id="nameOwnTaskSelectedLabel" layoutX="787.0" layoutY="141.0" prefHeight="18.0" prefWidth="225.0" />
                         <Button fx:id="pauseTaskBut" layoutX="828.0" layoutY="180.0" mnemonicParsing="false" onAction="#handlerPauseTask" prefHeight="20.0" prefWidth="48.0" text="Pause" />
                         <Button fx:id="stopTaskBut" layoutX="933.0" layoutY="180.0" mnemonicParsing="false" onAction="#handlerStopTask" prefHeight="20.0" prefWidth="48.0" text="Stop" />
+                        <TableView fx:id="infoOwnTaskTable" layoutX="1080.0" layoutY="32.0" prefHeight="682.0" prefWidth="437.0">
+                           <columns>
+                              <TableColumn fx:id="hashPassTOwnCol" prefWidth="220.0" text="Hash Pass" />
+                              <TableColumn fx:id="resultTOwnCol" prefWidth="216.7999267578125" text="Result" />
+                           </columns>
+                        </TableView>
                      </children>
                   </AnchorPane>
                </content>

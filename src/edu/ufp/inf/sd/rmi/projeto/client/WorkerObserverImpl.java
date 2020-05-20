@@ -70,7 +70,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     /** threads vao fazer o trabalho */
     public void doWork() throws RemoteException {
         try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
-             FileOutputStream fileOutputStream = new FileOutputStream("file.txt")) {
+             FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
             byte dataBuffer[] = new byte[1024];
             int bytesRead;
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
@@ -119,7 +119,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         @Override
         public void run() {
             try {
-                File file = new File("file.txt");
+                File file = new File("file"+workerObserverRI.getId()+".txt");
 
                 int line = 0;
 
@@ -130,6 +130,11 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 MessageDigest hashFunction;
 
                 while ((st = br.readLine()) != null) {
+
+                    if(task.getTaskSubjectRI().getState().getmsg().equals("Completed")){
+                        break;
+                    }
+
                     if (line >= start && line < start + delta) {
                         switch (hashType) {
                             case "SHA-512":
@@ -137,7 +142,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                                 hashFunction.reset();
                                 hashFunction.update(st.getBytes("utf8"));
                                 result = String.format("%0128x", new BigInteger(1, hashFunction.digest()));
-                                System.out.println("Thread "+id+" Password: "+st);
                                 break;
                             case "PBKDF2":
                                 break;
@@ -153,11 +157,10 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                                 System.out.println("\n\nThread:"+id+"Password Encontrada!");
                                 System.out.println("hashPass:"+s);
                                 System.out.println("Password:"+st);
-                                State state = new State();
+                                State state = new State("");
                                 state.setmsg(state.FOUND);
                                 this.workerObserverRI.update(state,s,st);
                             }
-                            System.out.println(s);
                         }
 
                     }
@@ -177,7 +180,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     public void update(State state, String hashPass,String pass) throws RemoteException {
         this.lastObserverState = state;
         this.task.getTaskSubjectRI().changeWorkerState(state,hashPass,pass);
-        taskUpdated();
     }
 
     @Override
@@ -227,17 +229,11 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void taskUpdated() throws RemoteException {
-        //switch (this.task.getTaskSubjectRI().getState().getmsg()) {
-          //  case "Completed":
+        switch (this.task.getTaskSubjectRI().getState().getmsg()) {
+            case "Completed":
+                this.lastObserverState.setmsg("Completed");
                 System.out.println("\nThread GoodBye\n");
-                for (Thread t:this.threads) {
-                    try {
-                        t.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-        //}
+        }
     }
 
 }

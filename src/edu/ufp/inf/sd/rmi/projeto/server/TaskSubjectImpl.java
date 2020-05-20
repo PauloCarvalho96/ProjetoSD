@@ -6,6 +6,7 @@ import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectRI {
 
@@ -14,7 +15,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private ArrayList<String> hashPass;
     private Integer creditsPerWord;
     private Integer creditsTotal;
-    private State subjectState;
+    private State subjectState = new State();
     private boolean available = true;
     private Integer start = 0;     //linha atual
     private Integer delta;     //quantidade de linhas
@@ -23,6 +24,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private ArrayList<WorkerObserverRI> workers = new ArrayList<>();
     // array tasks
     private ArrayList<Task> tasks = new ArrayList<>();
+    private ArrayList<Result> result = new ArrayList<>();
 
     public TaskSubjectImpl(String name, String hashType, ArrayList<String> hashPass,Integer delta) throws RemoteException {
         super();
@@ -30,6 +32,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.hashType = hashType;
         this.hashPass = hashPass;
         this.delta = delta;
+        this.subjectState.setmsg("Available");
         createSubTasks();
     }
 
@@ -91,13 +94,19 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     public void notifyAllObservers(){
-        /*for (WorkerObserverRI obs: workers) {
+        switch (this.subjectState.getmsg()) {
+            case "Completed":
+                //função para parar todos os threads de todos os workers, função a criar no WorkerObserverImpl
+            case "Found":
+                this.subjectState.setmsg(this.subjectState.WORKING);
+        }
+        for (WorkerObserverRI obs: workers) {
             try {
-//                obs.update();
+                obs.taskUpdated();
             } catch (RemoteException ex) {
-                Logger.getLogger(TaskSubjectImpl.class.getName()).log(Level.SEVERE,null,ex);
+                ex.printStackTrace();
             }
-        }*/
+        }
     }
 
     @Override
@@ -118,9 +127,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     @Override
-    public void setState(State state) throws RemoteException {
+    public void setState(State state){
         this.subjectState = state;
-        this.notifyAllObservers();
     }
 
     @Override
@@ -144,6 +152,27 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     @Override
+    public void changeWorkerState(State state, String hash, String pass) throws RemoteException {
+
+        switch (state.getmsg()){
+            case "Found":
+                for (int i = 0; i < this.hashPass.size() ; i ++){
+                    if(this.hashPass.get(i).compareTo(hash)==0){
+                        result.add(new Result(hash,pass));
+                        this.hashPass.remove(i);
+                        break;
+                    }
+                }
+                if(this.hashPass.isEmpty()){
+                    this.subjectState.setmsg("Completed");
+                }else{
+                    this.subjectState.setmsg(state.getmsg());
+                }
+                this.notifyAllObservers();
+        }
+    }
+
+    @Override
     public Task getTaskFromArray() throws RemoteException {
         Task task = this.tasks.get(0);
         if(task != null && this.tasks.size() == 1){
@@ -158,4 +187,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         return null;
     }
 
+    @Override
+    public ArrayList<Result> getResult() throws RemoteException {
+        return result;
+    }
 }
