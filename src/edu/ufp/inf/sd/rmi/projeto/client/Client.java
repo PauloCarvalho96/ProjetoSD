@@ -33,8 +33,6 @@ public class Client {
 
     public String username;
 
-
-
     public Client() {
         try {
             //List ans set args

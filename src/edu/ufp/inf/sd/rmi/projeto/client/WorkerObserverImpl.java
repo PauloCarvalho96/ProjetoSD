@@ -34,6 +34,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.task = task;
         this.taskName = task.getTaskSubjectRI().getName();
         this.n_threads = n_threads;
+        this.wordsSize = task.getDelta();
         doWork();
     }
 

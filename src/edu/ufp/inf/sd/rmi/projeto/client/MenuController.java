@@ -217,6 +217,7 @@ public class MenuController implements Initializable {
             WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.getWorkersRI().size()+1, client.username,task, n_threads);
             client.getWorkersRI().add(workerObserverRI);
         }
+        initializeTableViewListOwnWorkers();
         initializeTableViewListTasks();
     }
 
@@ -235,6 +236,13 @@ public class MenuController implements Initializable {
     public void handlerListOwnWorkers(Event event) {
         workersOwnTable.getItems().clear();
         workersOwnTable.getItems().addAll(this.client.getWorkersRI());
+        for (WorkerObserverRI workerObserverRI:this.client.getWorkersRI()) {
+            try {
+                System.out.println("+++++++++++++++++++"+workerObserverRI.getId());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void handlerPauseWorker(ActionEvent actionEvent) {

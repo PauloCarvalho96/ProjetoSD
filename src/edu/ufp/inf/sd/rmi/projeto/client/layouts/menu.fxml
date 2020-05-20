@@ -103,14 +103,14 @@
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1018.0" prefWidth="1454.0">
                      <children>
                         <AnchorPane layoutX="23.0" layoutY="49.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="1820.0" />
-                        <TableView fx:id="workersOwnTable" layoutX="181.0" layoutY="32.0" prefHeight="682.0" prefWidth="581.0">
+                        <TableView fx:id="workersOwnTable" layoutX="149.0" layoutY="32.0" prefHeight="682.0" prefWidth="658.0">
                            <columns>
-                              <TableColumn fx:id="nameTaskWOwnCol" prefWidth="145.2000305056572" text="Task Name" />
-                              <TableColumn fx:id="hashTypeWOwnCol" prefWidth="82.20001220703125" text="Hash Type" />
-                              <TableColumn fx:id="threadsWOwnCol" prefWidth="60.20001220703125" text="Threads" />
-                              <TableColumn fx:id="wordsWOwnCol" prefWidth="72.20004272460938" text="Words" />
-                              <TableColumn fx:id="creditsWonWOwnCol" prefWidth="121.20001220703125" text="Credits Won" />
-                              <TableColumn fx:id="statusWOwnCol" prefWidth="102.79998779296875" text="Status" />
+                              <TableColumn fx:id="nameTaskWOwnCol" prefWidth="129.6000213623047" text="Task Name" />
+                              <TableColumn fx:id="hashTypeWOwnCol" prefWidth="113.60000610351562" text="Hash Type" />
+                              <TableColumn fx:id="threadsWOwnCol" prefWidth="83.4000244140625" text="Threads" />
+                              <TableColumn fx:id="wordsWOwnCol" prefWidth="84.60003662109375" text="Words" />
+                              <TableColumn fx:id="creditsWonWOwnCol" prefWidth="108.79998779296875" text="Credits Won" />
+                              <TableColumn fx:id="statusWOwnCol" prefWidth="139.4000244140625" text="Status" />
                            </columns>
                         </TableView>
                         <Pagination fx:id="listOwnWorkersPagination" layoutX="318.0" layoutY="715.0" prefHeight="60.0" prefWidth="163.0" />
