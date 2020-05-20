@@ -108,20 +108,22 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
                 if(this.hashPass.isEmpty()){
                     System.out.println("COMPLETE");
                     this.subjectState.setmsg("Completed");
+                    available = false;
                 }else{
                     System.out.println("NOT COMPLETE"+state.getmsg());
                     this.subjectState.setmsg(state.getmsg());
                 }
-                this.notifyAllObservers();
+                break;
+            case "Not Found":
+                System.out.println("NOT FOUND");
+                System.out.println("WORKING");
+                this.subjectState.setmsg("Working");
+                break;
         }
+        this.notifyAllObservers();
     }
 
     public void notifyAllObservers(){
-        switch (this.subjectState.getmsg()) {
-            case "Completed":
-                //função para parar todos os threads de todos os workers, função a criar no WorkerObserverImpl
-            case "Found":
-        }
         for (WorkerObserverRI obs: workers) {
             try {
                 obs.taskUpdated();
