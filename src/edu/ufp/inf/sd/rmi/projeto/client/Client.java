@@ -33,11 +33,7 @@ public class Client {
 
     public String username;
 
-    public ArrayList<WorkerObserverRI> workersRI = new ArrayList<>();
 
-    public ArrayList<TaskSubjectRI> tasksRI = new ArrayList<>();
-
-    public Float cash;
 
     public Client() {
         try {
@@ -72,6 +68,24 @@ public class Client {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         }
         return userFactoryRI;
+    }
+
+    public ArrayList<WorkerObserverRI> getWorkersRI() {
+        try {
+            return userSessionRI.getUser().getWorkersRI();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ArrayList<TaskSubjectRI> getTasksRI() {
+        try {
+            return userSessionRI.getUser().getTasksRI();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

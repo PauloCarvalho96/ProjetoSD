@@ -39,6 +39,10 @@ public class DBMockup implements Serializable {
         return false;
     }
 
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
     public HashMap<String,UserSessionRI> getSessions() {
         return sessions;
     }

@@ -13,4 +13,5 @@ public interface UserSessionRI extends Remote {
         public void joinTask(String task, WorkerObserverRI workerObserverRI) throws RemoteException;
         public void pauseTask(TaskSubjectRI taskSubjectRI) throws RemoteException;
         public void deleteTask(TaskSubjectRI taskSubjectRI) throws RemoteException;
+        public User getUser() throws RemoteException;
 }

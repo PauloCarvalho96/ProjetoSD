@@ -46,7 +46,7 @@
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1018.0" prefWidth="1454.0">
                      <children>
                         <AnchorPane layoutX="23.0" layoutY="49.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="1820.0" />
-                        <TableView fx:id="tasksTable" layoutX="23.0" layoutY="33.0" prefHeight="682.0" prefWidth="735.0">
+                        <TableView fx:id="tasksTable" layoutX="23.0" layoutY="32.0" prefHeight="682.0" prefWidth="735.0">
                            <columns>
                               <TableColumn fx:id="nameCol" prefWidth="145.2000305056572" text="Name" />
                               <TableColumn fx:id="hashTypeCol" prefWidth="143.20001220703125" text="Hash Type" />
@@ -74,7 +74,7 @@
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1018.0" prefWidth="1454.0">
                      <children>
                     <AnchorPane layoutX="23.0" layoutY="49.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="1820.0" />
-                        <TableView fx:id="tasksOwnTable" layoutX="181.0" layoutY="32.0" prefHeight="682.0" prefWidth="437.0">
+                        <TableView fx:id="tasksOwnTable" layoutX="27.0" layoutY="32.0" prefHeight="682.0" prefWidth="743.0">
                            <columns>
                               <TableColumn fx:id="nameTOwnCol" prefWidth="145.2000305056572" text="Name" />
                               <TableColumn fx:id="hashTypeTOwnCol" prefWidth="143.20001220703125" text="Hash Type" />
@@ -86,8 +86,8 @@
                         <Pagination fx:id="listOwnTasksPagination" layoutX="318.0" layoutY="715.0" prefHeight="60.0" prefWidth="163.0" />
                         <Label fx:id="messageOwnTask" layoutX="738.0" layoutY="59.0" prefHeight="69.0" prefWidth="323.0" />
                         <Label fx:id="nameOwnTaskSelectedLabel" layoutX="787.0" layoutY="141.0" prefHeight="18.0" prefWidth="225.0" />
-                        <Button fx:id="pauseTaskBut" layoutX="828.0" layoutY="180.0" mnemonicParsing="false" onAction="#handlerPauseTask" prefHeight="20.0" prefWidth="48.0" text="Pause" />
-                        <Button fx:id="stopTaskBut" layoutX="933.0" layoutY="180.0" mnemonicParsing="false" onAction="#handlerStopTask" prefHeight="20.0" prefWidth="48.0" text="Stop" />
+                        <Button fx:id="pauseTaskBut" layoutX="800.0" layoutY="179.0" mnemonicParsing="false" onAction="#handlerPauseTask" prefHeight="26.0" prefWidth="90.0" text="Pause" />
+                        <Button fx:id="stopTaskBut" layoutX="933.0" layoutY="180.0" mnemonicParsing="false" onAction="#handlerStopTask" prefHeight="26.0" prefWidth="102.0" text="Stop" />
                         <TableView fx:id="infoOwnTaskTable" layoutX="1080.0" layoutY="32.0" prefHeight="682.0" prefWidth="437.0">
                            <columns>
                               <TableColumn fx:id="hashPassTOwnCol" prefWidth="220.0" text="Hash Pass" />
@@ -116,8 +116,8 @@
                         <Pagination fx:id="listOwnWorkersPagination" layoutX="318.0" layoutY="715.0" prefHeight="60.0" prefWidth="163.0" />
                         <Label fx:id="messageOwnWorker" layoutX="876.0" layoutY="64.0" prefHeight="69.0" prefWidth="323.0" />
                         <Label fx:id="idOwnWorkerLabel" layoutX="925.0" layoutY="147.0" prefHeight="18.0" prefWidth="225.0" />
-                        <Button fx:id="pauseWorkerBut" layoutX="965.0" layoutY="180.0" mnemonicParsing="false" onAction="#handlerPauseWorker" prefHeight="20.0" prefWidth="48.0" text="Pause" />
-                        <Button fx:id="stopWorkerBut" layoutX="1066.0" layoutY="180.0" mnemonicParsing="false" onAction="#handlerStopWorker" prefHeight="20.0" prefWidth="48.0" text="Stop" />
+                        <Button fx:id="pauseWorkerBut" layoutX="881.0" layoutY="180.0" mnemonicParsing="false" onAction="#handlerPauseWorker" prefHeight="26.0" prefWidth="132.0" text="Pause" />
+                        <Button fx:id="stopWorkerBut" layoutX="1066.0" layoutY="180.0" mnemonicParsing="false" onAction="#handlerStopWorker" prefHeight="26.0" prefWidth="110.0" text="Stop" />
                      </children>
                   </AnchorPane>
                </content>

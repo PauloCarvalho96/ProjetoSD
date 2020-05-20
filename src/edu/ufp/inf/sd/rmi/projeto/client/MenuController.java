@@ -123,8 +123,8 @@ public class MenuController implements Initializable {
 
     public void initializeTableViewListOwnTasks(){
         //goes to the class and associates de col with the variable
-        nameTaskWOwnCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        hashTypeWOwnCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
+        nameTOwnCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        hashTypeTOwnCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
         creditsPerWordTOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsPerWord"));
         creditsTotalTOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsTotal"));
         statusTOwnCol.setCellValueFactory(new PropertyValueFactory<>("status"));
@@ -194,7 +194,6 @@ public class MenuController implements Initializable {
         if(!name.isEmpty() && !hashPass.isEmpty()){
             TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass,delta);
             if(taskSubjectRI != null){
-                this.client.tasksRI.add(taskSubjectRI);
                 nameTaskTF.clear();
                 hashPassTA.clear();
                 deltaTaskTF.clear();
@@ -215,15 +214,15 @@ public class MenuController implements Initializable {
         if(taskSubjectRI.isAvailable()){
             Task task = taskSubjectRI.getTaskFromArray();
             int n_threads = numberThreadsSpinner.getValue();
-            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.workersRI.size()+1, client.username,task, n_threads);
-            client.workersRI.add(workerObserverRI);
+            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(client.getWorkersRI().size()+1, client.username,task, n_threads);
+            client.getWorkersRI().add(workerObserverRI);
         }
         initializeTableViewListTasks();
     }
 
     public void handlerListOwnTasks(Event event) {
         tasksOwnTable.getItems().clear();
-        tasksOwnTable.getItems().addAll(this.client.tasksRI);
+        tasksOwnTable.getItems().addAll(this.client.getTasksRI());
     }
 
     public void handlerPauseTask(ActionEvent actionEvent) {
@@ -235,7 +234,7 @@ public class MenuController implements Initializable {
 
     public void handlerListOwnWorkers(Event event) {
         workersOwnTable.getItems().clear();
-        workersOwnTable.getItems().addAll(this.client.workersRI);
+        workersOwnTable.getItems().addAll(this.client.getWorkersRI());
     }
 
     public void handlerPauseWorker(ActionEvent actionEvent) {
