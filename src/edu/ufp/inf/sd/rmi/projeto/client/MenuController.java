@@ -72,6 +72,8 @@ public class MenuController implements Initializable {
     public Label idOwnWorkerLabel;
     public Button pauseWorkerBut;
     public Button stopWorkerBut;
+    /** Update all **/
+    public Button updateBut;
 
     private Client client;
 
@@ -133,7 +135,6 @@ public class MenuController implements Initializable {
                 try {
                     nameOwnTaskSelectedLabel.setText(tasksOwnTable.getSelectionModel().getSelectedItem().getName());
                     infoOwnTaskTable.getItems().clear();
-                    System.out.println("--> "+tasksOwnTable.getSelectionModel().getSelectedItem().getResult().size());
                     infoOwnTaskTable.getItems().addAll(tasksOwnTable.getSelectionModel().getSelectedItem().getResult());
                 } catch (Exception ignored) { }
             }
@@ -182,6 +183,10 @@ public class MenuController implements Initializable {
     }
 
     public void handlerListTasks(Event event) throws RemoteException {
+        listTasks();
+    }
+
+    public void listTasks() throws RemoteException{
         tasksTable.getItems().clear();
         tasksTable.getItems().addAll(this.client.userSessionRI.listTasks());
     }
@@ -212,7 +217,7 @@ public class MenuController implements Initializable {
     /** associar worker a um taskgroup */
     public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {
         TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
-        if(taskSubjectRI.isAvailable()){
+        if(taskSubjectRI != null && taskSubjectRI.isAvailable()){
             Task task = taskSubjectRI.getTaskFromArray();
             int n_threads = numberThreadsSpinner.getValue();
             WorkerObserverRI workerObserverRI = this.client.userSessionRI.createWorker(task, n_threads, client.username);
@@ -228,6 +233,10 @@ public class MenuController implements Initializable {
     }
 
     public void handlerListOwnTasks(Event event) throws RemoteException {
+        listOwnTasks();
+    }
+
+    public void listOwnTasks() throws RemoteException {
         tasksOwnTable.getItems().clear();
         tasksOwnTable.getItems().addAll(this.client.getTasksRI());
         for(TaskSubjectRI t: this.client.userSessionRI.getTasksRI(this.client.username)){
@@ -244,6 +253,10 @@ public class MenuController implements Initializable {
     }
 
     public void handlerListOwnWorkers(Event event) throws RemoteException{
+        listOwnWorkers();
+    }
+
+    public void listOwnWorkers(){
         workersOwnTable.getItems().clear();
         workersOwnTable.getItems().addAll(this.client.getWorkersRI());
         for (WorkerObserverRI workerObserverRI:this.client.getWorkersRI()) {
@@ -259,5 +272,12 @@ public class MenuController implements Initializable {
     }
 
     public void handlerStopWorker(ActionEvent actionEvent) {
+    }
+
+    public void handlerUpdate(ActionEvent actionEvent) throws RemoteException {
+        listTasks();
+        listOwnTasks();
+        listOwnWorkers();
+        infoOwnTaskTable.getItems().clear();
     }
 }

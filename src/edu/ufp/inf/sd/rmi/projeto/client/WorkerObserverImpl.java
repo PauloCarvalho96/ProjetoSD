@@ -4,7 +4,6 @@ import edu.ufp.inf.sd.rmi.projeto.server.State;
 import edu.ufp.inf.sd.rmi.projeto.server.Task;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 
-import javax.print.DocFlavor;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.URL;
@@ -26,6 +25,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private int wordsSize;
     private int creditsWon;
     private ArrayList<Thread> threads = new ArrayList<>();
+    private int actualLine;
 
     public WorkerObserverImpl(int id, String username, Task task, Integer n_threads) throws RemoteException {
         super();
@@ -35,6 +35,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.taskName = task.getTaskSubjectRI().getName();
         this.n_threads = n_threads;
         this.wordsSize = task.getDelta();
+        this.actualLine = 0;
         doWork();
     }
 
@@ -131,11 +132,9 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 MessageDigest hashFunction;
 
                 while ((st = br.readLine()) != null) {
-
                     if(task.getTaskSubjectRI().getState().getmsg().equals("Completed")){
                         break;
                     }
-
                     if (line >= start && line < start + delta) {
                         switch (hashType) {
                             case "SHA-512":
@@ -153,17 +152,21 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                             default:
                                 System.out.println("Method not recognized");
                         }
+                        boolean found = false;
                         for (String s:workerObserverRI.getHashPass()) {
                             if(workerObserverRI.match(s,result)){
-                                System.out.println("\n\nThread:"+id+"Password Encontrada!");
-                                System.out.println("hashPass:"+s);
-                                System.out.println("Password:"+st);
-                                State state = new State("");
-                                state.setmsg(state.FOUND);
-                                this.workerObserverRI.update(state,s,st);
+                                found = true;
                             }
                         }
-
+                        if(found){
+                            State state = new State("");
+                            state.setmsg(state.FOUND);
+                            this.workerObserverRI.updateFound(state,result,st, line);
+                        }else{
+                            State state = new State("");
+                            state.setmsg(state.NOT_FOUND);
+                            this.workerObserverRI.updateNotFound(state, line);
+                        }
                     }
                     if (line == start + delta) {
                         break;
@@ -178,9 +181,16 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     @Override
-    public void update(State state, String hashPass,String pass) throws RemoteException {
+    public void updateFound(State state, String hashPass, String pass, int line) throws RemoteException {
+        this.actualLine = line;
         this.lastObserverState = state;
-        this.task.getTaskSubjectRI().changeWorkerState(state,hashPass,pass);
+        this.task.getTaskSubjectRI().changeWorkerState(state, hashPass, pass);
+    }
+
+    @Override
+    public void updateNotFound(State state, int line) throws RemoteException {
+        this.lastObserverState = state;
+        this.task.getTaskSubjectRI().changeWorkerState(state, "", "");
     }
 
     @Override
@@ -234,11 +244,19 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     @Override
+    public int getActualLine() throws RemoteException {
+        return this.actualLine;
+    }
+
+    @Override
     public void taskUpdated() throws RemoteException {
         switch (this.task.getTaskSubjectRI().getState().getmsg()) {
             case "Completed":
-                this.lastObserverState.setmsg("Completed");
-                System.out.println("\nThread GoodBye\n");
+                this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
+                System.out.println("\nWorker all completed!!\n");
+            case "Working":
+                this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
+                System.out.println("\nStill working!!\n");
         }
     }
 
