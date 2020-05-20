@@ -13,9 +13,7 @@ import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MenuController implements Initializable {
     /** Create task **/
@@ -134,8 +132,8 @@ public class MenuController implements Initializable {
 
     public void initializeTableViewListOwnWorkers(){
         //goes to the class and associates de col with the variable
-        nameTaskWOwnCol.setCellValueFactory(new PropertyValueFactory<>("taskName"));
-        hashTypeWOwnCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("taskName"));
+        hashTypeCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
         threadsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("n_threads"));
         wordsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("wordsSize"));
         creditsWonWOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsWon"));
