@@ -174,10 +174,10 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         switch (this.task.getTaskSubjectRI().getState().getmsg()) {
             case "Completed":
                 this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
-                System.out.println("\nWorker all completed!!\n");
+//                System.out.println("\nWorker all completed!!\n");
             case "Working":
                 this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
-                System.out.println("\nStill working!!\n");
+//                System.out.println("\nStill working!!\n");
         }
     }
 

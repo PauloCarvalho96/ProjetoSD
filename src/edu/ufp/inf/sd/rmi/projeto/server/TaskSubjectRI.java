@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
 import java.rmi.Remote;

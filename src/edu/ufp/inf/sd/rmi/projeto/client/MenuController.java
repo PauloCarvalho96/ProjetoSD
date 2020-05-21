@@ -211,6 +211,7 @@ public class MenuController implements Initializable {
             int n_threads = numberThreadsSpinner.getValue();
             WorkerObserverRI workerObserverRI = this.client.userSessionRI.createWorker(task, n_threads, client.username);
             if(workerObserverRI != null){
+                taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
                 initializeTableViewListTasks();
                 initializeTableViewListOwnWorkers();
                 messageJoinTask.setWrapText(true);
@@ -228,11 +229,6 @@ public class MenuController implements Initializable {
     public void listOwnTasks() throws RemoteException {
         tasksOwnTable.getItems().clear();
         tasksOwnTable.getItems().addAll(this.client.getTasksRI());
-        for(TaskSubjectRI t: this.client.userSessionRI.getTasksRI(this.client.username)){
-            if(t.getState().getmsg().equals("Completed") && t.getResult() != null){
-                System.out.println("-> "+t.getResult().size());///////error invocation targe exception
-            }
-        }
     }
 
     public void handlerPauseTask(ActionEvent actionEvent) {

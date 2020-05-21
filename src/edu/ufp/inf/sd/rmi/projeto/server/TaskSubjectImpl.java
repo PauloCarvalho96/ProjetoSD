@@ -100,8 +100,6 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
                     if(this.hashPass.get(i).compareTo(hash)==0){
                         this.result.add(new Result(hash,pass));
                         this.hashPass.remove(i);
-//                        System.out.println(this.result.size());
-//                        System.out.println(this.hashPass.size());
                         break;
                     }
                 }
@@ -116,14 +114,10 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
                 }
                 break;
             case "Not Found":
-//                System.out.println("NOT FOUND");
-//                System.out.println("WORKING");
                 this.subjectState.setmsg("Working");
                 break;
         }
         this.notifyAllObservers();
-
-
     }
 
     public void notifyAllObservers(){
