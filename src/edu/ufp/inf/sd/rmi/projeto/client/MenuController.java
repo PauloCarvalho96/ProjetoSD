@@ -164,19 +164,8 @@ public class MenuController implements Initializable {
         });
     }
 
-    public void handleReadFile(ActionEvent actionEvent) {
-    }
-
-    public void handleReadBinFile(ActionEvent actionEvent) {
-    }
-
-    public void handleSaveFile(ActionEvent actionEvent) {
-    }
-
-    public void handleSaveBinFile(ActionEvent actionEvent) {
-    }
-
     public void handleExit(ActionEvent actionEvent) {
+        System.exit(0);
     }
 
     public void handleAbout(ActionEvent actionEvent) {
@@ -259,13 +248,6 @@ public class MenuController implements Initializable {
     public void listOwnWorkers(){
         workersOwnTable.getItems().clear();
         workersOwnTable.getItems().addAll(this.client.getWorkersRI());
-        for (WorkerObserverRI workerObserverRI:this.client.getWorkersRI()) {
-            try {
-                System.out.println("+++++++++++++++++++"+workerObserverRI.getId());
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void handlerPauseWorker(ActionEvent actionEvent) {
