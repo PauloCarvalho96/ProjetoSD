@@ -52,7 +52,10 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     }
 
     @Override
-    public void deleteTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
+    public void stopTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
+        TaskSubjectRI taskSubjectRI1 = db.getTask(taskSubjectRI.getName());
+        taskSubjectRI.getState().setmsg("Completed");
+        taskSubjectRI.notifyAllObservers();
         db.removeTask(taskSubjectRI);
     }
 

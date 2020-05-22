@@ -24,6 +24,11 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private ArrayList<Task> tasks = new ArrayList<>();// array tasks
     private ArrayList<Result> result = new ArrayList<>();//array pass found
 
+    private String path_toni = "C:\\Users\\tmsl9\\OneDrive\\Documentos\\GitHub" +
+            "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
+    private String path_paulo = "C:\\Users\\Paulo\\Documents\\GitHub" +
+            "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
+
     public TaskSubjectImpl(String name, String hashType, ArrayList<String> hashPass,Integer delta) throws RemoteException {
         super();
         this.name = name;
@@ -64,8 +69,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     /** divide linhas para criar sub tasks */
     public void createSubTasks(){
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\Paulo\\Documents\\GitHub" +
-                    "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader(path_toni));
             int lines = 0;
             while (reader.readLine() != null) {
                 if(lines == start + delta - 1){
@@ -120,11 +124,12 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.notifyAllObservers();
     }
 
-    public void notifyAllObservers(){
+    @Override
+    public void notifyAllObservers() throws RemoteException {
         for (WorkerObserverRI obs: workers) {
             try {
                 obs.taskUpdated();
-            } catch (RemoteException ex) {
+            } catch (RemoteException | InterruptedException ex) {
                 ex.printStackTrace();
             }
         }

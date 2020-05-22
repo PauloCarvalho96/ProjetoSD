@@ -43,7 +43,7 @@ public class MyThread implements Runnable {
             MessageDigest hashFunction;
 
             while ((st = br.readLine()) != null) {
-                if(task.getTaskSubjectRI().getState().getmsg().equals("Completed")){
+                if(workerObserverRI.getStateWorker().getmsg().equals("Completed")){////stop thread
                     break;
                 }
                 if (line >= start && line < start + delta) {
@@ -69,12 +69,12 @@ public class MyThread implements Runnable {
                             found = true;
                         }
                     }
+                    State state = new State("");
+                    //System.out.println(st);
                     if(found){
-                        State state = new State("");
                         state.setmsg(state.FOUND);
                         this.workerObserverRI.updateFound(state,result,st, line);
                     }else{
-                        State state = new State("");
                         state.setmsg(state.NOT_FOUND);
                         this.workerObserverRI.updateNotFound(state, line);
                     }
