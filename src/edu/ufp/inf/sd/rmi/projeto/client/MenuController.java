@@ -153,7 +153,7 @@ public class MenuController implements Initializable {
         threadsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("n_threads"));
         wordsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("wordsSize"));
         creditsWonWOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsWon"));
-        statusWOwnCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        statusWOwnCol.setCellValueFactory(new PropertyValueFactory<>(""));
         workersOwnTable.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -231,10 +231,21 @@ public class MenuController implements Initializable {
         tasksOwnTable.getItems().addAll(this.client.getTasksRI());
     }
 
+
     public void handlerPauseTask(ActionEvent actionEvent) {
     }
 
-    public void handlerStopTask(ActionEvent actionEvent) {
+    /** nao elimina da DB */
+    public void handlerRemoveTask(ActionEvent actionEvent) {
+        TaskSubjectRI taskSubjectRI = tasksOwnTable.getSelectionModel().getSelectedItem();
+        if(taskSubjectRI != null){
+            try {
+                client.userSessionRI.deleteTask(taskSubjectRI,client.username);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public void handlerListOwnWorkers(Event event) throws RemoteException{

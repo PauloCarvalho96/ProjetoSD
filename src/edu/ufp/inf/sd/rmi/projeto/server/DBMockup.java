@@ -10,17 +10,17 @@ import java.util.HashMap;
 public class DBMockup implements Serializable {
 
     // array users
-    private final ArrayList<User> users;
+    private ArrayList<User> users;
     // array sessoes (username/session)
-    private final HashMap<String, UserSessionRI> sessions;
+    private HashMap<String, UserSessionRI> sessions;
     // array tasks
-    private final ArrayList<TaskSubjectRI> tasks;
+    private ArrayList<TaskSubjectRI> tasks;
     // array workers
-    private final ArrayList<WorkerObserverRI> workers;
+    private ArrayList<WorkerObserverRI> workers;
     // hashmap user to workers
-    private final HashMap<User, ArrayList<WorkerObserverRI>> userWorkers;
+    private HashMap<String, ArrayList<WorkerObserverRI>> userWorkers;
     // hashmap user to tasks
-    private final HashMap<User, ArrayList<TaskSubjectRI>> userTasks;
+    private HashMap<String, ArrayList<TaskSubjectRI>> userTasks;
 
     public DBMockup() {
         users = new ArrayList<>();
@@ -31,12 +31,12 @@ public class DBMockup implements Serializable {
         userTasks = new HashMap<>();
         User user = new User("1","1");
         users.add(user);
-        userWorkers.put(user, new ArrayList<>());
-        userTasks.put(user, new ArrayList<>());
+        userWorkers.put(user.getUname(), new ArrayList<>());
+        userTasks.put(user.getUname(), new ArrayList<>());
         User user1 = new User("2","2");
         users.add(user1);
-        userWorkers.put(user1, new ArrayList<>());
-        userTasks.put(user1, new ArrayList<>());
+        userWorkers.put(user1.getUname(), new ArrayList<>());
+        userTasks.put(user1.getUname(), new ArrayList<>());
     }
 
     // registo
@@ -44,8 +44,8 @@ public class DBMockup implements Serializable {
         if (!exists(u, p)) {
             User user = new User(u, p);
             users.add(user);
-            userWorkers.put(user, new ArrayList<>());
-            userTasks.put(user, new ArrayList<>());
+            userWorkers.put(user.getUname(), new ArrayList<>());
+            userTasks.put(user.getUname(), new ArrayList<>());
         }
     }
 
@@ -77,34 +77,20 @@ public class DBMockup implements Serializable {
         sessions.remove(uname,sessionRI);
     }
 
-    // adiciona nova task
-    public void addTask(TaskSubjectRI taskSubjectRI){
-        tasks.add(taskSubjectRI);
-    }
-
-    //adiciona novo worker
-    public void addWorker(WorkerObserverRI workerObserverRI){
-        workers.add(workerObserverRI);
-    }
-
-    public void removeTask(TaskSubjectRI taskSubjectRI){
+    /** nao esta a eliminar da DB */
+    public void removeTask(TaskSubjectRI taskSubjectRI,String uname){
         tasks.remove(taskSubjectRI);
+        userTasks.get(uname).remove(taskSubjectRI);
     }
 
     public void assocWorkerToUser(String uname, WorkerObserverRI workerObserverRI) throws RemoteException {
-        if(this.getUser(uname) != null && workerObserverRI != null) {
-            this.workers.add(workerObserverRI);
-            User user = this.getUser(uname);
-            userWorkers.get(user).add(workerObserverRI);
-        }
+        this.workers.add(workerObserverRI);
+        userWorkers.get(uname).add(workerObserverRI);
     }
 
     public void assocTaskToUser(String uname, TaskSubjectRI taskSubjectRI) throws RemoteException {
-        if(this.getUser(uname) != null && taskSubjectRI != null) {
-            this.tasks.add(taskSubjectRI);
-            User user = this.getUser(uname);
-            userTasks.get(user).add(taskSubjectRI);
-        }
+        this.tasks.add(taskSubjectRI);
+        userTasks.get(uname).add(taskSubjectRI);
     }
 
     // todas as tasks disponveis
@@ -144,10 +130,10 @@ public class DBMockup implements Serializable {
     }
 
     public ArrayList<WorkerObserverRI> getWorkersFromUser(String uname) throws RemoteException {
-        return userWorkers.get(this.getUser(uname));
+        return userWorkers.get(uname);
     }
 
     public ArrayList<TaskSubjectRI> getTasksFromUser(String uname) throws RemoteException {
-        return userTasks.get(this.getUser(uname));
+        return userTasks.get(uname);
     }
 }

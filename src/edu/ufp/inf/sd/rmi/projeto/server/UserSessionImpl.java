@@ -52,13 +52,12 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     }
 
     @Override
-    public void deleteTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
-        db.removeTask(taskSubjectRI);
+    public void deleteTask(TaskSubjectRI taskSubjectRI,String uname) throws RemoteException {
+        db.removeTask(taskSubjectRI,uname);
     }
 
     @Override
     public void pauseTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
-
     }
 
     @Override
@@ -69,6 +68,5 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     @Override
     public ArrayList<TaskSubjectRI> getTasksRI(String uname) throws RemoteException {
         return db.getTasksFromUser(uname);
-
     }
 }
