@@ -13,7 +13,7 @@ public interface UserSessionRI extends Remote {
         public WorkerObserverRI createWorker(Task task, int n_threads, String uname) throws RemoteException ;
         public void joinTask(String task, WorkerObserverRI workerObserverRI) throws RemoteException;
         public void pauseTask(TaskSubjectRI taskSubjectRI) throws RemoteException;
-        public void deleteTask(TaskSubjectRI taskSubjectRI) throws RemoteException;
+        public void stopTask(TaskSubjectRI taskSubjectRI) throws RemoteException;
         public ArrayList<WorkerObserverRI> getWorkersRI(String uname) throws RemoteException;
         public ArrayList<TaskSubjectRI> getTasksRI(String uname) throws RemoteException;
 }

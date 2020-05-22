@@ -21,5 +21,5 @@ public interface WorkerObserverRI extends Remote {
     public String getHashType() throws RemoteException;
     public ArrayList<String> getHashPass() throws RemoteException;
     public int getActualLine() throws RemoteException;
-    public void taskUpdated() throws RemoteException;
+    public void taskUpdated() throws RemoteException, InterruptedException;
 }

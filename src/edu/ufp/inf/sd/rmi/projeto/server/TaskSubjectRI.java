@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
 import java.rmi.Remote;
@@ -19,4 +20,5 @@ public interface TaskSubjectRI extends Remote {
     public boolean isAvailable() throws RemoteException;
     public void changeWorkerState(State state, String hashPass,String pass) throws RemoteException;
     public ArrayList<Result> getResult() throws RemoteException;
+    public void notifyAllObservers() throws RemoteException;
 }

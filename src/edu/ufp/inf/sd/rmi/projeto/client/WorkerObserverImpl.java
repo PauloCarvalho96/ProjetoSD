@@ -36,6 +36,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.n_threads = n_threads;
         this.wordsSize = task.getDelta();
         this.actualLine = 0;
+        this.lastObserverState = new State("Available");
         doWork();
     }
 
@@ -96,87 +97,8 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             if(i==thread_size-1 && res!=0){
                 delta+=res;
             }
-            threads.add(new Thread(new myThread(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task)));
+            threads.add(new Thread(new MyThread(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task)));
             threads.get(i).start();
-        }
-    }
-
-    public static class myThread implements Runnable {
-        int start;
-        int delta;
-        int id;
-        String hashType;
-        WorkerObserverRI workerObserverRI;
-        Task task;
-
-        public myThread(int start, int delta, int id,String hashType, WorkerObserverRI workerObserverRI,Task task) {
-            this.start = start;
-            this.delta = delta;
-            this.id = id;
-            this.hashType = hashType;
-            this.workerObserverRI = workerObserverRI;
-            this.task = task;
-        }
-
-        @Override
-        public void run() {
-            try {
-                File file = new File("file"+workerObserverRI.getId()+".txt");
-
-                int line = 0;
-
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String st;
-                String result = null;
-
-                MessageDigest hashFunction;
-
-                while ((st = br.readLine()) != null) {
-                    if(task.getTaskSubjectRI().getState().getmsg().equals("Completed")){
-                        break;
-                    }
-                    if (line >= start && line < start + delta) {
-                        switch (hashType) {
-                            case "SHA-512":
-                                hashFunction = MessageDigest.getInstance("SHA-512");
-                                hashFunction.reset();
-                                hashFunction.update(st.getBytes("utf8"));
-                                result = String.format("%0128x", new BigInteger(1, hashFunction.digest()));
-                                break;
-                            case "PBKDF2":
-                                break;
-                            case "BCrypt":
-                                break;
-                            case "SCrypt":
-                                break;
-                            default:
-                                System.out.println("Method not recognized");
-                        }
-                        boolean found = false;
-                        for (String s:workerObserverRI.getHashPass()) {
-                            if(workerObserverRI.match(s,result)){
-                                found = true;
-                            }
-                        }
-                        if(found){
-                            State state = new State("");
-                            state.setmsg(state.FOUND);
-                            this.workerObserverRI.updateFound(state,result,st, line);
-                        }else{
-                            State state = new State("");
-                            state.setmsg(state.NOT_FOUND);
-                            this.workerObserverRI.updateNotFound(state, line);
-                        }
-                    }
-                    if (line == start + delta) {
-                        break;
-                    }
-                    line++;
-                }
-                br.close();
-            } catch (IOException|NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -215,12 +137,12 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void setStateWorker(State state) throws RemoteException {
-
+        lastObserverState = state;
     }
 
     @Override
     public State getStateWorker() throws RemoteException {
-        return null;
+        return lastObserverState;
     }
 
     @Override
@@ -249,11 +171,12 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     @Override
-    public void taskUpdated() throws RemoteException {
+    public void taskUpdated() throws RemoteException, InterruptedException {
         switch (this.task.getTaskSubjectRI().getState().getmsg()) {
             case "Completed":
                 this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
                 System.out.println("\nWorker all completed!!\n");
+                break;
             case "Working":
                 this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
                 System.out.println("\nStill working!!\n");

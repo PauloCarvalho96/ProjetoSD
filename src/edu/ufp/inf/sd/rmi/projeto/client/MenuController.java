@@ -164,19 +164,8 @@ public class MenuController implements Initializable {
         });
     }
 
-    public void handleReadFile(ActionEvent actionEvent) {
-    }
-
-    public void handleReadBinFile(ActionEvent actionEvent) {
-    }
-
-    public void handleSaveFile(ActionEvent actionEvent) {
-    }
-
-    public void handleSaveBinFile(ActionEvent actionEvent) {
-    }
-
     public void handleExit(ActionEvent actionEvent) {
+        System.exit(0);
     }
 
     public void handleAbout(ActionEvent actionEvent) {
@@ -195,22 +184,35 @@ public class MenuController implements Initializable {
         String name = nameTaskTF.getText();
         String typeHash = hashTypeCB.getValue();
         ArrayList<String> hashPass = new ArrayList<>(Arrays.asList(hashPassTA.getText().split(";")));
-        Integer delta = Integer.parseInt(deltaTaskTF.getText());
+        try {
+            Integer delta = Integer.parseInt(deltaTaskTF.getText());
 
-        if(!name.isEmpty() && !hashPass.isEmpty()){
-            TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, delta, client.username);
-            if(taskSubjectRI != null){
-                nameTaskTF.clear();
-                hashPassTA.clear();
-                deltaTaskTF.clear();
-                initializeHashTypeCombBox();
-                messageCreateTask.setWrapText(true);
-                messageCreateTask.setText("Task was created successfully.");
-            }else{
-                initializeHashTypeCombBox();
-                messageCreateTask.setWrapText(true);
-                messageCreateTask.setText("Task was not created! Name already exists, choose other one.");
+            if (!name.isEmpty() && !hashPass.isEmpty()) {
+                delta = 500000;
+                hashPass.clear();
+                hashPass.add("4e2083e0fc093f7f0fcf43b145fb586e476cdce4e38533462160a3656ef63f4ad75c027d45ee5ccbf652c8745210a2b7a1e652c79f0e8be3c926f591c4a667db");
+                hashPass.add("91fae6a834ad600709174d63bb98d7ff8bc5b4dab65b83a53b640be44e1a78fbc9d5caac0c4ab53a9af0d77b79696fe460e98d87211cd66c16c436eeb9fb0b27");
+                hashPass.add("f9cd0599ad0623251da70f2a9c97a9a89c2f034e9ab7a93cef3702d3c1d9b377738c6410079ad6a74cef9b84b4396621b4d0954a4419c302d389ce4ddbb03573");
+                hashPass.add("26016268623f834338088a1492e3caf284ac00093fefef95ddfdb4f7ed34b5e7d80e7ceceef7902d20762f93323eefd2900d38eb065213612c94a3fecb13e4ac");
+                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, delta, client.username);
+                if (taskSubjectRI != null) {
+                    nameTaskTF.clear();
+                    hashPassTA.clear();
+                    deltaTaskTF.clear();
+                    initializeHashTypeCombBox();
+                    messageCreateTask.setWrapText(true);
+                    messageCreateTask.setText("Task was created successfully.");
+                } else {
+                    initializeHashTypeCombBox();
+                    messageCreateTask.setWrapText(true);
+                    messageCreateTask.setText("Task was not created! Name already exists, choose other one.");
+                }
             }
+        }catch (IllegalArgumentException e){
+            initializeHashTypeCombBox();
+            messageCreateTask.setWrapText(true);
+            messageCreateTask.setText("Delta has to be a number!");
+
         }
     }
 
@@ -222,6 +224,7 @@ public class MenuController implements Initializable {
             int n_threads = numberThreadsSpinner.getValue();
             WorkerObserverRI workerObserverRI = this.client.userSessionRI.createWorker(task, n_threads, client.username);
             if(workerObserverRI != null){
+                taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
                 initializeTableViewListTasks();
                 initializeTableViewListOwnWorkers();
                 messageJoinTask.setWrapText(true);
@@ -239,17 +242,16 @@ public class MenuController implements Initializable {
     public void listOwnTasks() throws RemoteException {
         tasksOwnTable.getItems().clear();
         tasksOwnTable.getItems().addAll(this.client.getTasksRI());
-        for(TaskSubjectRI t: this.client.userSessionRI.getTasksRI(this.client.username)){
-            if(t.getState().getmsg().equals("Completed") && t.getResult() != null){
-                System.out.println("-> "+t.getResult().size());///////error invocation targe exception
-            }
-        }
     }
 
     public void handlerPauseTask(ActionEvent actionEvent) {
     }
 
-    public void handlerStopTask(ActionEvent actionEvent) {
+    public void handlerStopTask(ActionEvent actionEvent) throws RemoteException {//////test
+        TaskSubjectRI taskSubjectRI = tasksOwnTable.getSelectionModel().getSelectedItem();/////not working
+        if(taskSubjectRI != null){
+            client.userSessionRI.stopTask(taskSubjectRI);
+        }
     }
 
     public void handlerListOwnWorkers(Event event) throws RemoteException{
@@ -259,19 +261,16 @@ public class MenuController implements Initializable {
     public void listOwnWorkers(){
         workersOwnTable.getItems().clear();
         workersOwnTable.getItems().addAll(this.client.getWorkersRI());
-        for (WorkerObserverRI workerObserverRI:this.client.getWorkersRI()) {
-            try {
-                System.out.println("+++++++++++++++++++"+workerObserverRI.getId());
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void handlerPauseWorker(ActionEvent actionEvent) {
     }
 
-    public void handlerStopWorker(ActionEvent actionEvent) {
+    public void handlerStopWorker(ActionEvent actionEvent) throws RemoteException {///////////////test////////delete from tsk, get passwords that weren´t found
+        WorkerObserverRI workerObserverRI = workersOwnTable.getSelectionModel().getSelectedItem();
+        if(workerObserverRI != null){
+            workerObserverRI.getStateWorker().setmsg("Completed");
+        }
     }
 
     public void handlerUpdate(ActionEvent actionEvent) throws RemoteException {
@@ -281,3 +280,8 @@ public class MenuController implements Initializable {
         infoOwnTaskTable.getItems().clear();
     }
 }
+
+
+/**
+ * have to create xml to see all results of the client, create arraylist of all results first
+ **/
