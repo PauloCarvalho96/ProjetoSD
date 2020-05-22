@@ -36,6 +36,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.n_threads = n_threads;
         this.wordsSize = task.getDelta();
         this.actualLine = 0;
+        this.lastObserverState = new State("Available");
         doWork();
     }
 
@@ -136,12 +137,12 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void setStateWorker(State state) throws RemoteException {
-
+        lastObserverState = state;
     }
 
     @Override
     public State getStateWorker() throws RemoteException {
-        return null;
+        return lastObserverState;
     }
 
     @Override
@@ -170,14 +171,15 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     @Override
-    public void taskUpdated() throws RemoteException {
+    public void taskUpdated() throws RemoteException, InterruptedException {
         switch (this.task.getTaskSubjectRI().getState().getmsg()) {
             case "Completed":
                 this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
-//                System.out.println("\nWorker all completed!!\n");
+                System.out.println("\nWorker all completed!!\n");
+                break;
             case "Working":
                 this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
-//                System.out.println("\nStill working!!\n");
+                System.out.println("\nStill working!!\n");
         }
     }
 
