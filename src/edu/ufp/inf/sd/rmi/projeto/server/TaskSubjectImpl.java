@@ -69,7 +69,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     /** divide linhas para criar sub tasks */
     public void createSubTasks(){
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(path_toni));
+            BufferedReader reader = new BufferedReader(new FileReader(path_paulo));
             int lines = 0;
             while (reader.readLine() != null) {
                 if(lines == start + delta - 1){
@@ -139,6 +139,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     public void attach(WorkerObserverRI obsRI) throws RemoteException {
         if(!this.workers.contains(obsRI)){
             this.workers.add(obsRI);
+            obsRI.setTask(getTaskFromArray());
         }
     }
 

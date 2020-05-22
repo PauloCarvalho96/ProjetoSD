@@ -12,12 +12,13 @@
 
 @REM ======================== CHANGE BELOW ACCORDING YOUR PROJECT and PC SETTINGS ========================
 @REM ==== PC STUFF ====
+@SET USERNAME=Paulo
 @REM USERNAME=tmsl9
-@Set USERNAME=tmsl9
 
 @Set WORKDRIVE=C
 @REM Set JDK=%WORKDRIVE%:\Programas\Java\jdk1.8.0_60
-@Set JDK="C:\Program Files\JetBrains\IntelliJ IDEA 2019.2.3\jbr"
+@SET JDK="C:\Program Files\JetBrains\IntelliJ IDEA 2019.3.3\jbr"
+@REM JDK="C:\Program Files\JetBrains\IntelliJ IDEA 2019.2.3\jbr"
 @REM These vars will be used to check the output folder (whereto classes are generated)
 @SET NETBEANS=NetBeans
 @SET INTELLIJ=IntelliJ
@@ -26,8 +27,8 @@
 
 @REM ==== JAVA NAMING STUFF ====
 @Set JAVAPROJ_NAME=ProjetoSD
-@REM JAVAPROJ=%WORKDRIVE%:\\Users\\%USERNAME%\\Documents\\GitHub\\%JAVAPROJ_NAME%
-@set JAVAPROJ=%WORKDRIVE%:\\Users\\%USERNAME%\\OneDrive\\Documentos\\GitHub\\%JAVAPROJ_NAME%
+@SET JAVAPROJ=%WORKDRIVE%:\\Users\\%USERNAME%\\Documents\\GitHub\\%JAVAPROJ_NAME%
+@REM JAVAPROJ=%WORKDRIVE%:\\Users\\%USERNAME%\\OneDrive\\Documentos\\GitHub\\%JAVAPROJ_NAME%
 @Set PACKAGE=projeto
 @Set PACKAGE_PREFIX=edu.ufp.inf.sd.rmi
 @Set PACKAGE_PREFIX_FOLDERS=edu/ufp/inf/sd/rmi

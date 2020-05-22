@@ -39,8 +39,8 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     }
 
     @Override
-    public WorkerObserverRI createWorker(Task task, int n_threads, String uname) throws RemoteException {
-        WorkerObserverRI workerObserverRI = new WorkerObserverImpl(db.allWorkers().size()+1, uname, task, n_threads);
+    public WorkerObserverRI createWorker(int n_threads, String uname) throws RemoteException {
+        WorkerObserverRI workerObserverRI = new WorkerObserverImpl(db.allWorkers().size()+1, uname, n_threads);
         db.assocWorkerToUser(uname, workerObserverRI);
         return workerObserverRI;
     }
@@ -52,15 +52,15 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     }
 
     @Override
-    public void stopTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
+    public void stopTask(TaskSubjectRI taskSubjectRI,String uname) throws RemoteException {
         TaskSubjectRI taskSubjectRI1 = db.getTask(taskSubjectRI.getName());
         taskSubjectRI.getState().setmsg("Completed");
         taskSubjectRI.notifyAllObservers();
-        db.removeTask(taskSubjectRI);
+        db.removeTask(taskSubjectRI1,uname);
     }
 
     @Override
-    public void pauseTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
+    public void pauseTask(TaskSubjectRI taskSubjectRI,String uname) throws RemoteException {
     }
 
     @Override
