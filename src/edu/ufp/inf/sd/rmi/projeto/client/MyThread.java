@@ -44,7 +44,7 @@ public class MyThread implements Runnable {
 
             while ((st = br.readLine()) != null) {
                 if(workerObserverRI.getStateWorker().getmsg().equals("Completed")){////stop thread
-                    break;
+                    return;
                 }
                 if (line >= start && line < start + delta) {
                     switch (hashType) {

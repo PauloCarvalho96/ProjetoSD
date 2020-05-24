@@ -16,7 +16,7 @@ public interface WorkerObserverRI extends Remote {
     public void selectTask(TaskSubjectRI task) throws RemoteException;
     public void removeWorker() throws RemoteException;
     public void  setStateWorker(State state) throws RemoteException;
-    public State  getStateWorker() throws RemoteException;
+    public State getStateWorker() throws RemoteException;
     public Integer getId() throws RemoteException;
     public String getTaskName() throws RemoteException;
     public String getHashType() throws RemoteException;

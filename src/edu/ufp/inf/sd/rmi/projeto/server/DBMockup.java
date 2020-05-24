@@ -79,7 +79,6 @@ public class DBMockup implements Serializable {
 
     /** nao esta a eliminar da DB */
     public void removeTask(TaskSubjectRI taskSubjectRI, String uname){
-        userTasks.get(uname).remove(taskSubjectRI);
         tasks.remove(taskSubjectRI);
     }
 

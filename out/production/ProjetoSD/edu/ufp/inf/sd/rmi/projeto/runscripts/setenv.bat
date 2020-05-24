@@ -16,8 +16,7 @@
 
 @Set WORKDRIVE=C
 @REM Set JDK=%WORKDRIVE%:\Programas\Java\jdk1.8.0_60
-@SET JDK="C:\Program Files\JetBrains\IntelliJ IDEA 2019.3.3\jbr"
-@REM JDK="C:\Program Files\JetBrains\IntelliJ IDEA 2019.2.3\jbr"
+@Set JDK="C:\Program Files\JetBrains\IntelliJ IDEA 2019.2.3\jbr"
 @REM These vars will be used to check the output folder (whereto classes are generated)
 @SET NETBEANS=NetBeans
 @SET INTELLIJ=IntelliJ

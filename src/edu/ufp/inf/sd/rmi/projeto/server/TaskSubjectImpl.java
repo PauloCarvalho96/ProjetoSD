@@ -24,7 +24,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private ArrayList<Task> tasks = new ArrayList<>();// array tasks
     private ArrayList<Result> result = new ArrayList<>();//array pass found
 
-    private String path_toni = "C:\\Users\\tmsl9\\OneDrive\\Documentos\\GitHub" +
+    private String path_toni = "C:\\Users\\tmsl9\\GitHub" +
             "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
     private String path_paulo = "C:\\Users\\Paulo\\Documents\\GitHub" +
             "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
@@ -69,7 +69,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     /** divide linhas para criar sub tasks */
     public void createSubTasks(){
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(path_paulo));
+            BufferedReader reader = new BufferedReader(new FileReader(path_toni));
             int lines = 0;
             while (reader.readLine() != null) {
                 if(lines == start + delta - 1){
@@ -118,8 +118,9 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
                 }
                 break;
             case "Not Found":
-                this.subjectState.setmsg("Working");
-                break;
+                if(!this.subjectState.getmsg().equals("Completed")) {
+                    this.subjectState.setmsg("Working");
+                }
         }
         this.notifyAllObservers();
     }
@@ -196,5 +197,13 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     @Override
     public ArrayList<Result> getResult() throws RemoteException {
         return result;
+    }
+
+    @Override
+    public void stop() throws RemoteException {
+        this.hashPass.clear();
+        this.subjectState.setmsg("Completed");
+        this.notifyAllObservers();
+        this.available = false;
     }
 }
