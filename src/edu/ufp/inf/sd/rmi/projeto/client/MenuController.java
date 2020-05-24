@@ -153,7 +153,7 @@ public class MenuController implements Initializable {
         threadsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("n_threads"));
         wordsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("wordsSize"));
         creditsWonWOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsWon"));
-        statusWOwnCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        statusWOwnCol.setCellValueFactory(new PropertyValueFactory<>(""));
         workersOwnTable.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -188,6 +188,7 @@ public class MenuController implements Initializable {
             Integer delta = Integer.parseInt(deltaTaskTF.getText());
 
             if (!name.isEmpty() && !hashPass.isEmpty()) {
+                /** para testes */
                 delta = 500000;
                 hashPass.clear();
                 hashPass.add("4e2083e0fc093f7f0fcf43b145fb586e476cdce4e38533462160a3656ef63f4ad75c027d45ee5ccbf652c8745210a2b7a1e652c79f0e8be3c926f591c4a667db");
@@ -220,9 +221,8 @@ public class MenuController implements Initializable {
     public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {
         TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
         if(taskSubjectRI != null && taskSubjectRI.isAvailable()){
-            Task task = taskSubjectRI.getTaskFromArray();
             int n_threads = numberThreadsSpinner.getValue();
-            WorkerObserverRI workerObserverRI = this.client.userSessionRI.createWorker(task, n_threads, client.username);
+            WorkerObserverRI workerObserverRI = this.client.userSessionRI.createWorker(n_threads, client.username);
             if(workerObserverRI != null){
                 taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
                 initializeTableViewListTasks();
@@ -244,13 +244,14 @@ public class MenuController implements Initializable {
         tasksOwnTable.getItems().addAll(this.client.getTasksRI());
     }
 
+
     public void handlerPauseTask(ActionEvent actionEvent) {
     }
 
     public void handlerStopTask(ActionEvent actionEvent) throws RemoteException {//////test
         TaskSubjectRI taskSubjectRI = tasksOwnTable.getSelectionModel().getSelectedItem();/////not working
         if(taskSubjectRI != null){
-            client.userSessionRI.stopTask(taskSubjectRI);
+            client.userSessionRI.stopTask(taskSubjectRI,client.username);
         }
     }
 

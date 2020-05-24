@@ -27,17 +27,13 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private ArrayList<Thread> threads = new ArrayList<>();
     private int actualLine;
 
-    public WorkerObserverImpl(int id, String username, Task task, Integer n_threads) throws RemoteException {
+    public WorkerObserverImpl(int id, String username, Integer n_threads) throws RemoteException {
         super();
         this.id = id;
         this.username = username;
-        this.task = task;
-        this.taskName = task.getTaskSubjectRI().getName();
         this.n_threads = n_threads;
-        this.wordsSize = task.getDelta();
         this.actualLine = 0;
         this.lastObserverState = new State("Available");
-        doWork();
     }
 
     /** Em testes
@@ -71,7 +67,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
      }*/
 
     /** threads vao fazer o trabalho */
-    public void doWork() throws RemoteException {
+    private void doWork() throws RemoteException {
         try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
              FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
             byte dataBuffer[] = new byte[1024];
@@ -168,6 +164,14 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     @Override
     public int getActualLine() throws RemoteException {
         return this.actualLine;
+    }
+
+    @Override
+    public void setTask(Task task) throws RemoteException {
+        this.task = task;
+        this.taskName = task.getTaskSubjectRI().getName();
+        this.wordsSize = task.getDelta();
+        doWork();
     }
 
     @Override

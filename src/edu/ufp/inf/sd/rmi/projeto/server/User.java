@@ -9,9 +9,6 @@ public class User implements Serializable {
 
     private String uname;
     private String pword;
-    private Integer credits;
-    private ArrayList<WorkerObserverRI> workersRI = new ArrayList<>();
-    private ArrayList<TaskSubjectRI> tasksRI = new ArrayList<>();
 
     public User(String uname, String pword) {
         this.uname = uname;
@@ -32,14 +29,6 @@ public class User implements Serializable {
 
     public void setPword(String pword) {
         this.pword = pword;
-    }
-
-    public ArrayList<WorkerObserverRI> getWorkersRI() {
-        return workersRI;
-    }
-
-    public ArrayList<TaskSubjectRI> getTasksRI() {
-        return tasksRI;
     }
 
     @Override
