@@ -6,7 +6,6 @@ import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectRI {
 
@@ -20,10 +19,10 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private boolean available = true;
     private Integer start = 0;     //linha atual
     private Integer delta;     //quantidade de linhas
-    private static final String url = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt";
     private ArrayList<WorkerObserverRI> workers = new ArrayList<>();// array de workers
     private ArrayList<Task> tasks = new ArrayList<>();// array tasks
     private ArrayList<Result> result = new ArrayList<>();//array pass found
+    private static final String url = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt";
 
     private String path_paulo = "C:\\Users\\Paulo\\Documents\\GitHub" +
             "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";

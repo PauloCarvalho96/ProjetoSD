@@ -26,6 +26,7 @@ public class MenuController implements Initializable {
     public Button createTaskBut;
     public Label messageCreateTask;
     /** List tasks **/
+    public Tab listTasksTab;
     public TableView<TaskSubjectRI> tasksTable;
     public TableColumn<TaskSubjectRI, String> nameCol;
     public TableColumn<TaskSubjectRI, String> hashTypeCol;
@@ -34,7 +35,6 @@ public class MenuController implements Initializable {
     public TableColumn<TaskSubjectRI, String> availableCol;
     public Pagination listTasksPagination;
     /** Join task **/
-    public Tab listTasksTab;
     public Label nameTaskSelectedLabel;
     public Spinner<Integer> numberThreadsSpinner;
     public Button joinTaskBut;
@@ -90,6 +90,7 @@ public class MenuController implements Initializable {
         initializeTableViewListOwnTasks();
         initializeTableViewListOwnWorkers();
         initializeTableViewListInfoTask();
+        updateBut.setVisible(false);
     }
 
     public void initializeHashTypeCombBox(){
@@ -169,6 +170,12 @@ public class MenuController implements Initializable {
     public void handleAbout(ActionEvent actionEvent) {
     }
 
+    public void handlerCreateTaskTab(Event event) {
+        try {
+            updateBut.setVisible(false);
+        } catch (NullPointerException ignored){}
+    }
+
     public void handlerListTasks(Event event) throws RemoteException {
         listTasks();
     }
@@ -176,6 +183,7 @@ public class MenuController implements Initializable {
     public void listTasks() throws RemoteException{
         tasksTable.getItems().clear();
         tasksTable.getItems().addAll(this.client.userSessionRI.listTasks());
+        updateBut.setVisible(true);
     }
 
     public void handlerCreateTask(ActionEvent actionEvent) throws RemoteException {
@@ -184,7 +192,6 @@ public class MenuController implements Initializable {
         ArrayList<String> hashPass = new ArrayList<>(Arrays.asList(hashPassTA.getText().split(";")));
         try {
             Integer delta = Integer.parseInt(deltaTaskTF.getText());
-
             if (!name.isEmpty() && !hashPass.isEmpty()) {
                 /** para testes */
                 delta = 500000;
@@ -212,7 +219,6 @@ public class MenuController implements Initializable {
             initializeHashTypeCombBox();
             messageCreateTask.setWrapText(true);
             messageCreateTask.setText("Delta has to be a number!");
-
         }
     }
 
@@ -241,6 +247,7 @@ public class MenuController implements Initializable {
     public void listOwnTasks() throws RemoteException {
         tasksOwnTable.getItems().clear();
         tasksOwnTable.getItems().addAll(this.client.getTasksRI());
+        updateBut.setVisible(true);
     }
 
 
@@ -272,6 +279,7 @@ public class MenuController implements Initializable {
     public void listOwnWorkers(){
         workersOwnTable.getItems().clear();
         workersOwnTable.getItems().addAll(this.client.getWorkersRI());
+        updateBut.setVisible(true);
     }
 
     public void handlerPauseWorker(ActionEvent actionEvent) {
@@ -293,8 +301,3 @@ public class MenuController implements Initializable {
 
 
 }
-
-
-/**
- * have to create xml to see all results of the client, create arraylist of all results first
- **/
