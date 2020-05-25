@@ -44,7 +44,7 @@ public class MyThread implements Runnable {
 
             while ((st = br.readLine()) != null) {
 
-                if(workerObserverRI.getStateWorker().getmsg().equals("Paused")){
+                if(workerObserverRI.getStateWorker().getmsg().equals("Paused")){////pause thread
                     try {
                         System.out.println("\nTOU A DORMIR!");
                         Thread.sleep(1000);

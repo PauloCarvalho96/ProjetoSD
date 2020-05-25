@@ -27,7 +27,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
 
     private String path_paulo = "C:\\Users\\Paulo\\Documents\\GitHub" +
             "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
-
+    private String path_other = "C:\\Users\\tmsl9\\GitHub" +
+            "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
     public TaskSubjectImpl(String name, String hashType, ArrayList<String> hashPass,Integer delta) throws RemoteException {
         super();
         this.name = name;
@@ -69,7 +70,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     /** divide linhas para criar sub tasks */
     public void createSubTasks(){
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(path_paulo));
+            BufferedReader reader = new BufferedReader(new FileReader(path_other));
             int lines = 0;
             while (reader.readLine() != null) {
                 if(lines == start + delta - 1){
@@ -115,13 +116,13 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
                     available = false;
                 }else{
                     System.out.println("NOT COMPLETE");
-                    this.subjectState.setmsg(state.getmsg());
-                    this.status = this.subjectState.NOT_COMPLETED;
+                    this.subjectState.setmsg("Working");
+                    this.status = this.subjectState.WORKING;
                 }
                 break;
                 /** Se nao encontrar nenhuma palavra no range */
             case "Not Found":
-                if(!this.subjectState.getmsg().equals("Completed")) {
+                if(!this.subjectState.getmsg().equals("Completed") && !this.subjectState.getmsg().equals("Paused")) {
                     this.subjectState.setmsg("Working");
                     this.status = this.subjectState.WORKING;
                 }
@@ -209,16 +210,22 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
 
     @Override
     public void pause() throws RemoteException {
-        this.subjectState.setmsg("Paused");
-        this.status = this.subjectState.PAUSED;
-        this.notifyAllObservers();
+        System.out.println("---->"+
+                this.subjectState.getmsg());
+        if(!this.subjectState.getmsg().equals("Completed") || !this.subjectState.getmsg().equals("Paused")) {
+            this.subjectState.setmsg("Paused");
+            this.status = this.subjectState.PAUSED;
+            this.notifyAllObservers();
+        }
     }
 
     @Override
     public void resume() throws RemoteException{
-        this.subjectState.setmsg("Working");
-        this.status = this.subjectState.WORKING;
-        this.notifyAllObservers();
+        if(this.subjectState.getmsg().equals("Paused")) {
+            this.subjectState.setmsg("Working");
+            this.status = this.subjectState.WORKING;
+            this.notifyAllObservers();
+        }
     }
 
 

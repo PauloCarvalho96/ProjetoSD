@@ -62,15 +62,6 @@
                            </valueFactory>
                         </Spinner>
                         <Button fx:id="joinTaskBut" layoutX="1015.0" layoutY="201.0" mnemonicParsing="false" onAction="#handlerJoinTask" prefHeight="20.0" prefWidth="48.0" text="Join" />
-                        <Button fx:id="updateBut" layoutX="942.0" layoutY="918.0" mnemonicParsing="false" onAction="#handlerUpdate" prefHeight="35.0" prefWidth="26.0">
-                           <graphic>
-                              <ImageView fitHeight="27.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="https://icons-for-free.com/iconfiles/png/512/refresh+reload+update+icon-1320191166843452904.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
                      </children>
                   </AnchorPane>
                </content>
@@ -131,5 +122,14 @@
             </Tab>
          </tabs>
       </TabPane>
+      <Button fx:id="updateBut" layoutX="942.0" layoutY="918.0" mnemonicParsing="false" onAction="#handlerUpdate" prefHeight="35.0" prefWidth="26.0">
+         <graphic>
+            <ImageView fitHeight="27.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="https://icons-for-free.com/iconfiles/png/512/refresh+reload+update+icon-1320191166843452904.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
    </children>
 </AnchorPane>

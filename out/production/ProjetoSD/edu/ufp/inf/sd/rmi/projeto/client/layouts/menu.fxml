@@ -62,15 +62,6 @@
                            </valueFactory>
                         </Spinner>
                         <Button fx:id="joinTaskBut" layoutX="1015.0" layoutY="201.0" mnemonicParsing="false" onAction="#handlerJoinTask" prefHeight="20.0" prefWidth="48.0" text="Join" />
-                        <Button fx:id="updateBut" layoutX="942.0" layoutY="918.0" mnemonicParsing="false" onAction="#handlerUpdate" prefHeight="35.0" prefWidth="26.0">
-                           <graphic>
-                              <ImageView fitHeight="27.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="https://icons-for-free.com/iconfiles/png/512/refresh+reload+update+icon-1320191166843452904.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
                      </children>
                   </AnchorPane>
                </content>
@@ -92,15 +83,15 @@
                         <Pagination fx:id="listOwnTasksPagination" layoutX="318.0" layoutY="715.0" prefHeight="60.0" prefWidth="163.0" />
                         <Label fx:id="messageOwnTask" layoutX="738.0" layoutY="59.0" prefHeight="69.0" prefWidth="323.0" />
                         <Label fx:id="nameOwnTaskSelectedLabel" layoutX="787.0" layoutY="141.0" prefHeight="18.0" prefWidth="225.0" />
-                        <Button fx:id="pauseTaskBut" layoutX="801.0" layoutY="192.0" mnemonicParsing="false" onAction="#handlerPauseTask" prefHeight="26.0" prefWidth="90.0" text="Pause" />
-                        <Button fx:id="stopTaskBut" layoutX="933.0" layoutY="172.0" mnemonicParsing="false" onAction="#handlerStopTask" prefHeight="26.0" prefWidth="102.0" text="Remove" />
+                        <Button fx:id="pauseTaskBut" layoutX="801.0" layoutY="239.0" mnemonicParsing="false" onAction="#handlerPauseTask" prefHeight="26.0" prefWidth="90.0" text="Pause" />
+                        <Button fx:id="stopTaskBut" layoutX="933.0" layoutY="219.0" mnemonicParsing="false" onAction="#handlerStopTask" prefHeight="26.0" prefWidth="102.0" text="Remove" />
                         <TableView fx:id="infoOwnTaskTable" layoutX="1080.0" layoutY="32.0" prefHeight="682.0" prefWidth="676.0">
                            <columns>
                               <TableColumn fx:id="hashPassTOwnCol" prefWidth="350.0" text="Hash Pass" />
                               <TableColumn fx:id="resultTOwnCol" prefWidth="325.199951171875" text="Result" />
                            </columns>
                         </TableView>
-                        <Button fx:id="resumeTaskBut" layoutX="800.0" layoutY="147.0" mnemonicParsing="false" onAction="#handlerResumeTask" prefHeight="25.0" prefWidth="92.0" text="Resume" />
+                        <Button fx:id="resumeTaskBut" layoutX="800.0" layoutY="207.0" mnemonicParsing="false" onAction="#handlerResumeTask" prefHeight="25.0" prefWidth="92.0" text="Resume" />
                      </children>
                   </AnchorPane>
                </content>
@@ -131,5 +122,14 @@
             </Tab>
          </tabs>
       </TabPane>
+      <Button fx:id="updateBut" layoutX="942.0" layoutY="918.0" mnemonicParsing="false" onAction="#handlerUpdate" prefHeight="35.0" prefWidth="26.0">
+         <graphic>
+            <ImageView fitHeight="27.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="https://icons-for-free.com/iconfiles/png/512/refresh+reload+update+icon-1320191166843452904.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
    </children>
 </AnchorPane>
