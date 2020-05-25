@@ -43,10 +43,21 @@ public class MyThread implements Runnable {
             MessageDigest hashFunction;
 
             while ((st = br.readLine()) != null) {
+
+                if(workerObserverRI.getStateWorker().getmsg().equals("Paused")){
+                    try {
+                        System.out.println("\nTOU A DORMIR!");
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 if(workerObserverRI.getStateWorker().getmsg().equals("Completed")){////stop thread
                     return;
                 }
-                if (line >= start && line < start + delta) {
+
+                if (line >= start && line < start + delta && !workerObserverRI.getStateWorker().getmsg().equals("Paused")) {
                     switch (hashType) {
                         case "SHA-512":
                             hashFunction = MessageDigest.getInstance("SHA-512");

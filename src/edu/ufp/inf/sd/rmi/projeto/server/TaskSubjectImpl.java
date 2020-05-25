@@ -16,6 +16,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private Integer creditsPerWord;
     private Integer creditsTotal;
     private State subjectState = new State();
+    private String status;
     private boolean available = true;
     private Integer start = 0;     //linha atual
     private Integer delta;     //quantidade de linhas
@@ -24,8 +25,6 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private ArrayList<Task> tasks = new ArrayList<>();// array tasks
     private ArrayList<Result> result = new ArrayList<>();//array pass found
 
-    private String path_toni = "C:\\Users\\tmsl9\\GitHub" +
-            "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
     private String path_paulo = "C:\\Users\\Paulo\\Documents\\GitHub" +
             "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
 
@@ -36,6 +35,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
         this.hashPass = hashPass;
         this.delta = delta;
         this.subjectState.setmsg("Available");
+        this.status = this.subjectState.AVAILABLE;
         createSubTasks();
     }
 
@@ -69,7 +69,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     /** divide linhas para criar sub tasks */
     public void createSubTasks(){
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(path_toni));
+            BufferedReader reader = new BufferedReader(new FileReader(path_paulo));
             int lines = 0;
             while (reader.readLine() != null) {
                 if(lines == start + delta - 1){
@@ -111,16 +111,24 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
                 if(this.hashPass.isEmpty()){
                     System.out.println("COMPLETE");
                     this.subjectState.setmsg("Completed");
+                    this.status = this.subjectState.COMPLETED;
                     available = false;
                 }else{
                     System.out.println("NOT COMPLETE");
                     this.subjectState.setmsg(state.getmsg());
+                    this.status = this.subjectState.NOT_COMPLETED;
                 }
                 break;
+                /** Se nao encontrar nenhuma palavra no range */
             case "Not Found":
                 if(!this.subjectState.getmsg().equals("Completed")) {
                     this.subjectState.setmsg("Working");
+                    this.status = this.subjectState.WORKING;
                 }
+                break;
+            case "Paused":
+                System.out.println("PAUSED!");
+                break;
         }
         this.notifyAllObservers();
     }
@@ -200,9 +208,25 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     @Override
+    public void pause() throws RemoteException {
+        this.subjectState.setmsg("Paused");
+        this.status = this.subjectState.PAUSED;
+        this.notifyAllObservers();
+    }
+
+    @Override
+    public void resume() throws RemoteException{
+        this.subjectState.setmsg("Working");
+        this.status = this.subjectState.WORKING;
+        this.notifyAllObservers();
+    }
+
+
+    @Override
     public void stop() throws RemoteException {
         this.hashPass.clear();
         this.subjectState.setmsg("Completed");
+        this.status = this.subjectState.COMPLETED;
         this.notifyAllObservers();
         this.available = false;
     }

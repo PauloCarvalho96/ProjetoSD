@@ -22,4 +22,6 @@ public interface TaskSubjectRI extends Remote {
     public ArrayList<Result> getResult() throws RemoteException;
     public void notifyAllObservers() throws RemoteException;
     public void stop() throws RemoteException;
+    public void pause() throws RemoteException;
+    public void resume() throws RemoteException;
 }

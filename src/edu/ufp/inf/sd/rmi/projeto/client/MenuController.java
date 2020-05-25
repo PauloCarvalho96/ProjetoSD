@@ -54,6 +54,7 @@ public class MenuController implements Initializable {
     public Label messageOwnTask;
     public Label nameOwnTaskSelectedLabel;
     public Button pauseTaskBut;
+    public Button resumeTaskBut;
     public Button stopTaskBut;
     public TableView<Result> infoOwnTaskTable;
     public TableColumn<Result, String> hashPassTOwnCol;
@@ -245,13 +246,24 @@ public class MenuController implements Initializable {
     }
 
 
-    public void handlerPauseTask(ActionEvent actionEvent) {
+    public void handlerPauseTask(ActionEvent actionEvent) throws RemoteException {
+        TaskSubjectRI taskSubjectRI = tasksOwnTable.getSelectionModel().getSelectedItem();
+        if(taskSubjectRI != null){
+            client.userSessionRI.pauseTask(taskSubjectRI);
+        }
     }
 
-    public void handlerStopTask(ActionEvent actionEvent) throws RemoteException {//////test
-        TaskSubjectRI taskSubjectRI = tasksOwnTable.getSelectionModel().getSelectedItem();/////not working
+    public void handlerStopTask(ActionEvent actionEvent) throws RemoteException {
+        TaskSubjectRI taskSubjectRI = tasksOwnTable.getSelectionModel().getSelectedItem();
         if(taskSubjectRI != null){
             client.userSessionRI.stopTask(taskSubjectRI,client.username);
+        }
+    }
+
+    public void handlerResumeTask(ActionEvent actionEvent) throws RemoteException {
+        TaskSubjectRI taskSubjectRI = tasksOwnTable.getSelectionModel().getSelectedItem();
+        if(taskSubjectRI != null){
+            client.userSessionRI.resumeTask(taskSubjectRI);
         }
     }
 
@@ -280,6 +292,8 @@ public class MenuController implements Initializable {
         listOwnWorkers();
         infoOwnTaskTable.getItems().clear();
     }
+
+
 }
 
 

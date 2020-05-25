@@ -61,7 +61,19 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     }
 
     @Override
-    public void pauseTask(TaskSubjectRI taskSubjectRI,String uname) throws RemoteException {
+    public void pauseTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
+        TaskSubjectRI taskDB = db.getTask(taskSubjectRI.getName());
+        if(taskDB != null) {
+            taskDB.pause();
+        }
+    }
+
+    @Override
+    public void resumeTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
+        TaskSubjectRI taskDB = db.getTask(taskSubjectRI.getName());
+        if(taskDB != null) {
+            taskDB.resume();
+        }
     }
 
     @Override
