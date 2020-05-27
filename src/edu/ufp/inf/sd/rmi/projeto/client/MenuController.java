@@ -20,6 +20,8 @@ public class MenuController implements Initializable {
     /** Create task **/
     public Tab createTaskTab;
     public TextField nameTaskTF;
+    public TextField creditsProcTaskTF;
+    public TextField creditsFoundTaskTF;
     public ComboBox<String> hashTypeCB;
     public TextArea hashPassTA;
     public TextField deltaTaskTF;
@@ -37,6 +39,8 @@ public class MenuController implements Initializable {
     /** Join task **/
     public Label nameTaskSelectedLabel;
     public Spinner<Integer> numberThreadsSpinner;
+    public TextField maxLengthWordTF;
+    public TextField maxWordsTF;
     public Button joinTaskBut;
     public Label messageJoinTask;
     /** List own tasks **/
@@ -85,7 +89,7 @@ public class MenuController implements Initializable {
     }
 
     public void initializeComboBoxAndTableView(){
-        initializeHashTypeCombBox();
+        initializeHashTypeComboBox();
         initializeTableViewListTasks();
         initializeTableViewListOwnTasks();
         initializeTableViewListOwnWorkers();
@@ -93,7 +97,7 @@ public class MenuController implements Initializable {
         updateBut.setVisible(false);
     }
 
-    public void initializeHashTypeCombBox(){
+    public void initializeHashTypeComboBox(){
         hashTypeCB.getItems().clear();
         hashTypeCB.setValue("SHA-512");
         hashTypeCB.getItems().add("SHA-512");
@@ -163,6 +167,21 @@ public class MenuController implements Initializable {
         });
     }
 
+    public void initializeCreateTask(){
+        nameTaskTF.clear();
+        hashPassTA.clear();
+        creditsFoundTaskTF.clear();
+        creditsProcTaskTF.clear();
+        deltaTaskTF.clear();
+        hashTypeCB.setValue("SHA-512");
+    }
+
+    public void initializeListTasks(){
+        maxLengthWordTF.clear();
+        maxWordsTF.clear();
+        numberThreadsSpinner.getValueFactory().setValue(1);
+    }
+
     public void handleExit(ActionEvent actionEvent) {
         System.exit(0);
     }
@@ -175,25 +194,15 @@ public class MenuController implements Initializable {
             updateBut.setVisible(false);
         } catch (NullPointerException ignored){}
     }
-
-    public void handlerListTasks(Event event) throws RemoteException {
-        listTasks();
-    }
-
-    public void listTasks() throws RemoteException{
-        tasksTable.getItems().clear();
-        tasksTable.getItems().addAll(this.client.userSessionRI.listTasks());
-        updateBut.setVisible(true);
-    }
-
     public void handlerCreateTask(ActionEvent actionEvent) throws RemoteException {
         String name = nameTaskTF.getText();
         String typeHash = hashTypeCB.getValue();
         ArrayList<String> hashPass = new ArrayList<>(Arrays.asList(hashPassTA.getText().split(";")));
         try {
-            Integer delta = Integer.parseInt(deltaTaskTF.getText());
+            int creditsProc = Integer.parseInt(creditsProcTaskTF.getText());
+            int creditsFound = Integer.parseInt(creditsFoundTaskTF.getText());
+            int delta = Integer.parseInt(deltaTaskTF.getText());
             if (!name.isEmpty() && !hashPass.isEmpty()) {
-                /** para testes */
                 delta = 500000;
                 hashPass.clear();
                 hashPass.add("4e2083e0fc093f7f0fcf43b145fb586e476cdce4e38533462160a3656ef63f4ad75c027d45ee5ccbf652c8745210a2b7a1e652c79f0e8be3c926f591c4a667db");
@@ -203,44 +212,61 @@ public class MenuController implements Initializable {
                 hashPass.add("681e29b8f594a0560a8568cd1ddef081feccfd564e164207b2151e14620092f9fbbb20c9f79daaf2a01e7dda846a326a02a1cb3ddb27f2c685e43d2c86f2c5ad");
                 TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, delta, client.username);
                 if (taskSubjectRI != null) {
-                    nameTaskTF.clear();
-                    hashPassTA.clear();
-                    deltaTaskTF.clear();
-                    initializeHashTypeCombBox();
+                    initializeCreateTask();
                     messageCreateTask.setWrapText(true);
                     messageCreateTask.setText("Task was created successfully.");
                 } else {
-                    initializeHashTypeCombBox();
                     messageCreateTask.setWrapText(true);
                     messageCreateTask.setText("Task was not created! Name already exists, choose other one.");
                 }
             }
         }catch (IllegalArgumentException e){
-            initializeHashTypeCombBox();
             messageCreateTask.setWrapText(true);
             messageCreateTask.setText("Delta has to be a number!");
         }
     }
 
+    public void handlerListTasksTab(Event event) throws RemoteException {
+        listTasks();
+    }
+
+    public void listTasks() throws RemoteException{
+        tasksTable.getItems().clear();
+        tasksTable.getItems().addAll(this.client.userSessionRI.listTasks());
+        nameTaskSelectedLabel.setText("");
+        messageJoinTask.setText("");
+        updateBut.setVisible(true);
+    }
+
     /** associar worker a um taskgroup */
     public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {
-        TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
-        if(taskSubjectRI != null && taskSubjectRI.isAvailable()){
-            int n_threads = numberThreadsSpinner.getValue();
-            WorkerObserverRI workerObserverRI = this.client.userSessionRI.createWorker(n_threads, client.username);
-            if(workerObserverRI != null){
-                taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
-                initializeTableViewListTasks();
-                initializeTableViewListOwnWorkers();
+        if(!maxLengthWordTF.getText().isEmpty() && !maxWordsTF.getText().isEmpty()) {
+            try {
+                int maxLength = Integer.getInteger(maxLengthWordTF.getText());
+                int maxWords = Integer.getInteger(maxWordsTF.getText());
+                TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
+                if (taskSubjectRI != null && taskSubjectRI.isAvailable()) {
+                    int n_threads = numberThreadsSpinner.getValue();
+                    WorkerObserverRI workerObserverRI = this.client.userSessionRI.createWorker(n_threads, client.username);
+                    if (workerObserverRI != null) {
+                        taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
+                        initializeTableViewListTasks();
+                        listTasks();
+                        messageJoinTask.setWrapText(true);
+                        messageJoinTask.setText("Worker was created with success!");
+                    } else {
+                        messageJoinTask.setWrapText(true);
+                        messageJoinTask.setText("Worker was not created!");
+                    }
+                }
+            }catch (IllegalArgumentException e){
                 messageJoinTask.setWrapText(true);
-                messageJoinTask.setText("Worker was created with success!");
-            }else{
-                messageJoinTask.setText("Worker was not created!");
+                messageJoinTask.setText("Max length word and max words have to be numbers!");
             }
         }
     }
 
-    public void handlerListOwnTasks(Event event) throws RemoteException {
+    public void handlerListOwnTasksTab(Event event) throws RemoteException {
         listOwnTasks();
     }
 
@@ -272,8 +298,9 @@ public class MenuController implements Initializable {
         }
     }
 
-    public void handlerListOwnWorkers(Event event) throws RemoteException{
+    public void handlerListOwnWorkersTab(Event event) throws RemoteException{
         listOwnWorkers();
+        nameOwnTaskSelectedLabel.setText("");
     }
 
     public void listOwnWorkers(){
