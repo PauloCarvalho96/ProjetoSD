@@ -79,14 +79,10 @@ public class MenuController implements Initializable {
 
     private Client client;
 
-    public void initData(Client client){
-        this.client = client;
-    }
+    public void initData(Client client){ this.client = client; }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        initializeComboBoxAndTableView();
-    }
+    public void initialize(URL location, ResourceBundle resources) { initializeComboBoxAndTableView(); }
 
     public void initializeComboBoxAndTableView(){
         initializeHashTypeComboBox();
@@ -110,8 +106,8 @@ public class MenuController implements Initializable {
         //goes to the class and associates de col with the variable
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         hashTypeCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
-        creditsPerWordCol.setCellValueFactory(new PropertyValueFactory<>("creditsPerWord"));
-        creditsTotalCol.setCellValueFactory(new PropertyValueFactory<>("creditsTotal"));
+        creditsPerWordCol.setCellValueFactory(new PropertyValueFactory<>("creditsWordProcessed"));
+        creditsTotalCol.setCellValueFactory(new PropertyValueFactory<>("creditsWordFound"));
         availableCol.setCellValueFactory(new PropertyValueFactory<>("available"));
         tasksTable.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
@@ -129,8 +125,8 @@ public class MenuController implements Initializable {
         //goes to the class and associates de col with the variable
         nameTOwnCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         hashTypeTOwnCol.setCellValueFactory(new PropertyValueFactory<>("hashType"));
-        creditsPerWordTOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsPerWord"));
-        creditsTotalTOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsTotal"));
+        creditsPerWordTOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsWordProcessed"));
+        creditsTotalTOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsWordFound"));
         statusTOwnCol.setCellValueFactory(new PropertyValueFactory<>("status"));
         tasksOwnTable.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
@@ -210,7 +206,8 @@ public class MenuController implements Initializable {
                 hashPass.add("f9cd0599ad0623251da70f2a9c97a9a89c2f034e9ab7a93cef3702d3c1d9b377738c6410079ad6a74cef9b84b4396621b4d0954a4419c302d389ce4ddbb03573");
                 hashPass.add("26016268623f834338088a1492e3caf284ac00093fefef95ddfdb4f7ed34b5e7d80e7ceceef7902d20762f93323eefd2900d38eb065213612c94a3fecb13e4ac");
                 hashPass.add("681e29b8f594a0560a8568cd1ddef081feccfd564e164207b2151e14620092f9fbbb20c9f79daaf2a01e7dda846a326a02a1cb3ddb27f2c685e43d2c86f2c5ad");
-                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, delta, client.username);
+
+                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username);
                 if (taskSubjectRI != null) {
                     initializeCreateTask();
                     messageCreateTask.setWrapText(true);
@@ -222,7 +219,7 @@ public class MenuController implements Initializable {
             }
         }catch (IllegalArgumentException e){
             messageCreateTask.setWrapText(true);
-            messageCreateTask.setText("Delta has to be a number!");
+            messageCreateTask.setText("Delta and credits have to be numbers!");
         }
     }
 
@@ -242,8 +239,8 @@ public class MenuController implements Initializable {
     public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {
         if(!maxLengthWordTF.getText().isEmpty() && !maxWordsTF.getText().isEmpty()) {
             try {
-                int maxLength = Integer.getInteger(maxLengthWordTF.getText());
-                int maxWords = Integer.getInteger(maxWordsTF.getText());
+                //int maxLength = Integer.getInteger(maxLengthWordTF.getText());
+                //int maxWords = Integer.getInteger(maxWordsTF.getText());
                 TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
                 if (taskSubjectRI != null && taskSubjectRI.isAvailable()) {
                     int n_threads = numberThreadsSpinner.getValue();

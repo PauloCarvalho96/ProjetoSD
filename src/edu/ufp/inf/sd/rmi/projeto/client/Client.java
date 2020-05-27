@@ -1,22 +1,17 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
-import edu.ufp.inf.sd.rmi.projeto.server.Task;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.google.common.hash.Hashing;
 
 public class Client {
 

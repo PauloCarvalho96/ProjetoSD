@@ -1,7 +1,9 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import edu.ufp.inf.sd.rmi.projeto.client.TrayIconDemo;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
+import java.awt.*;
 import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -12,8 +14,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private String name;
     private String hashType;
     private ArrayList<String> hashPass;
-    private Integer creditsPerWord;
-    private Integer creditsTotal;
+    private Integer creditsWordProcessed;
+    private Integer creditsWordFound;
     private State subjectState = new State();
     private String status;
     private boolean available = true;
@@ -23,32 +25,23 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     private ArrayList<Task> tasks = new ArrayList<>();// array tasks
     private ArrayList<Result> result = new ArrayList<>();//array pass found
     private static final String url = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt";
+    private ArrayList<String> paths = new ArrayList<>();
 
-    private String path_paulo = "C:\\Users\\Paulo\\Documents\\GitHub" +
-            "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
-    private String path_rui = "C:\\Users\\Rui\\Documents" +
-            "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
-    private String path_other = "C:\\Users\\tmsl9\\GitHub" +
-            "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
-    public TaskSubjectImpl(String name, String hashType, ArrayList<String> hashPass,Integer delta) throws RemoteException {
+    public TaskSubjectImpl(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta) throws RemoteException {
         super();
         this.name = name;
         this.hashType = hashType;
         this.hashPass = hashPass;
+        this.creditsWordProcessed = creditsWordProcessed;
+        this.creditsWordFound = creditsWordFound;
         this.delta = delta;
         this.subjectState.setmsg("Available");
         this.status = this.subjectState.AVAILABLE;
+        paths.add("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
+        paths.add("C:\\Users\\Rui\\Documents\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
+        paths.add("C:\\Users\\tmsl9\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
         createSubTasks();
     }
-
-    /*public TaskSubjectImpl(String name, String hashType, String hashPass, String creditsPerWord, String creditsTotal) throws RemoteException {
-        super();
-        this.name = name;
-        this.hashType = hashType;
-        this.hashPass = hashPass;
-        this.creditsPerWord = creditsPerWord;
-        this.creditsTotal = creditsTotal;
-    }*/
 
     /** Em testes -> para adicionar tasks na fila */
     public void sendToQueue() throws RemoteException{
@@ -71,28 +64,32 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     /** divide linhas para criar sub tasks */
     public void createSubTasks(){
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(path_rui));
-            int lines = 0;
-            while (reader.readLine() != null) {
-                if(lines == start + delta - 1){
-                    Task task = new Task(url,start,delta,this);
-                    tasks.add(task);
-                    start = lines + 1;
-                }
-                lines++;
-            }
-            int lastDelta = delta;
-            lastDelta = lines - start;
-            if(lastDelta != 0){
-                Task task = new Task(url,start,lastDelta,this);
-                tasks.add(task);
-                reader.close();
-            }
+            for(String path: paths){
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader(path));
+                    int lines = 0;
+                    while (reader.readLine() != null) {
+                        if(lines == start + delta - 1){
+                            Task task = new Task(url,start,delta,this);
+                            tasks.add(task);
+                            start = lines + 1;
+                        }
+                        lines++;
+                    }
+                    int lastDelta = delta;
+                    lastDelta = lines - start;
+                    if(lastDelta != 0){
+                        Task task = new Task(url,start,lastDelta,this);
+                        tasks.add(task);
+                        reader.close();
+                    }
 
-            for (Task task:tasks) {
-                System.out.println("\nStart: "+task.getStart()+"\nDelta: "+task.getDelta()+"\n");
+                    for (Task task:tasks) {
+                        System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
+                    }
+                    break;
+                }catch (FileNotFoundException ignored){}
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,6 +111,11 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
                     System.out.println("COMPLETE");
                     this.subjectState.setmsg("Completed");
                     this.status = this.subjectState.COMPLETED;
+                    try { /** Notification in server, we have **/
+                        TrayIconDemo notif = new TrayIconDemo(this.name);
+                    } catch (AWTException e) {
+                        e.printStackTrace();
+                    }
                     available = false;
                 }else{
                     System.out.println("NOT COMPLETE");
@@ -211,9 +213,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
 
     @Override
     public void pause() throws RemoteException {
-        System.out.println("---->"+
-                this.subjectState.getmsg());
         if(!this.subjectState.getmsg().equals("Completed") || !this.subjectState.getmsg().equals("Paused")) {
+            System.out.println("PAUSED");
             this.subjectState.setmsg("Paused");
             this.status = this.subjectState.PAUSED;
             this.notifyAllObservers();

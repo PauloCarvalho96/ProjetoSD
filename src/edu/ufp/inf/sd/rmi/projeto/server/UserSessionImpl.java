@@ -1,16 +1,14 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
-import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
-import javax.print.DocFlavor;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 public class UserSessionImpl extends UnicastRemoteObject implements UserSessionRI{
 
-    private DBMockup db;
+    private final DBMockup db;
 
     public UserSessionImpl(DBMockup db) throws RemoteException {
         super();
@@ -29,12 +27,12 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
 
     // cria nova task
     @Override
-    public TaskSubjectRI createTask(String name, String hashType, ArrayList<String> hashPass,Integer delta, String uname) throws RemoteException {
+    public TaskSubjectRI createTask(String name, String hashType, ArrayList<String> hashPass, Integer creditsProc, Integer creditsFound, Integer delta, String uname) throws RemoteException {
         /** verifica se existe taskgroup com nome dado */
         if(db.getTask(name) != null){
             return null;
         }
-        TaskSubjectRI taskSubjectRI = new TaskSubjectImpl(name, hashType, hashPass,delta);
+        TaskSubjectRI taskSubjectRI = new TaskSubjectImpl(name, hashType, hashPass, creditsProc, creditsFound, delta);
         db.assocTaskToUser(uname, taskSubjectRI);  // adiciona task a DB
         return taskSubjectRI;
     }
