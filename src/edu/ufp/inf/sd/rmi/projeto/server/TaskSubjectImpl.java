@@ -26,6 +26,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
 
     private String path_paulo = "C:\\Users\\Paulo\\Documents\\GitHub" +
             "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
+    private String path_rui = "C:\\Users\\Rui\\Documents" +
+            "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
     private String path_other = "C:\\Users\\tmsl9\\GitHub" +
             "\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt";
     public TaskSubjectImpl(String name, String hashType, ArrayList<String> hashPass,Integer delta) throws RemoteException {
@@ -69,7 +71,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     /** divide linhas para criar sub tasks */
     public void createSubTasks(){
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(path_other));
+            BufferedReader reader = new BufferedReader(new FileReader(path_rui));
             int lines = 0;
             while (reader.readLine() != null) {
                 if(lines == start + delta - 1){
