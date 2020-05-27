@@ -227,16 +227,13 @@ public class MenuController implements Initializable {
         TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
         if(taskSubjectRI != null && taskSubjectRI.isAvailable()){
             int n_threads = numberThreadsSpinner.getValue();
-            WorkerObserverRI workerObserverRI = this.client.userSessionRI.createWorker(n_threads, client.username);
-            if(workerObserverRI != null){
-                taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
-                initializeTableViewListTasks();
-                initializeTableViewListOwnWorkers();
-                messageJoinTask.setWrapText(true);
-                messageJoinTask.setText("Worker was created with success!");
-            }else{
-                messageJoinTask.setText("Worker was not created!");
-            }
+            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(this.client.userSessionRI.getSizeWorkersDB(), client.username, n_threads);
+            this.client.userSessionRI.createWorker(workerObserverRI, client.username);
+            taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
+            initializeTableViewListTasks();
+            initializeTableViewListOwnWorkers();
+            messageJoinTask.setWrapText(true);
+            messageJoinTask.setText("Worker was created with success!");
         }
     }
 

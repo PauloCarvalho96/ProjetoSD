@@ -3,6 +3,7 @@ package edu.ufp.inf.sd.rmi.projeto.server;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverImpl;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
+import javax.print.DocFlavor;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -39,10 +40,8 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     }
 
     @Override
-    public WorkerObserverRI createWorker(int n_threads, String uname) throws RemoteException {
-        WorkerObserverRI workerObserverRI = new WorkerObserverImpl(db.allWorkers().size()+1, uname, n_threads);
+    public void createWorker(WorkerObserverRI workerObserverRI, String uname) throws RemoteException {
         db.assocWorkerToUser(uname, workerObserverRI);
-        return workerObserverRI;
     }
 
     @Override
@@ -84,5 +83,10 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     @Override
     public ArrayList<TaskSubjectRI> getTasksRI(String uname) throws RemoteException {
         return db.getTasksFromUser(uname);
+    }
+
+    @Override
+    public int getSizeWorkersDB() throws RemoteException {
+        return db.allWorkers().size()+1;
     }
 }
