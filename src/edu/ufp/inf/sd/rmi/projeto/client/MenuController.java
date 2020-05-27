@@ -1,8 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
 import edu.ufp.inf.sd.rmi.projeto.server.Result;
-import edu.ufp.inf.sd.rmi.projeto.server.Task;
-import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectImpl;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -16,7 +14,6 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class MenuController implements Initializable {
@@ -29,6 +26,7 @@ public class MenuController implements Initializable {
     public Button createTaskBut;
     public Label messageCreateTask;
     /** List tasks **/
+    public Tab listTasksTab;
     public TableView<TaskSubjectRI> tasksTable;
     public TableColumn<TaskSubjectRI, String> nameCol;
     public TableColumn<TaskSubjectRI, String> hashTypeCol;
@@ -37,7 +35,6 @@ public class MenuController implements Initializable {
     public TableColumn<TaskSubjectRI, String> availableCol;
     public Pagination listTasksPagination;
     /** Join task **/
-    public Tab listTasksTab;
     public Label nameTaskSelectedLabel;
     public Spinner<Integer> numberThreadsSpinner;
     public Button joinTaskBut;
@@ -54,6 +51,7 @@ public class MenuController implements Initializable {
     public Label messageOwnTask;
     public Label nameOwnTaskSelectedLabel;
     public Button pauseTaskBut;
+    public Button resumeTaskBut;
     public Button stopTaskBut;
     public TableView<Result> infoOwnTaskTable;
     public TableColumn<Result, String> hashPassTOwnCol;
@@ -92,6 +90,7 @@ public class MenuController implements Initializable {
         initializeTableViewListOwnTasks();
         initializeTableViewListOwnWorkers();
         initializeTableViewListInfoTask();
+        updateBut.setVisible(false);
     }
 
     public void initializeHashTypeCombBox(){
@@ -153,7 +152,7 @@ public class MenuController implements Initializable {
         threadsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("n_threads"));
         wordsWOwnCol.setCellValueFactory(new PropertyValueFactory<>("wordsSize"));
         creditsWonWOwnCol.setCellValueFactory(new PropertyValueFactory<>("creditsWon"));
-        statusWOwnCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        statusWOwnCol.setCellValueFactory(new PropertyValueFactory<>(""));
         workersOwnTable.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -171,6 +170,12 @@ public class MenuController implements Initializable {
     public void handleAbout(ActionEvent actionEvent) {
     }
 
+    public void handlerCreateTaskTab(Event event) {
+        try {
+            updateBut.setVisible(false);
+        } catch (NullPointerException ignored){}
+    }
+
     public void handlerListTasks(Event event) throws RemoteException {
         listTasks();
     }
@@ -178,6 +183,7 @@ public class MenuController implements Initializable {
     public void listTasks() throws RemoteException{
         tasksTable.getItems().clear();
         tasksTable.getItems().addAll(this.client.userSessionRI.listTasks());
+        updateBut.setVisible(true);
     }
 
     public void handlerCreateTask(ActionEvent actionEvent) throws RemoteException {
@@ -186,14 +192,15 @@ public class MenuController implements Initializable {
         ArrayList<String> hashPass = new ArrayList<>(Arrays.asList(hashPassTA.getText().split(";")));
         try {
             Integer delta = Integer.parseInt(deltaTaskTF.getText());
-
             if (!name.isEmpty() && !hashPass.isEmpty()) {
+                /** para testes */
                 delta = 500000;
                 hashPass.clear();
                 hashPass.add("4e2083e0fc093f7f0fcf43b145fb586e476cdce4e38533462160a3656ef63f4ad75c027d45ee5ccbf652c8745210a2b7a1e652c79f0e8be3c926f591c4a667db");
                 hashPass.add("91fae6a834ad600709174d63bb98d7ff8bc5b4dab65b83a53b640be44e1a78fbc9d5caac0c4ab53a9af0d77b79696fe460e98d87211cd66c16c436eeb9fb0b27");
                 hashPass.add("f9cd0599ad0623251da70f2a9c97a9a89c2f034e9ab7a93cef3702d3c1d9b377738c6410079ad6a74cef9b84b4396621b4d0954a4419c302d389ce4ddbb03573");
                 hashPass.add("26016268623f834338088a1492e3caf284ac00093fefef95ddfdb4f7ed34b5e7d80e7ceceef7902d20762f93323eefd2900d38eb065213612c94a3fecb13e4ac");
+                hashPass.add("681e29b8f594a0560a8568cd1ddef081feccfd564e164207b2151e14620092f9fbbb20c9f79daaf2a01e7dda846a326a02a1cb3ddb27f2c685e43d2c86f2c5ad");
                 TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, delta, client.username);
                 if (taskSubjectRI != null) {
                     nameTaskTF.clear();
@@ -212,7 +219,6 @@ public class MenuController implements Initializable {
             initializeHashTypeCombBox();
             messageCreateTask.setWrapText(true);
             messageCreateTask.setText("Delta has to be a number!");
-
         }
     }
 
@@ -220,9 +226,8 @@ public class MenuController implements Initializable {
     public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {
         TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
         if(taskSubjectRI != null && taskSubjectRI.isAvailable()){
-            Task task = taskSubjectRI.getTaskFromArray();
             int n_threads = numberThreadsSpinner.getValue();
-            WorkerObserverRI workerObserverRI = this.client.userSessionRI.createWorker(task, n_threads, client.username);
+            WorkerObserverRI workerObserverRI = this.client.userSessionRI.createWorker(n_threads, client.username);
             if(workerObserverRI != null){
                 taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
                 initializeTableViewListTasks();
@@ -242,15 +247,28 @@ public class MenuController implements Initializable {
     public void listOwnTasks() throws RemoteException {
         tasksOwnTable.getItems().clear();
         tasksOwnTable.getItems().addAll(this.client.getTasksRI());
+        updateBut.setVisible(true);
     }
 
-    public void handlerPauseTask(ActionEvent actionEvent) {
-    }
 
-    public void handlerStopTask(ActionEvent actionEvent) throws RemoteException {//////test
-        TaskSubjectRI taskSubjectRI = tasksOwnTable.getSelectionModel().getSelectedItem();/////not working
+    public void handlerPauseTask(ActionEvent actionEvent) throws RemoteException {
+        TaskSubjectRI taskSubjectRI = tasksOwnTable.getSelectionModel().getSelectedItem();
         if(taskSubjectRI != null){
-            client.userSessionRI.stopTask(taskSubjectRI);
+            client.userSessionRI.pauseTask(taskSubjectRI);
+        }
+    }
+
+    public void handlerStopTask(ActionEvent actionEvent) throws RemoteException {
+        TaskSubjectRI taskSubjectRI = tasksOwnTable.getSelectionModel().getSelectedItem();
+        if(taskSubjectRI != null){
+            client.userSessionRI.stopTask(taskSubjectRI,client.username);
+        }
+    }
+
+    public void handlerResumeTask(ActionEvent actionEvent) throws RemoteException {
+        TaskSubjectRI taskSubjectRI = tasksOwnTable.getSelectionModel().getSelectedItem();
+        if(taskSubjectRI != null){
+            client.userSessionRI.resumeTask(taskSubjectRI);
         }
     }
 
@@ -261,6 +279,7 @@ public class MenuController implements Initializable {
     public void listOwnWorkers(){
         workersOwnTable.getItems().clear();
         workersOwnTable.getItems().addAll(this.client.getWorkersRI());
+        updateBut.setVisible(true);
     }
 
     public void handlerPauseWorker(ActionEvent actionEvent) {
@@ -279,9 +298,6 @@ public class MenuController implements Initializable {
         listOwnWorkers();
         infoOwnTaskTable.getItems().clear();
     }
+
+
 }
-
-
-/**
- * have to create xml to see all results of the client, create arraylist of all results first
- **/

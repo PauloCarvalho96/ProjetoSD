@@ -5,12 +5,9 @@ import edu.ufp.inf.sd.rmi.projeto.server.Task;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 
@@ -27,17 +24,15 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private ArrayList<Thread> threads = new ArrayList<>();
     private int actualLine;
 
-    public WorkerObserverImpl(int id, String username, Task task, Integer n_threads) throws RemoteException {
+    private int work = 0;
+
+    public WorkerObserverImpl(int id, String username, Integer n_threads) throws RemoteException {
         super();
         this.id = id;
         this.username = username;
-        this.task = task;
-        this.taskName = task.getTaskSubjectRI().getName();
         this.n_threads = n_threads;
-        this.wordsSize = task.getDelta();
         this.actualLine = 0;
         this.lastObserverState = new State("Available");
-        doWork();
     }
 
     /** Em testes
@@ -71,7 +66,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
      }*/
 
     /** threads vao fazer o trabalho */
-    public void doWork() throws RemoteException {
+    private void doWork() throws RemoteException {
         try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
              FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
             byte dataBuffer[] = new byte[1024];
@@ -171,15 +166,37 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     @Override
+    public void setTask(Task task) throws RemoteException {
+        this.task = task;
+        this.taskName = task.getTaskSubjectRI().getName();
+        this.wordsSize = task.getDelta();
+        doWork();
+    }
+
+    @Override
     public void taskUpdated() throws RemoteException, InterruptedException {
         switch (this.task.getTaskSubjectRI().getState().getmsg()) {
             case "Completed":
-                this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
-                System.out.println("\nWorker all completed!!\n");
+                if(!this.lastObserverState.getmsg().equals("Completed")) {
+                    this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
+                    System.out.println("\nWorker all completed!!\n");
+                }
                 break;
             case "Working":
-                this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
-                System.out.println("\nStill working!!\n");
+                if(!this.lastObserverState.getmsg().equals("Working")) {
+                    this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
+                    if (work % 1000 == 0) {
+                        System.out.println("\nStill working!!\n");
+                    }
+                    ++work;
+                }
+                break;
+            case "Paused":
+                if(!this.lastObserverState.getmsg().equals("Paused")) {
+                    this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
+                    System.out.println("\nPaused!!\n");
+                }
+                break;
         }
     }
 

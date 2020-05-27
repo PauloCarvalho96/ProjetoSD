@@ -11,6 +11,7 @@ public class State implements Serializable {
     //TASK & WORKER
     public final String PAUSED = "Paused";
     public final String COMPLETED = "Completed";
+    public final String NOT_COMPLETED = "Not Completed";
     public final String WORKING = "Working";
 
     //TASK

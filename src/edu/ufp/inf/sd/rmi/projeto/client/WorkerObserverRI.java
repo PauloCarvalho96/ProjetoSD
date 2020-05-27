@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
 import edu.ufp.inf.sd.rmi.projeto.server.State;
+import edu.ufp.inf.sd.rmi.projeto.server.Task;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 
 import java.rmi.Remote;
@@ -15,11 +16,12 @@ public interface WorkerObserverRI extends Remote {
     public void selectTask(TaskSubjectRI task) throws RemoteException;
     public void removeWorker() throws RemoteException;
     public void  setStateWorker(State state) throws RemoteException;
-    public State  getStateWorker() throws RemoteException;
+    public State getStateWorker() throws RemoteException;
     public Integer getId() throws RemoteException;
     public String getTaskName() throws RemoteException;
     public String getHashType() throws RemoteException;
     public ArrayList<String> getHashPass() throws RemoteException;
     public int getActualLine() throws RemoteException;
     public void taskUpdated() throws RemoteException, InterruptedException;
+    public void setTask(Task task) throws RemoteException;
 }

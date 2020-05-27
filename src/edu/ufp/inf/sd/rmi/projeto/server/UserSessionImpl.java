@@ -39,8 +39,8 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     }
 
     @Override
-    public WorkerObserverRI createWorker(Task task, int n_threads, String uname) throws RemoteException {
-        WorkerObserverRI workerObserverRI = new WorkerObserverImpl(db.allWorkers().size()+1, uname, task, n_threads);
+    public WorkerObserverRI createWorker(int n_threads, String uname) throws RemoteException {
+        WorkerObserverRI workerObserverRI = new WorkerObserverImpl(db.allWorkers().size()+1, uname, n_threads);
         db.assocWorkerToUser(uname, workerObserverRI);
         return workerObserverRI;
     }
@@ -52,16 +52,28 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     }
 
     @Override
-    public void stopTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
-        TaskSubjectRI taskSubjectRI1 = db.getTask(taskSubjectRI.getName());
-        taskSubjectRI.getState().setmsg("Completed");
-        taskSubjectRI.notifyAllObservers();
-        db.removeTask(taskSubjectRI);
+    public void stopTask(TaskSubjectRI taskSubjectRI,String uname) throws RemoteException {
+        TaskSubjectRI taskDB = db.getTask(taskSubjectRI.getName());
+        if(taskDB != null) {
+            taskDB.stop();
+            db.removeTask(taskDB, uname);
+        }
     }
 
     @Override
     public void pauseTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
+        TaskSubjectRI taskDB = db.getTask(taskSubjectRI.getName());
+        if(taskDB != null) {
+            taskDB.pause();
+        }
+    }
 
+    @Override
+    public void resumeTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
+        TaskSubjectRI taskDB = db.getTask(taskSubjectRI.getName());
+        if(taskDB != null) {
+            taskDB.resume();
+        }
     }
 
     @Override
@@ -72,6 +84,5 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     @Override
     public ArrayList<TaskSubjectRI> getTasksRI(String uname) throws RemoteException {
         return db.getTasksFromUser(uname);
-
     }
 }
