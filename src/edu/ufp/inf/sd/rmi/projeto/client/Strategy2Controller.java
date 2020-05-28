@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
-public class MenuController implements Initializable {
+public class Strategy2Controller implements Initializable {
     /** Create task **/
     public Tab createTaskTab;
     public TextField nameTaskTF;
