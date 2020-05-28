@@ -36,7 +36,7 @@ public class UserFactoryImpl extends UnicastRemoteObject implements UserFactoryR
                     }
                 }
             } else {
-                return this.db.getSessions().get(uname);
+                return null;
             }
         }
         return null;
