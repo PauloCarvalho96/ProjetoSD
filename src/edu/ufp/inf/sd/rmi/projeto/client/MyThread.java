@@ -85,7 +85,7 @@ public class MyThread implements Runnable {
                     if(found){
                         state.setmsg(state.FOUND);
                         this.workerObserverRI.updateFound(state,result,st, line);
-                    }else{
+                    }else if(line % (delta * 0.1) == 0){
                         state.setmsg(state.NOT_FOUND);
                         this.workerObserverRI.updateNotFound(state, line);
                     }

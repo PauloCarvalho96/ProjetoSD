@@ -8,6 +8,7 @@ import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectRI {
 
@@ -123,7 +124,7 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
                     this.status = this.subjectState.WORKING;
                 }
                 break;
-                /** Se nao encontrar nenhuma palavra no range */
+            /** Se nao encontrar nenhuma palavra no range */
             case "Not Found":
                 if(!this.subjectState.getmsg().equals("Completed") && !this.subjectState.getmsg().equals("Paused")) {
                     this.subjectState.setmsg("Working");
@@ -139,9 +140,9 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
 
     @Override
     public void notifyAllObservers() throws RemoteException {
-        for (WorkerObserverRI obs: workers) {
+        for (WorkerObserverRI obj : workers) {
             try {
-                obs.taskUpdated();
+                obj.taskUpdated();
             } catch (RemoteException | InterruptedException ex) {
                 ex.printStackTrace();
             }

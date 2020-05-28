@@ -12,11 +12,11 @@
 
 @REM ======================== CHANGE BELOW ACCORDING YOUR PROJECT and PC SETTINGS ========================
 @REM ==== PC STUFF ====
-@Set USERNAME=tmsl9
+@Set USERNAME=Rui
 
 @Set WORKDRIVE=C
 @REM Set JDK=%WORKDRIVE%:\Programas\Java\jdk1.8.0_60
-@Set JDK="C:\Program Files\JetBrains\IntelliJ IDEA 2019.2.3\jbr"
+@Set JDK="C:\Program Files\JetBrains\IntelliJ IDEA 2020.1.1\jbr"
 @REM These vars will be used to check the output folder (whereto classes are generated)
 @SET NETBEANS=NetBeans
 @SET INTELLIJ=IntelliJ
@@ -31,7 +31,7 @@
 @Set PACKAGE_PREFIX_FOLDERS=edu/ufp/inf/sd/rmi
 @Set SERVICE_NAME_ON_REGISTRY=ProjetoService
 @Set CLIENT_CLASS_PREFIX=LoadGUI
-@Set SERVER_CLASS_PREFIX=Server
+@Set sSERVER_CLASS_PREFIX=Server
 @Set CLIENT_CLASS_POSTFIX=
 @Set SERVER_CLASS_POSTFIX=
 @Set SETUP_CLASS_POSTFIX=Setup
