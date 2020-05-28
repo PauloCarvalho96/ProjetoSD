@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
-public class Strategy1Controller implements Initializable {
+public class MenuController implements Initializable {
     /** Create task **/
     public Tab createTaskTab;
     public TextField nameTaskTF;
@@ -25,6 +25,7 @@ public class Strategy1Controller implements Initializable {
     public ComboBox<String> hashTypeCB;
     public TextArea hashPassTA;
     public TextField deltaTaskTF;
+    public ComboBox<String> strategyCB;
     public Button createTaskBut;
     public Label messageCreateTask;
     /** List tasks **/
@@ -39,6 +40,8 @@ public class Strategy1Controller implements Initializable {
     /** Join task **/
     public Label nameTaskSelectedLabel;
     public Spinner<Integer> numberThreadsSpinner;
+    public TextField maxLengthWordTF;
+    public TextField maxWordsTF;
     public Button joinTaskBut;
     public Label messageJoinTask;
     /** List own tasks **/
@@ -83,7 +86,7 @@ public class Strategy1Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) { initializeComboBoxAndTableView(); }
 
     public void initializeComboBoxAndTableView(){
-        initializeHashTypeComboBox();
+        initializeComboBox();
         initializeTableViewListTasks();
         initializeTableViewListOwnTasks();
         initializeTableViewListOwnWorkers();
@@ -91,13 +94,18 @@ public class Strategy1Controller implements Initializable {
         updateBut.setVisible(false);
     }
 
-    public void initializeHashTypeComboBox(){
+    public void initializeComboBox(){
         hashTypeCB.getItems().clear();
         hashTypeCB.setValue("SHA-512");
         hashTypeCB.getItems().add("SHA-512");
         hashTypeCB.getItems().add("PBKDF2");
         hashTypeCB.getItems().add("BCrypt");
         hashTypeCB.getItems().add("SCrypt");
+        strategyCB.getItems().clear();
+        strategyCB.setValue("Strategy 1");
+        strategyCB.getItems().add("Strategy 1");
+        strategyCB.getItems().add("Strategy 2");
+        strategyCB.getItems().add("Strategy 3");
     }
 
     public void initializeTableViewListTasks(){
@@ -168,9 +176,12 @@ public class Strategy1Controller implements Initializable {
         creditsProcTaskTF.clear();
         deltaTaskTF.clear();
         hashTypeCB.setValue("SHA-512");
+        strategyCB.setValue("Strategy 1");
     }
 
     public void initializeListTasks(){
+        maxLengthWordTF.clear();
+        maxWordsTF.clear();
         numberThreadsSpinner.getValueFactory().setValue(1);
     }
 
@@ -189,6 +200,8 @@ public class Strategy1Controller implements Initializable {
     public void handlerCreateTask(ActionEvent actionEvent) throws RemoteException {
         String name = nameTaskTF.getText();
         String typeHash = hashTypeCB.getValue();
+        String[] stCB = strategyCB.getValue().split(" ");
+        int strategy = Integer.parseInt(stCB[1]);
         ArrayList<String> hashPass = new ArrayList<>(Arrays.asList(hashPassTA.getText().split(";")));
         try {
             int creditsProc = Integer.parseInt(creditsProcTaskTF.getText());
@@ -203,9 +216,7 @@ public class Strategy1Controller implements Initializable {
                 hashPass.add("26016268623f834338088a1492e3caf284ac00093fefef95ddfdb4f7ed34b5e7d80e7ceceef7902d20762f93323eefd2900d38eb065213612c94a3fecb13e4ac");
                 hashPass.add("681e29b8f594a0560a8568cd1ddef081feccfd564e164207b2151e14620092f9fbbb20c9f79daaf2a01e7dda846a326a02a1cb3ddb27f2c685e43d2c86f2c5ad");
                 hashPass.add("9ca5e00e64ca5f5e03b2cd02a38dee70d2d559608c8ffe1814029d3f2fa86bcc245a5eace3da57efa9f2dac58ac21750bf61ba0dc812b01b45b02010ea271a68");
-
-
-                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username);
+                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy);
                 if (taskSubjectRI != null) {
                     initializeCreateTask();
                     messageCreateTask.setWrapText(true);
@@ -235,21 +246,25 @@ public class Strategy1Controller implements Initializable {
 
     /** associar worker a um taskgroup */
     public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {
-        try {
-            TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
-            if (taskSubjectRI != null && taskSubjectRI.isAvailable()) {
-                int n_threads = numberThreadsSpinner.getValue();
-                WorkerObserverRI workerObserverRI = new WorkerObserverImpl(this.client.userSessionRI.getSizeWorkersDB(), client.username, n_threads);
-                this.client.userSessionRI.createWorker(workerObserverRI, client.username);
-                taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
-                initializeTableViewListTasks();
-                listTasks();
+        if(!maxLengthWordTF.getText().isEmpty() && !maxWordsTF.getText().isEmpty()) {
+            try {
+                //int maxLength = Integer.getInteger(maxLengthWordTF.getText());
+                //int maxWords = Integer.getInteger(maxWordsTF.getText());
+                TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
+                if (taskSubjectRI != null && taskSubjectRI.isAvailable()) {
+                    int n_threads = numberThreadsSpinner.getValue();
+                   WorkerObserverRI workerObserverRI = new WorkerObserverImpl(this.client.userSessionRI.getSizeWorkersDB(), client.username, n_threads);
+                   this.client.userSessionRI.createWorker(workerObserverRI, client.username);
+                   taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
+                   initializeTableViewListTasks();
+                   listTasks();
+                   messageJoinTask.setWrapText(true);
+                   messageJoinTask.setText("Worker was created with success!");
+                }
+            }catch (IllegalArgumentException e){
                 messageJoinTask.setWrapText(true);
-                messageJoinTask.setText("Worker was created with success!");
+                messageJoinTask.setText("Max length word and max words have to be numbers!");
             }
-        }catch (IllegalArgumentException e){
-            messageJoinTask.setWrapText(true);
-            messageJoinTask.setText("Max length word and max words have to be numbers!");
         }
     }
 
