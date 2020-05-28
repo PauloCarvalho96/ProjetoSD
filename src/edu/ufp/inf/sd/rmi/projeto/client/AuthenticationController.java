@@ -102,7 +102,7 @@ public class AuthenticationController implements Initializable {
             this.client.username = username;
             if (sessionRI != null) {
                 this.client.userSessionRI = sessionRI;
-                goToMenuScene(actionEvent);
+                goToChoiceScene(actionEvent);
             } else {
                 messageLoginRegister.setWrapText(true);
                 messageLoginRegister.setText("Login didn't succeeded! Username doesn't exist or data don't match...");
@@ -110,17 +110,17 @@ public class AuthenticationController implements Initializable {
         }
     }
 
-    public void goToMenuScene(ActionEvent actionEvent) throws IOException {
+    public void goToChoiceScene(ActionEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("layouts/menu.fxml"));
+        loader.setLocation(getClass().getResource("layouts/choice.fxml"));
         Parent root = loader.load();
         root.setStyle("-fx-background-color: #c4c4c4;");
         Scene scene = new Scene(root);
-        MenuController menuController = loader.getController();
-        menuController.initData(this.client);
+        ChoiceController choiceController = loader.getController();
+        choiceController.initData(this.client);
         Stage primaryStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         primaryStage.setMaximized(true);
-        primaryStage.setTitle("Menu");
+        primaryStage.setTitle("Choice");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream( "logo/logo.png" )));
         primaryStage.setScene(scene);
         primaryStage.show();
