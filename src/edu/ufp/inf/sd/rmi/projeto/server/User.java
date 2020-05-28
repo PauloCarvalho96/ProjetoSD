@@ -1,15 +1,14 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
-import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverImpl;
+import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User {
+public class User implements Serializable {
 
     private String uname;
     private String pword;
-    private Integer credits;
-    private ArrayList<TaskSubjectImpl> myTasks = new ArrayList<>();
 
     public User(String uname, String pword) {
         this.uname = uname;

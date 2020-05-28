@@ -1,116 +1,158 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import edu.ufp.inf.sd.rmi.projeto.client.TrayIconDemo;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.awt.*;
+import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectRI {
 
     private String name;
     private String hashType;
-    private String hashPass;
-    private String creditsPerWord;
-    private String creditsTotal;
-    private State subjectState;
-    private boolean available;
+    private ArrayList<String> hashPass;
+    private Integer creditsWordProcessed;
+    private Integer creditsWordFound;
+    private State subjectState = new State();
+    private String status;
+    private boolean available = true;
     private Integer start = 0;     //linha atual
-    private Integer delta = 1000;     //linha atual
-    // array de workers
-    private final ArrayList<WorkerObserverRI> workers = new ArrayList<>();
+    private Integer delta;     //quantidade de linhas
+    private ArrayList<WorkerObserverRI> workers = new ArrayList<>();// array de workers
+    private ArrayList<Task> tasks = new ArrayList<>();// array tasks
+    private ArrayList<Result> result = new ArrayList<>();//array pass found
+    private static final String url = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt";
+    private ArrayList<String> paths = new ArrayList<>();
 
-    public TaskSubjectImpl(String name, String hashType, String hashPass) throws RemoteException {
+    public TaskSubjectImpl(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta) throws RemoteException {
         super();
         this.name = name;
         this.hashType = hashType;
         this.hashPass = hashPass;
+        this.creditsWordProcessed = creditsWordProcessed;
+        this.creditsWordFound = creditsWordFound;
+        this.delta = delta;
+        this.subjectState.setmsg("Available");
+        this.status = this.subjectState.AVAILABLE;
+        paths.add("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
+        paths.add("C:\\Users\\Rui\\Documents\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
+        paths.add("C:\\Users\\tmsl9\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
+        createSubTasks();
     }
 
-    /*public TaskSubjectImpl(String name, String hashType, String hashPass, String creditsPerWord, String creditsTotal) throws RemoteException {
-        super();
-        this.name = name;
-        this.hashType = hashType;
-        this.hashPass = hashPass;
-        this.creditsPerWord = creditsPerWord;
-        this.creditsTotal = creditsTotal;
-    }*/
+    /** Em testes -> para adicionar tasks na fila */
+    public void sendToQueue() throws RemoteException{
+        /*try {
+            Connection connection = RabbitUtils.newConnection2Server("localhost", "guest", "guest");
+            Channel channel=RabbitUtils.createChannel2Server(connection);
+            boolean durable=true;
+            channel.queueDeclare(name, durable, false, false, null);
 
-    @Override
-    public void divideFile() throws RemoteException{
+            String message="url / start / delta";
+
+            channel.basicPublish("", name, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+            System.out.println(" [x] Sent '" + message + "'");
+
+        } catch (IOException|TimeoutException e) {
+            e.printStackTrace();
+        }*/
+    }
+
+    /** divide linhas para criar sub tasks */
+    public void createSubTasks(){
         try {
-            // ficheiro do servidor
-            File passwords = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
-            Scanner passwordsReader = new Scanner(passwords);
-
-            try {
-                // ficheiro para entregar ao cliente
-                File txtToDelivery = createFile(start,delta);
-
-                if(txtToDelivery != null){
-                    FileWriter txtToDeliveryReader = new FileWriter(txtToDelivery);
-
-                    for(int i=start;i<start+delta;i++){
-                        String data = passwordsReader.nextLine();
-                        txtToDeliveryReader.write(data+"\n");
-
-                        if(passwordsReader.nextLine() == null){
-                            break;
+            for(String path: paths){
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader(path));
+                    int lines = 0;
+                    while (reader.readLine() != null) {
+                        if(lines == start + delta - 1){
+                            Task task = new Task(url,start,delta,this);
+                            tasks.add(task);
+                            start = lines + 1;
                         }
+                        lines++;
+                    }
+                    int lastDelta = delta;
+                    lastDelta = lines - start;
+                    if(lastDelta != 0){
+                        Task task = new Task(url,start,lastDelta,this);
+                        tasks.add(task);
+                        reader.close();
                     }
 
-                    txtToDeliveryReader.close();
-                    passwordsReader.close();
+                    for (Task task:tasks) {
+                        System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
+                    }
+                    break;
+                }catch (FileNotFoundException ignored){}
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-                    start = start + delta;
+    @Override
+    public void changeWorkerState(State state, String hash, String pass) throws RemoteException {
+        switch (state.getmsg()){
+            case "Found":
+                for (int i = 0; i < this.hashPass.size() ; i ++){
+                    if(this.hashPass.get(i).compareTo(hash)==0){
+                        this.result.add(new Result(hash,pass));
+                        this.hashPass.remove(i);
+                        break;
+                    }
                 }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+                System.out.println("FOUND");
+                if(this.hashPass.isEmpty()){
+                    System.out.println("COMPLETE");
+                    this.subjectState.setmsg("Completed");
+                    this.status = this.subjectState.COMPLETED;
+                    try { /** Notification in server, we have **/
+                        TrayIconDemo notif = new TrayIconDemo(this.name);
+                    } catch (AWTException e) {
+                        e.printStackTrace();
+                    }
+                    available = false;
+                }else{
+                    System.out.println("NOT COMPLETE");
+                    this.subjectState.setmsg("Working");
+                    this.status = this.subjectState.WORKING;
+                }
+                break;
+                /** Se nao encontrar nenhuma palavra no range */
+            case "Not Found":
+                if(!this.subjectState.getmsg().equals("Completed") && !this.subjectState.getmsg().equals("Paused")) {
+                    this.subjectState.setmsg("Working");
+                    this.status = this.subjectState.WORKING;
+                }
+                break;
+            case "Paused":
+                System.out.println("PAUSED!");
+                break;
         }
-
+        this.notifyAllObservers();
     }
 
-    private File createFile(Integer start,Integer delta) {
-        try {
-            String filename = name+start+delta+"txt";
-            File newFile = new File("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\"+filename);
-            if (newFile.createNewFile()) {
-                System.out.println("File created");
-                return newFile;
-            } else {
-                System.out.println("Error!");
-                return null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-    public void notifyAllObservers(){
-        /*for (WorkerObserverRI obs: workers) {
+    @Override
+    public void notifyAllObservers() throws RemoteException {
+        for (WorkerObserverRI obs: workers) {
             try {
-//                obs.update();
-            } catch (RemoteException ex) {
-                Logger.getLogger(TaskSubjectImpl.class.getName()).log(Level.SEVERE,null,ex);
+                obs.taskUpdated();
+            } catch (RemoteException | InterruptedException ex) {
+                ex.printStackTrace();
             }
-        }*/
+        }
     }
 
     @Override
     public void attach(WorkerObserverRI obsRI) throws RemoteException {
         if(!this.workers.contains(obsRI)){
             this.workers.add(obsRI);
+            obsRI.setTask(getTaskFromArray());
         }
     }
 
@@ -125,9 +167,8 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     @Override
-    public void setState(State state) throws RemoteException {
+    public void setState(State state){
         this.subjectState = state;
-        this.notifyAllObservers();
     }
 
     @Override
@@ -141,10 +182,61 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
     }
 
     @Override
-    public String getHashPass() {
+    public ArrayList<String> getHashPass() {
         return hashPass;
     }
 
+    @Override
+    public boolean isAvailable() throws RemoteException {
+        return available;
+    }
+
+    @Override
+    public Task getTaskFromArray() throws RemoteException {
+        Task task = this.tasks.get(0);
+        if(task != null && this.tasks.size() == 1){
+            this.tasks.remove(0);
+            this.available = false;
+            return task;
+        }
+        if(task != null) {
+            this.tasks.remove(0);
+            return task;
+        }
+        return null;
+    }
+
+    @Override
+    public ArrayList<Result> getResult() throws RemoteException {
+        return result;
+    }
+
+    @Override
+    public void pause() throws RemoteException {
+        if(!this.subjectState.getmsg().equals("Completed") || !this.subjectState.getmsg().equals("Paused")) {
+            System.out.println("PAUSED");
+            this.subjectState.setmsg("Paused");
+            this.status = this.subjectState.PAUSED;
+            this.notifyAllObservers();
+        }
+    }
+
+    @Override
+    public void resume() throws RemoteException{
+        if(this.subjectState.getmsg().equals("Paused")) {
+            this.subjectState.setmsg("Working");
+            this.status = this.subjectState.WORKING;
+            this.notifyAllObservers();
+        }
+    }
 
 
+    @Override
+    public void stop() throws RemoteException {
+        this.hashPass.clear();
+        this.subjectState.setmsg("Completed");
+        this.status = this.subjectState.COMPLETED;
+        this.notifyAllObservers();
+        this.available = false;
+    }
 }

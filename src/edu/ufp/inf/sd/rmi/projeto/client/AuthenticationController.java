@@ -8,11 +8,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class AuthenticationController implements Initializable {
@@ -97,6 +99,7 @@ public class AuthenticationController implements Initializable {
 
         if(!username.isEmpty() && !password.isEmpty()) {
             UserSessionRI sessionRI = this.client.userFactoryRI.login(username, password);
+            this.client.username = username;
             if (sessionRI != null) {
                 this.client.userSessionRI = sessionRI;
                 goToMenuScene(actionEvent);
@@ -111,13 +114,14 @@ public class AuthenticationController implements Initializable {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("layouts/menu.fxml"));
         Parent root = loader.load();
+        root.setStyle("-fx-background-color: #c4c4c4;");
         Scene scene = new Scene(root);
         MenuController menuController = loader.getController();
         menuController.initData(this.client);
         Stage primaryStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        primaryStage.setX(25);
-        primaryStage.setY(0);
+        primaryStage.setMaximized(true);
         primaryStage.setTitle("Menu");
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream( "logo/logo.png" )));
         primaryStage.setScene(scene);
         primaryStage.show();
     }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class UserSessionImpl extends UnicastRemoteObject implements UserSessionRI{
 
-    private DBMockup db;
+    private final DBMockup db;
 
     public UserSessionImpl(DBMockup db) throws RemoteException {
         super();
@@ -27,10 +27,19 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
 
     // cria nova task
     @Override
-    public TaskSubjectRI createTask(String name, String hashType, String hashPass) throws RemoteException {
-        TaskSubjectRI taskSubjectRI = new TaskSubjectImpl(name, hashType, hashPass);
-        db.addTask(taskSubjectRI);  // adiciona task a DB
+    public TaskSubjectRI createTask(String name, String hashType, ArrayList<String> hashPass, Integer creditsProc, Integer creditsFound, Integer delta, String uname) throws RemoteException {
+        /** verifica se existe taskgroup com nome dado */
+        if(db.getTask(name) != null){
+            return null;
+        }
+        TaskSubjectRI taskSubjectRI = new TaskSubjectImpl(name, hashType, hashPass, creditsProc, creditsFound, delta);
+        db.assocTaskToUser(uname, taskSubjectRI);  // adiciona task a DB
         return taskSubjectRI;
+    }
+
+    @Override
+    public void createWorker(WorkerObserverRI workerObserverRI, String uname) throws RemoteException {
+        db.assocWorkerToUser(uname, workerObserverRI);
     }
 
     @Override
@@ -40,13 +49,42 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
     }
 
     @Override
-    public void deleteTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
-        db.removeTask(taskSubjectRI);
+    public void stopTask(TaskSubjectRI taskSubjectRI,String uname) throws RemoteException {
+        TaskSubjectRI taskDB = db.getTask(taskSubjectRI.getName());
+        if(taskDB != null) {
+            taskDB.stop();
+            db.removeTask(taskDB, uname);
+        }
     }
 
     @Override
     public void pauseTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
-
+        TaskSubjectRI taskDB = db.getTask(taskSubjectRI.getName());
+        if(taskDB != null) {
+            taskDB.pause();
+        }
     }
 
+    @Override
+    public void resumeTask(TaskSubjectRI taskSubjectRI) throws RemoteException {
+        TaskSubjectRI taskDB = db.getTask(taskSubjectRI.getName());
+        if(taskDB != null) {
+            taskDB.resume();
+        }
+    }
+
+    @Override
+    public ArrayList<WorkerObserverRI> getWorkersRI(String uname) throws RemoteException {
+        return db.getWorkersFromUser(uname);
+    }
+
+    @Override
+    public ArrayList<TaskSubjectRI> getTasksRI(String uname) throws RemoteException {
+        return db.getTasksFromUser(uname);
+    }
+
+    @Override
+    public int getSizeWorkersDB() throws RemoteException {
+        return db.allWorkers().size()+1;
+    }
 }

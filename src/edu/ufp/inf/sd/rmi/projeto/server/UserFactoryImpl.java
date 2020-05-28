@@ -28,9 +28,13 @@ public class UserFactoryImpl extends UnicastRemoteObject implements UserFactoryR
     public UserSessionRI login(String uname, String pw) throws RemoteException {
         if (db.exists(uname, pw)) {
             if(!this.db.getSessions().containsKey(uname)){
-                UserSessionRI userSessionRI = new UserSessionImpl(db);
-                this.db.addSession(uname,userSessionRI);     // insere no hashmap de sessoes
-                return userSessionRI;
+                for (User user:db.getUsers()) {
+                    if(user.getUname().equals(uname)){
+                        UserSessionRI userSessionRI = new UserSessionImpl(db);
+                        this.db.addSession(uname,userSessionRI);     // insere no hashmap de sessoes
+                        return userSessionRI;
+                    }
+                }
             } else {
                 return this.db.getSessions().get(uname);
             }
