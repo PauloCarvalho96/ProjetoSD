@@ -206,8 +206,7 @@ public class Strategy2Controller implements Initializable {
                 hashPass.add("f9cd0599ad0623251da70f2a9c97a9a89c2f034e9ab7a93cef3702d3c1d9b377738c6410079ad6a74cef9b84b4396621b4d0954a4419c302d389ce4ddbb03573");
                 hashPass.add("26016268623f834338088a1492e3caf284ac00093fefef95ddfdb4f7ed34b5e7d80e7ceceef7902d20762f93323eefd2900d38eb065213612c94a3fecb13e4ac");
                 hashPass.add("681e29b8f594a0560a8568cd1ddef081feccfd564e164207b2151e14620092f9fbbb20c9f79daaf2a01e7dda846a326a02a1cb3ddb27f2c685e43d2c86f2c5ad");
-                hashPass.add("0d61f3d4103becb2799e9ee5b2f9f10262ef9e790fed2ff5b3bce9ef750f05c9be186f48636ed9b6f551e31796d46b19352012400841c267ddee40e27cc0af32");
-                hashPass.add("33fcfbb7f877bea02b03816aa9819162564d890b68483f45217ce53d44185168e1beea80de8d33f5fb36548c8586fa8e99130f3ce12c00ada2990867ee6ab124");
+                hashPass.add("9ca5e00e64ca5f5e03b2cd02a38dee70d2d559608c8ffe1814029d3f2fa86bcc245a5eace3da57efa9f2dac58ac21750bf61ba0dc812b01b45b02010ea271a68");
 
                 TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username);
                 if (taskSubjectRI != null) {

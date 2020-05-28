@@ -37,6 +37,10 @@ public class DBMockup implements Serializable {
         users.add(user1);
         userWorkers.put(user1.getUname(), new ArrayList<>());
         userTasks.put(user1.getUname(), new ArrayList<>());
+        User user2 = new User("3","3");
+        users.add(user2);
+        userWorkers.put(user2.getUname(), new ArrayList<>());
+        userTasks.put(user2.getUname(), new ArrayList<>());
     }
 
     // registo

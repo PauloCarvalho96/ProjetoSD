@@ -24,8 +24,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private ArrayList<Thread> threads = new ArrayList<>();
     private int actualLine;
 
-    private int work = 0;
-
     public WorkerObserverImpl(int id, String username, Integer n_threads) throws RemoteException {
         super();
         this.id = id;
@@ -93,7 +91,9 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 delta+=res;
             }
             threads.add(new Thread(new MyThread(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task)));
+            System.out.println("SIZE:"+threads.size());
             threads.get(i).start();
+            System.out.println(threads.get(i).getId());
         }
     }
 
@@ -174,8 +174,9 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     @Override
-    public void taskUpdated() throws RemoteException {
-        switch (this.task.getTaskSubjectRI().getState().getmsg()) {
+    synchronized public void taskUpdated() throws RemoteException {
+        String state = this.task.getTaskSubjectRI().getState().getmsg();
+        switch (state) {
             case "Completed":
                 if(!this.lastObserverState.getmsg().equals("Completed")) {
                     this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
@@ -185,10 +186,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             case "Working":
                 if(!this.lastObserverState.getmsg().equals("Working")) {
                     this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
-                    if (work % 1000 == 0) {
-                        System.out.println("\nStill working!!\n");
-                    }
-                    ++work;
+                    System.out.println("\nStill working!!\n");
                 }
                 break;
             case "Paused":
