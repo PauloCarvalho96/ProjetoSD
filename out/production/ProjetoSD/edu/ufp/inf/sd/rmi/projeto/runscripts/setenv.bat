@@ -25,7 +25,7 @@
 
 @REM ==== JAVA NAMING STUFF ====
 @Set JAVAPROJ_NAME=ProjetoSD
-@set JAVAPROJ=%WORKDRIVE%:\\Users\\%USERNAME%\\\GitHub\\%JAVAPROJ_NAME%
+@set JAVAPROJ=%WORKDRIVE%:\\Users\\%USERNAME%\\GitHub\\%JAVAPROJ_NAME%
 @Set PACKAGE=projeto
 @Set PACKAGE_PREFIX=edu.ufp.inf.sd.rmi
 @Set PACKAGE_PREFIX_FOLDERS=edu/ufp/inf/sd/rmi
