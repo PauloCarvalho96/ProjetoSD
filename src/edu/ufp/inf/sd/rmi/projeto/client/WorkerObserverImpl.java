@@ -174,7 +174,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     @Override
-    public void taskUpdated() throws RemoteException, InterruptedException {
+    public void taskUpdated() throws RemoteException {
         switch (this.task.getTaskSubjectRI().getState().getmsg()) {
             case "Completed":
                 if(!this.lastObserverState.getmsg().equals("Completed")) {

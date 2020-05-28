@@ -81,14 +81,13 @@ public class MyThread implements Runnable {
                         }
                     }
                     State state = new State("");
-                    //System.out.println(st);
-                    if(found){
-                        state.setmsg(state.FOUND);
-                        this.workerObserverRI.updateFound(state,result,st, line);
-                    }else{
-                        state.setmsg(state.NOT_FOUND);
-                        this.workerObserverRI.updateNotFound(state, line);
-                    }
+                        if(found){
+                            state.setmsg(state.FOUND);
+                            this.workerObserverRI.updateFound(state,result,st, line);
+                        } else{
+                            state.setmsg(state.NOT_FOUND);
+                            this.workerObserverRI.updateNotFound(state, line);
+                        }
                 }
                 if (line == start + delta) {
                     break;

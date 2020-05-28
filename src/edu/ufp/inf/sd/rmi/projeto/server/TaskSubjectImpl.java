@@ -8,6 +8,7 @@ import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectRI {
 
@@ -139,13 +140,15 @@ public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectR
 
     @Override
     public void notifyAllObservers() throws RemoteException {
-        for (WorkerObserverRI obs: workers) {
-            try {
-                obs.taskUpdated();
-            } catch (RemoteException | InterruptedException ex) {
-                ex.printStackTrace();
+
+            for (WorkerObserverRI obs: workers) {
+                try {
+                    obs.taskUpdated();
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
             }
-        }
+
     }
 
     @Override
