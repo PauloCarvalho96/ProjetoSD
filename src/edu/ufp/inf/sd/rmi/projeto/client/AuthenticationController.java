@@ -112,11 +112,13 @@ public class AuthenticationController implements Initializable {
 
     public void goToChoiceScene(ActionEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("layouts/choice.fxml"));
+        /** testes */
+        loader.setLocation(getClass().getResource("layouts/strategy1.fxml"));
         Parent root = loader.load();
         root.setStyle("-fx-background-color: #c4c4c4;");
         Scene scene = new Scene(root);
-        ChoiceController choiceController = loader.getController();
+        /** testes */
+        Strategy1Controller choiceController = loader.getController();
         choiceController.initData(this.client);
         Stage primaryStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         primaryStage.setMaximized(true);

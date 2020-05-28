@@ -66,9 +66,21 @@ public class ChoiceController implements Initializable {
         }
     }
 
-    public void handlerStrategy1(ActionEvent actionEvent) { choice = 1; }
+    public void handlerStrategy1(ActionEvent actionEvent) {
+        strategy2RB.setSelected(false);
+        strategy3RB.setSelected(false);
+        choice = 1;
+    }
 
-    public void handlerStrategy2(ActionEvent actionEvent) { choice = 2; }
+    public void handlerStrategy2(ActionEvent actionEvent) {
+        strategy1RB.setSelected(false);
+        strategy3RB.setSelected(false);
+        choice = 2;
+    }
 
-    public void handlerStrategy3(ActionEvent actionEvent) { choice = 3; }
+    public void handlerStrategy3(ActionEvent actionEvent) {
+        strategy1RB.setSelected(false);
+        strategy2RB.setSelected(false);
+        choice = 3;
+    }
 }
