@@ -27,7 +27,7 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
 
     // cria nova task
     @Override
-    public TaskSubjectRI createTask(String name, String hashType, ArrayList<String> hashPass, Integer creditsProc, Integer creditsFound, Integer delta, String uname) throws RemoteException {
+    public TaskSubjectRI createTask(String name, String hashType, ArrayList<String> hashPass, Integer creditsProc, Integer creditsFound, Integer delta, String uname, int strategy) throws RemoteException {
         /** verifica se existe taskgroup com nome dado */
         if(db.getTask(name) != null){
             return null;
