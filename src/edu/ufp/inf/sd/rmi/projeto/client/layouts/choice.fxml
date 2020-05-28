@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ufp.inf.sd.rmi.projeto.client.ChoiceController">
+   <children>
+      <Label layoutX="860.0" layoutY="97.0" text="Wich strategy do you want to pick?" />
+      <RadioButton fx:id="strategy1RB" layoutX="909.0" layoutY="135.0" mnemonicParsing="false" onAction="#handlerStrategy1" text="Strategy 1" />
+      <RadioButton fx:id="strategy2RB" layoutX="909.0" layoutY="167.0" mnemonicParsing="false" onAction="#handlerStrategy2" text="Strategy 2" />
+      <RadioButton fx:id="strategy3RB" layoutX="909.0" layoutY="198.0" mnemonicParsing="false" onAction="#handlerStrategy3" text="Strategy 3" />
+      <Button fx:id="startStrategyBut" layoutX="900.0" layoutY="240.0" mnemonicParsing="false" onAction="#handlerStartStrategy" prefHeight="35.0" prefWidth="94.0" text="Start strategy" />
+   </children>
+</AnchorPane>
