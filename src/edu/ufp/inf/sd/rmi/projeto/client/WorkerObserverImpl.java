@@ -1,9 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
-import edu.ufp.inf.sd.rmi.projeto.server.State;
-import edu.ufp.inf.sd.rmi.projeto.server.Task;
-import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectImplS3;
-import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
+import edu.ufp.inf.sd.rmi.projeto.server.*;
 
 import java.io.*;
 import java.net.URL;
@@ -24,7 +21,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private int creditsWon;
     private ArrayList<Thread> threads = new ArrayList<>();
     private int actualLine;
-    ArrayList<Integer> linesWithWordLength = new ArrayList<>();
 
     public WorkerObserverImpl(int id, String username, Integer n_threads) throws RemoteException {
         super();
@@ -35,52 +31,11 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.lastObserverState = new State("Available");
     }
 
-    private ArrayList<Integer> doWorkDividing() throws RemoteException {
-        try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
-             FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
-            byte dataBuffer[] = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-                fileOutputStream.write(dataBuffer, 0, bytesRead);
-            }
-        } catch (IOException e) {
-            System.out.println("Error");
-        }
-
-        int thread_size=n_threads;
-
-        int start = task.getStart();
-
-        int delta = task.getDelta();
-
-        int res = delta % thread_size;
-
-        delta = delta / thread_size;
-
-        for(int i = 0; i < thread_size ; i++ , start+=delta){
-            if(i==thread_size-1 && res!=0){
-                delta+=res;
-            }
-            threads.add(new Thread(new Dividing(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task)));
-            System.out.println("SIZE:"+threads.size());
-            threads.get(i).start();
-            System.out.println(threads.get(i).getId());
-        }
-        return linesWithWordLength;
-    }
-
-    private void doWorkHashing() throws RemoteException {
-        try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
-             FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
-            byte dataBuffer[] = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-                fileOutputStream.write(dataBuffer, 0, bytesRead);
     /** threads vao fazer o trabalho */
     private void doWork() throws RemoteException {
         int delta = 0;
         int start = 0;
-        if (!(task.getTaskSubjectRI() instanceof TaskSubjectImplS3)){
+        if (task.getTaskSubjectRI().getStrategy() != 3){
             try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
                  FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
                 byte dataBuffer[] = new byte[1024];
@@ -193,7 +148,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void setTask(Task task) throws RemoteException {
-        if(task.getTaskSubjectRI() instanceof TaskSubjectImplS3){
+        if(task.getTaskSubjectRI().getStrategy() == 3){
             createFileTask(task);
         }else{
             this.task = task;
@@ -207,12 +162,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     public void createFileTask(Task task) throws RemoteException {
         this.task = task;
         this.taskName = task.getTaskSubjectRI().getName();
-        this.wordsSize = task.getDelta();
-        if(task.getTaskSubjectRI().getProcess() != null && task.getTaskSubjectRI().getProcess().compareTo("Dividing")==0){
-            doWorkDividing();
-        } else {
-            doWorkHashing();
-        }
         this.wordsSize = task.getWordsSize();
         try {
             File file = new File("file"+id+".txt");
@@ -236,7 +185,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         // If string is empty
         if (str.length() == 0) {
             try {
-                file.write(ans);
+                file.write(ans+"\n");
             } catch (IOException e) {
                 System.out.println("An error occurred while writing in file.");
                 e.printStackTrace();
@@ -282,11 +231,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 }
                 break;
         }
-    }
-
-    @Override
-    public void setLinesWithWordLength(int line) throws RemoteException {
-        this.linesWithWordLength.add(line);
     }
 
 }
