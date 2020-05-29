@@ -1,7 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Task implements Serializable {
 

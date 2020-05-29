@@ -12,13 +12,10 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     public String alphabet;
 
     public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize, String alphabet) throws RemoteException {
-        super(name, hashType, hashPass, creditsWordProcessed, creditsWordFound, delta);
-        System.out.println("\n\nPUTEDAS FRESCAS11111\n"+name);
+        super(name, hashType, hashPass, creditsWordProcessed, creditsWordFound, delta,3);
         this.wordsSize = wordsSize;
         this.alphabet = alphabet;
         createSubTasks();
-        System.out.println("\n\nPUTEDAS FRESCAS22222\n"+this.getName());
-        System.out.println("\n\nPUTEDAS FRESCAS33333\n"+this.alphabet);
     }
 
     /** divide linhas para criar sub tasks */
@@ -28,7 +25,14 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
         recursiveAlphabet(alphabet.toCharArray(), new char[wordsSize], 0, alphabet.length() - 1, 0, wordsSize);
         for (Task task:tasks) {
             System.out.println("\nAlphabet:    "+"\""+task.getAlphabet()+"\"");
+            System.out.println("\n\nQUAL ÉEEEEE: ");
+            System.out.println(this.strategy);
         }
+    }
+
+    @Override
+    public Integer getStrategy() throws RemoteException {
+        return this.strategy;
     }
 
     @Override
@@ -107,22 +111,22 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
 
     @Override
     public String getHashType() throws RemoteException {
-        return null;
+        return this.hashType;
     }
 
     @Override
     public ArrayList<String> getHashPass() throws RemoteException {
-        return null;
+        return this.hashPass;
     }
 
     @Override
     public String getName() throws RemoteException {
-        return null;
+        return this.name;
     }
 
     @Override
     public State getState() throws RemoteException {
-        return null;
+        return this.subjectState;
     }
 
     @Override

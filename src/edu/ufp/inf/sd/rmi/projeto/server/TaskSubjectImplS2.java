@@ -15,7 +15,7 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
     public int wordsSize;
 
     public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize) throws RemoteException {
-        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta);
+        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,2);
         this.wordsSize = wordsSize;
         createSubTasks();
     }
@@ -53,6 +53,11 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Integer getStrategy() throws RemoteException {
+        return this.strategy;
     }
 
     @Override
