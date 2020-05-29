@@ -13,29 +13,28 @@ import java.util.Iterator;
 public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubjectRI {
 
     private String process;
-
-    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, String process) throws RemoteException {
-        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta);
-        this.process=process;
     public int wordsSize;
 
     public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize) throws RemoteException {
-        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta);
+        super(name, hashType, hashPass, creditsWordProcessed, creditsWordFound, delta);
+        this.process = process;
         this.wordsSize = wordsSize;
         createSubTasks();
     }
 
-    /** divide linhas para criar sub tasks */
+    /**
+     * divide linhas para criar sub tasks
+     */
     @Override
-    public void createSubTasks() throws RemoteException{
+    public void createSubTasks() throws RemoteException {
         try {
-            for(String path: paths){
+            for (String path : paths) {
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader(path));
                     int lines = 0;
                     while (reader.readLine() != null) {
-                        if(lines == start + delta - 1){
-                            Task task = new Task(url,start,delta,this);
+                        if (lines == start + delta - 1) {
+                            Task task = new Task(url, start, delta, this);
                             tasks.add(task);
                             start = lines + 1;
                         }
@@ -43,17 +42,18 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                     }
                     int lastDelta = delta;
                     lastDelta = lines - start;
-                    if(lastDelta != 0){
-                        Task task = new Task(url,start,lastDelta,this);
+                    if (lastDelta != 0) {
+                        Task task = new Task(url, start, lastDelta, this);
                         tasks.add(task);
                         reader.close();
                     }
 
-                    for (Task task:tasks) {
+                    for (Task task : tasks) {
                         System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
                     }
                     break;
-                }catch (FileNotFoundException ignored){}
+                } catch (FileNotFoundException ignored) {
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,17 +62,17 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     @Override
     public void changeWorkerState(State state, String hash, String pass) throws RemoteException {
-        switch (state.getmsg()){
+        switch (state.getmsg()) {
             case "Found":
-                for (int i = 0; i < this.hashPass.size() ; i ++){
-                    if(this.hashPass.get(i).compareTo(hash)==0){
-                        this.result.add(new Result(hash,pass));
+                for (int i = 0; i < this.hashPass.size(); i++) {
+                    if (this.hashPass.get(i).compareTo(hash) == 0) {
+                        this.result.add(new Result(hash, pass));
                         this.hashPass.remove(i);
                         break;
                     }
                 }
                 System.out.println("FOUND");
-                if(this.hashPass.isEmpty()){
+                if (this.hashPass.isEmpty()) {
                     System.out.println("COMPLETE");
                     this.subjectState.setmsg("Completed");
                     this.status = this.subjectState.COMPLETED;
@@ -82,7 +82,7 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                         e.printStackTrace();
                     }
                     available = false;
-                }else{
+                } else {
                     System.out.println("NOT COMPLETE");
                     this.subjectState.setmsg("Working");
                     this.status = this.subjectState.WORKING;
@@ -90,7 +90,7 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                 break;
             /** Se nao encontrar nenhuma palavra no range */
             case "Not Found":
-                if(!this.subjectState.getmsg().equals("Completed") && !this.subjectState.getmsg().equals("Paused")) {
+                if (!this.subjectState.getmsg().equals("Completed") && !this.subjectState.getmsg().equals("Paused")) {
                     this.subjectState.setmsg("Working");
                     this.status = this.subjectState.WORKING;
                 }
@@ -117,7 +117,7 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     @Override
     public void pause() throws RemoteException {
-        if(!this.subjectState.getmsg().equals("Completed") || !this.subjectState.getmsg().equals("Paused")) {
+        if (!this.subjectState.getmsg().equals("Completed") || !this.subjectState.getmsg().equals("Paused")) {
             System.out.println("PAUSED");
             this.subjectState.setmsg("Paused");
             this.status = this.subjectState.PAUSED;
@@ -126,8 +126,8 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
     }
 
     @Override
-    public void resume() throws RemoteException{
-        if(this.subjectState.getmsg().equals("Paused")) {
+    public void resume() throws RemoteException {
+        if (this.subjectState.getmsg().equals("Paused")) {
             this.subjectState.setmsg("Working");
             this.status = this.subjectState.WORKING;
             this.notifyAllObservers();
@@ -167,6 +167,7 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
         this.notifyAllObservers();
         this.available = false;
     }
+
     @Override
     public String getProcess() throws RemoteException {
         return process;
