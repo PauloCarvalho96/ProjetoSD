@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubjectRI {
+    public Integer wordsSize;
+    public String alphabet;
 
-    public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta) throws RemoteException {
+    public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, String length, String alphabet) throws RemoteException {
         super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta);
         createSubTasks();
     }
@@ -133,9 +135,9 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
         this.available = false;
     }
 
-    public void recursiveAlphabet(char[] arr, char[] data, int start, int end, int index, int r)
+    public void recursiveAlphabet(char[] alphabet, char[] data, int start, int end, int index, int wordSize)
     {
-        if (index == r)
+        if (index == wordSize)
         {
             String str = new String(data);
             Task task = new Task(this,str);
@@ -143,10 +145,10 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
             return;
         }
 
-        for (int i=start; i<=end && end-i+1 >= r-index; i++)
+        for (int i=start; i<=end && end-i+1 >= wordSize-index; i++)
         {
-            data[index] = arr[i];
-            recursiveAlphabet(arr, data, i+1, end, index+1, r);
+            data[index] = alphabet[i];
+            recursiveAlphabet(alphabet, data, i+1, end, index+1, wordSize);
         }
     }
 }
