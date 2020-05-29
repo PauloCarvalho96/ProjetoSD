@@ -12,18 +12,18 @@ import java.util.Iterator;
 
 public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubjectRI {
 
-    public Integer passLenght;
+    public Integer wordsSize;
     public String process;
 
-    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer passLenght) throws RemoteException {
+    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize) throws RemoteException {
         super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,2);
-        this.passLenght = passLenght;
+        this.wordsSize = wordsSize;
         this.process = "Dividing";
-        createSubTasks();
+        createSubTasksDividing();
     }
 
-    @Override
-    public void createSubTasks() throws RemoteException{
+    /** Tasks para divisao do ficheiro por linhas */
+    public void createSubTasksDividing(){
         try {
             for(String path: paths){
                 try {
@@ -32,7 +32,8 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                     while (reader.readLine() != null) {
                         if(lines == start + delta - 1){
                             Task task = new Task(url,start,delta,this);
-                            tasks.add(task);
+                            task.setWordsSize(wordsSize);
+                            dividingTasks.add(task);
                             start = lines + 1;
                         }
                         lines++;
@@ -41,11 +42,12 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                     lastDelta = lines - start;
                     if(lastDelta != 0){
                         Task task = new Task(url,start,lastDelta,this);
-                        tasks.add(task);
+                        task.setWordsSize(wordsSize);
+                        dividingTasks.add(task);
                         reader.close();
                     }
 
-                    for (Task task:tasks) {
+                    for (Task task:dividingTasks) {
                         System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
                     }
                     break;
@@ -57,8 +59,8 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
     }
 
     @Override
-    public Integer getStrategy() throws RemoteException {
-        return this.strategy;
+    public void createSubTasks() throws RemoteException{
+
     }
 
     @Override
@@ -135,31 +137,6 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
     }
 
     @Override
-    public String getHashType() throws RemoteException {
-        return null;
-    }
-
-    @Override
-    public ArrayList<String> getHashPass() throws RemoteException {
-        return null;
-    }
-
-    @Override
-    public String getName() throws RemoteException {
-        return null;
-    }
-
-    @Override
-    public State getState() throws RemoteException {
-        return null;
-    }
-
-    @Override
-    public ArrayList<Result> getResult() throws RemoteException {
-        return result;
-    }
-
-    @Override
     public void stop() throws RemoteException {
         this.hashPass.clear();
         this.subjectState.setmsg("Completed");
@@ -168,8 +145,42 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
         this.available = false;
     }
 
+    @Override
+    public String getHashType() throws RemoteException {
+        return this.hashType;
+    }
+
+    @Override
+    public ArrayList<String> getHashPass() throws RemoteException {
+        return this.hashPass;
+    }
+
+    @Override
+    public String getName() throws RemoteException {
+        return this.name;
+    }
+
+    @Override
+    public State getState() throws RemoteException {
+        return this.subjectState;
+    }
+
+    @Override
+    public ArrayList<Result> getResult() throws RemoteException {
+        return result;
+    }
+
+    @Override
+    public Integer getStrategy() throws RemoteException {
+        return this.strategy;
+    }
+
     public String getProcess() throws RemoteException {
         return process;
+    }
+
+    public Integer getWordsSize() {
+        return wordsSize;
     }
 
 }

@@ -20,6 +20,7 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
     public Integer delta;     //quantidade de linhas
     public ArrayList<WorkerObserverRI> workers = new ArrayList<>();// array de workers
     public ArrayList<Task> tasks = new ArrayList<>();// array tasks
+    public ArrayList<Task> dividingTasks = new ArrayList<>();
     public ArrayList<Result> result = new ArrayList<>();//array pass found
     public static final String url = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt";
     public ArrayList<String> paths = new ArrayList<>();
@@ -40,11 +41,18 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
         paths.add("C:\\Users\\tmsl9\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
     }
 
-
     public void attach(WorkerObserverRI obsRI) throws RemoteException {
         if(!this.workers.contains(obsRI)){
             this.workers.add(obsRI);
             obsRI.setTask(getTaskFromArray());
+        }
+    }
+
+    /** for dividing */
+    public void attachToDividing(WorkerObserverRI obsRI) throws RemoteException{
+        if(!this.workers.contains(obsRI)){
+            this.workers.add(obsRI);
+            obsRI.setTask(getTaskFromArrayDividing());
         }
     }
 
@@ -69,6 +77,20 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
         }
         if(task != null) {
             this.tasks.remove(0);
+            return task;
+        }
+        return null;
+    }
+
+    public Task getTaskFromArrayDividing() throws RemoteException {
+        Task task = this.dividingTasks.get(0);
+        if(task != null && this.dividingTasks.size() == 1){
+            this.dividingTasks.remove(0);
+            this.available = false;
+            return task;
+        }
+        if(task != null) {
+            this.dividingTasks.remove(0);
             return task;
         }
         return null;

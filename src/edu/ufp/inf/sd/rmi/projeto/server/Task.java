@@ -10,7 +10,6 @@ public class Task implements Serializable {
     private Integer delta;
     private TaskSubjectRI taskSubjectRI;
     private State state;
-    private Integer passLenght;
     public String alphabet;
     public Integer wordsSize;
 
@@ -45,15 +44,15 @@ public class Task implements Serializable {
         return taskSubjectRI;
     }
 
-    public int getLenght() throws RemoteException {
-        return passLenght;
-    }
-
     public String getAlphabet() {
         return alphabet;
     }
 
     public Integer getWordsSize() {
         return wordsSize;
+    }
+
+    public void setWordsSize(Integer wordsSize) {
+        this.wordsSize = wordsSize;
     }
 }

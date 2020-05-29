@@ -59,9 +59,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 delta+=res;
             }
             threads.add(new Thread(new Dividing(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task)));
-            System.out.println("SIZE:"+threads.size());
             threads.get(i).start();
-            System.out.println(threads.get(i).getId());
         }
     }
 
@@ -83,6 +81,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             start = task.getStart();
 
             delta = task.getDelta();
+
         }else{
             System.out.println("\n\n\nOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n\n");
             try {
@@ -141,7 +140,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void removeWorker() throws RemoteException {
-
     }
 
     @Override
@@ -184,10 +182,15 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         if(task.getTaskSubjectRI().getStrategy() == 3){
             createFileTask(task);
         }else{
-            this.task = task;
-            this.taskName = task.getTaskSubjectRI().getName();
-            this.wordsSize = task.getDelta();
-            doWork();
+            if(task.getTaskSubjectRI().getStrategy() == 2 && task.getTaskSubjectRI().getProcess().compareTo("Dividing")==0){
+                this.task = task;
+                doWorkDividing();
+            } else {
+                this.task = task;
+                this.taskName = task.getTaskSubjectRI().getName();
+                this.wordsSize = task.getDelta();
+                doWork();
+            }
         }
     }
 
@@ -268,6 +271,8 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void setLinesWithWordLength(int line) throws RemoteException {
+        System.out.println("\n"+line);
         this.linesWithWordLength.add(line);
     }
+
 }

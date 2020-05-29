@@ -59,21 +59,20 @@ public class Dividing implements Runnable {
                     return;
                 }
 
-                if(st.length()== task.getLenght() && !workerObserverRI.getStateWorker().getmsg().equals("Paused")){
+                if(st.length() == task.getWordsSize() && !workerObserverRI.getStateWorker().getmsg().equals("Paused")){
                     boolean found = false;
-                    workerObserverRI.setLinesWithWordLength(line);
+                    workerObserverRI.setLinesWithWordLength(line+1);
 
-                    found = true;
+                    /*found = true;
 
                     State state = new State("");
-                    //System.out.println(st);
                     if(found){
                         state.setmsg(state.FOUND);
                         this.workerObserverRI.updateFound(state,result,st, line);
                     }else if(line % (delta * 0.1) == 0){
                         state.setmsg(state.NOT_FOUND);
                         this.workerObserverRI.updateNotFound(state, line);
-                    }
+                    }*/
                 }
                 if (line == start + delta) {
                     break;

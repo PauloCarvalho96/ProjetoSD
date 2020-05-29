@@ -294,7 +294,15 @@ public class MenuController implements Initializable {
                     int n_threads = numberThreadsSpinner.getValue();
                    WorkerObserverRI workerObserverRI = new WorkerObserverImpl(this.client.userSessionRI.getSizeWorkersDB(), client.username, n_threads);
                    this.client.userSessionRI.createWorker(workerObserverRI, client.username);
-                   taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
+
+                   if(taskSubjectRI.getStrategy() == 2){
+                       if(taskSubjectRI.getProcess().compareTo("Dividing")==0){
+                            taskSubjectRI.attachToDividing(workerObserverRI);
+                       }
+                   } else {
+                       taskSubjectRI.attach(workerObserverRI);
+                   }
+
                    initializeTableViewListTasks();
                    listTasks();
                    messageJoinTask.setWrapText(true);
