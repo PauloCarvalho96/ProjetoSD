@@ -71,5 +71,4 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
         }
         return null;
     }
-
 }

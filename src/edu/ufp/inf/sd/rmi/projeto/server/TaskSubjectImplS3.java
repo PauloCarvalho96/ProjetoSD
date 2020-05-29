@@ -4,51 +4,30 @@ import edu.ufp.inf.sd.rmi.projeto.client.TrayIconDemo;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
 import java.awt.*;
-import java.io.*;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubjectRI {
+    public Integer wordsSize;
+    public String alphabet;
 
-    public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta) throws RemoteException {
-        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta);
+    public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize, String alphabet) throws RemoteException {
+        super(name, hashType, hashPass, creditsWordProcessed, creditsWordFound, delta);
+        System.out.println("\n\nPUTEDAS FRESCAS11111\n"+name);
+        this.wordsSize = wordsSize;
+        this.alphabet = alphabet;
         createSubTasks();
+        System.out.println("\n\nPUTEDAS FRESCAS22222\n"+this.getName());
+        System.out.println("\n\nPUTEDAS FRESCAS33333\n"+this.alphabet);
     }
 
     /** divide linhas para criar sub tasks */
     @Override
     public void createSubTasks() throws RemoteException{
-        try {
-            for(String path: paths){
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(path));
-                    int lines = 0;
-                    while (reader.readLine() != null) {
-                        if(lines == start + delta - 1){
-                            Task task = new Task(url,start,delta,this);
-                            tasks.add(task);
-                            start = lines + 1;
-                        }
-                        lines++;
-                    }
-                    int lastDelta = delta;
-                    lastDelta = lines - start;
-                    if(lastDelta != 0){
-                        Task task = new Task(url,start,lastDelta,this);
-                        tasks.add(task);
-                        reader.close();
-                    }
-
-                    for (Task task:tasks) {
-                        System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
-                    }
-                    break;
-                }catch (FileNotFoundException ignored){}
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        //TODO: Comentar o que cada variavel é
+        recursiveAlphabet(alphabet.toCharArray(), new char[wordsSize], 0, alphabet.length() - 1, 0, wordsSize);
+        for (Task task:tasks) {
+            System.out.println("\nAlphabet:    "+"\""+task.getAlphabet()+"\"");
         }
     }
 
@@ -159,5 +138,26 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
         this.status = this.subjectState.COMPLETED;
         this.notifyAllObservers();
         this.available = false;
+    }
+
+    public void recursiveAlphabet(char[] alphabet, char[] data, int start, int end, int index, int wordSize)
+    {
+        if (index == wordSize)
+        {
+            String str = new String(data);
+            Task task = new Task(this,str,wordsSize);
+            tasks.add(task);
+            return;
+        }
+
+        for (int i=start; i<=end && end-i+1 >= wordSize-index; i++)
+        {
+            data[index] = alphabet[i];
+            recursiveAlphabet(alphabet, data, i+1, end, index+1, wordSize);
+        }
+    }
+
+    public Integer getWordsSize() {
+        return wordsSize;
     }
 }
