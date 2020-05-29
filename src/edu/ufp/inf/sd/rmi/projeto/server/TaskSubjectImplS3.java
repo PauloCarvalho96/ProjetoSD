@@ -18,7 +18,8 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     }
 
     /** divide linhas para criar sub tasks */
-    public void createSubTasks(){
+    @Override
+    public void createSubTasks() throws RemoteException{
         try {
             for(String path: paths){
                 try {

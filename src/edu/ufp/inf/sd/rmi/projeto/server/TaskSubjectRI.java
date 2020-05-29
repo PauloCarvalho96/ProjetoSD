@@ -22,4 +22,5 @@ public interface TaskSubjectRI extends Remote {
     public String getName() throws RemoteException;
     public State getState() throws RemoteException;
     public ArrayList<Result> getResult() throws RemoteException;
+    public void createSubTasks() throws RemoteException;
 }
