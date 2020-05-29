@@ -22,9 +22,14 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private int wordsSize;
     private int creditsWon;
     private ArrayList<Thread> threads = new ArrayList<>();
-    private int actualLine;
+    int wordLength;
 
-    public WorkerObserverImpl(int id, String username, Integer n_threads) throws RemoteException {
+
+
+    private int actualLine;
+    ArrayList<Integer> linesWithWordLength = new ArrayList<>();
+
+    public WorkerObserverImpl(int id, String username, Integer n_threads,int wordLength) throws RemoteException {
         super();
         this.id = id;
         this.username = username;
@@ -64,7 +69,41 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
      }*/
 
     /** threads vao fazer o trabalho */
-    private void doWork() throws RemoteException {
+    private void doWorkDividing() throws RemoteException {
+        try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
+             FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
+            byte dataBuffer[] = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                fileOutputStream.write(dataBuffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+
+        int thread_size=n_threads;
+
+        int start = task.getStart();
+
+        int delta = task.getDelta();
+
+        int res = delta % thread_size;
+
+        delta = delta / thread_size;
+
+        for(int i = 0; i < thread_size ; i++ , start+=delta){
+            if(i==thread_size-1 && res!=0){
+                delta+=res;
+            }
+            threads.add(new Thread(new Dividing(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task, wordLength)));
+            System.out.println("SIZE:"+threads.size());
+            threads.get(i).start();
+            System.out.println(threads.get(i).getId());
+        }
+        return linesWithWordLength;
+    }
+
+    private void doWorkHashing() throws RemoteException {
         try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
              FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
             byte dataBuffer[] = new byte[1024];
@@ -170,7 +209,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.task = task;
         this.taskName = task.getTaskSubjectRI().getName();
         this.wordsSize = task.getDelta();
-        doWork();
+        doWorkHashing();
     }
 
     @Override
@@ -196,6 +235,14 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 }
                 break;
         }
+    }
+    @Override
+    public ArrayList<Integer> getLinesWithWordLength() {
+        return linesWithWordLength;
+    }
+    @Override
+    public void setLinesWithWordLength(ArrayList<Integer> linesWithWordLength) {
+        this.linesWithWordLength = linesWithWordLength;
     }
 
 }
