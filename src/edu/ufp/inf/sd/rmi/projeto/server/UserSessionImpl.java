@@ -42,7 +42,7 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
                 taskSubjectRI = new TaskSubjectImplS2(name, hashType, hashPass, creditsProc, creditsFound, delta, dataStrategy.get("length"));
                 break;
             case 3:
-                taskSubjectRI = new TaskSubjectImplS3(name, hashType, hashPass, creditsProc, creditsFound, delta, dataStrategy.get("length"), dataStrategy.get("alphabet"));
+                //taskSubjectRI = new TaskSubjectImplS3(name, hashType, hashPass, creditsProc, creditsFound, delta, dataStrategy.get("length"), dataStrategy.get("alphabet"));
                 break;
         }
         db.assocTaskToUser(uname, taskSubjectRI);  // adiciona task a DB

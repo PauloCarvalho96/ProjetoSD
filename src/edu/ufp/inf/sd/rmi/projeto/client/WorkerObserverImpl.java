@@ -22,10 +22,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private int wordsSize;
     private int creditsWon;
     private ArrayList<Thread> threads = new ArrayList<>();
-    int wordLength;
-
-
-
     private int actualLine;
     ArrayList<Integer> linesWithWordLength = new ArrayList<>();
 
@@ -38,38 +34,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.lastObserverState = new State("Available");
     }
 
-    /** Em testes
-    public void getTask(TaskSubjectRI taskSubjectRI) throws RemoteException{
-        /*try {
-            Connection connection = RabbitUtils.newConnection2Server("localhost","guest", "guest");
-            Channel channel=RabbitUtils.createChannel2Server(connection);
-            boolean durable = true;
-            channel.queueDeclare(taskSubjectRI.getName(), durable, false, false, null);
-            int prefetchCount = 1;
-            channel.basicQos(prefetchCount);
-
-            DeliverCallback deliverCallback=(consumerTag, delivery) -> {
-                String message = new String(delivery.getBody(), "UTF-8");
-                System.out.println(" [x] Received '" + message + "'");
-                try {
-                    doWork();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    System.out.println(" [x] Done processing task");
-                    channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-                }
-            };
-            boolean autoAck = false;
-            channel.basicConsume(taskSubjectRI.getName(), autoAck, deliverCallback, consumerTag -> { });
-
-        } catch (IOException|TimeoutException e) {
-            e.printStackTrace();
-        }
-     }*/
-
-    /** threads vao fazer o trabalho
-     * @return*/
     private ArrayList<Integer> doWorkDividing() throws RemoteException {
         try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
              FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
@@ -210,7 +174,11 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.task = task;
         this.taskName = task.getTaskSubjectRI().getName();
         this.wordsSize = task.getDelta();
-        doWorkHashing();
+        if(task.getTaskSubjectRI().getProcess() != null && task.getTaskSubjectRI().getProcess().compareTo("Dividing")==0){
+            doWorkDividing();
+        } else {
+            doWorkHashing();
+        }
     }
 
     @Override
@@ -239,7 +207,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     @Override
-    public void setLinesWithWordLength(int line) {
+    public void setLinesWithWordLength(int line) throws RemoteException {
         this.linesWithWordLength.add(line);
     }
 

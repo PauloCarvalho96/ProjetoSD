@@ -12,8 +12,11 @@ import java.util.Iterator;
 
 public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubjectRI {
 
-    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta) throws RemoteException {
+    private String process;
+
+    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, String process) throws RemoteException {
         super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta);
+        this.process=process;
         createSubTasks();
     }
 
@@ -158,5 +161,9 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
         this.status = this.subjectState.COMPLETED;
         this.notifyAllObservers();
         this.available = false;
+    }
+    @Override
+    public String getProcess() throws RemoteException {
+        return process;
     }
 }
