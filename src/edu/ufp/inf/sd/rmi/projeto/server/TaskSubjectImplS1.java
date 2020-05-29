@@ -13,7 +13,7 @@ import java.util.Iterator;
 public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubjectRI {
 
     public TaskSubjectImplS1(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta) throws RemoteException {
-        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta);
+        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,1);
         createSubTasks();
     }
 
@@ -55,6 +55,11 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
     @Override
     public String getProcess() throws RemoteException {
         return null;
+
+    }
+    
+    public Integer getStrategy() throws RemoteException {
+        return this.strategy;
     }
 
     @Override

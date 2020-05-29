@@ -57,6 +57,11 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
     }
 
     @Override
+    public Integer getStrategy() throws RemoteException {
+        return this.strategy;
+    }
+
+    @Override
     public void changeWorkerState(State state, String hash, String pass) throws RemoteException {
         switch (state.getmsg()){
             case "Found":

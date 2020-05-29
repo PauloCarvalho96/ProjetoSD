@@ -1,10 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
-import com.sun.org.apache.xpath.internal.operations.Div;
-import edu.ufp.inf.sd.rmi.projeto.server.State;
-import edu.ufp.inf.sd.rmi.projeto.server.Task;
-import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectImplS3;
-import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
+import edu.ufp.inf.sd.rmi.projeto.server.*;
 
 import java.io.*;
 import java.net.URL;
@@ -166,7 +162,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void setTask(Task task) throws RemoteException {
-        if(task.getTaskSubjectRI() instanceof TaskSubjectImplS3){
+        if(task.getTaskSubjectRI().getStrategy() == 3){
             createFileTask(task);
         }else{
             this.task = task;
@@ -203,7 +199,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         // If string is empty
         if (str.length() == 0) {
             try {
-                file.write(ans);
+                file.write(ans+"\n");
             } catch (IOException e) {
                 System.out.println("An error occurred while writing in file.");
                 e.printStackTrace();
