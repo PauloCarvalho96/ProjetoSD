@@ -94,6 +94,10 @@ public class MenuController implements Initializable {
         initializeTableViewListOwnWorkers();
         initializeTableViewListInfoTask();
         updateBut.setVisible(false);
+        lengthPassTaskLabel.setVisible(false);
+        lengthPassTaskTF.setVisible(false);
+        alphabetTaskLabel.setVisible(false);
+        alphabetTaskTF.setVisible(false);
     }
 
     public void initializeComboBox(){
