@@ -10,7 +10,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TaskSubjectImpl extends UnicastRemoteObject implements TaskSubjectRI {
+public class TaskSubjectImpl extends 
 
     private String name;
     private String hashType;
