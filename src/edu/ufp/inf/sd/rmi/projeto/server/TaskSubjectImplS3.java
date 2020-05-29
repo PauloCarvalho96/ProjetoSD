@@ -20,36 +20,8 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     /** divide linhas para criar sub tasks */
     @Override
     public void createSubTasks() throws RemoteException{
-        try {
-            for(String path: paths){
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(path));
-                    int lines = 0;
-                    while (reader.readLine() != null) {
-                        if(lines == start + delta - 1){
-                            Task task = new Task(url,start,delta,this);
-                            tasks.add(task);
-                            start = lines + 1;
-                        }
-                        lines++;
-                    }
-                    int lastDelta = delta;
-                    lastDelta = lines - start;
-                    if(lastDelta != 0){
-                        Task task = new Task(url,start,lastDelta,this);
-                        tasks.add(task);
-                        reader.close();
-                    }
-
-                    for (Task task:tasks) {
-                        System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
-                    }
-                    break;
-                }catch (FileNotFoundException ignored){}
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //TODO: Comentar o que cada variavel é
+        recursiveAlphabet(alphabet.toCharArray(), new char[wordsSize], 0, alphabet.length() - 1, 0, wordsSize);
     }
 
     @Override
@@ -164,5 +136,22 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
         this.status = this.subjectState.COMPLETED;
         this.notifyAllObservers();
         this.available = false;
+    }
+
+    public void recursiveAlphabet(char[] arr, char[] data, int start, int end, int index, int r)
+    {
+        if (index == r)
+        {
+            String str = new String(data);
+            Task task = new Task(this,str);
+            tasks.add(task);
+            return;
+        }
+
+        for (int i=start; i<=end && end-i+1 >= r-index; i++)
+        {
+            data[index] = arr[i];
+            recursiveAlphabet(arr, data, i+1, end, index+1, r);
+        }
     }
 }

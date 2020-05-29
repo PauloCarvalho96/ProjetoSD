@@ -12,9 +12,7 @@ import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MenuController implements Initializable {
     /** Create task **/
@@ -26,6 +24,10 @@ public class MenuController implements Initializable {
     public TextArea hashPassTA;
     public TextField deltaTaskTF;
     public ComboBox<String> strategyCB;
+    public Label lengthPassTaskLabel;
+    public TextField lengthPassTaskTF;
+    public Label alphabetTaskLabel;
+    public TextField alphabetTaskTF;
     public Button createTaskBut;
     public Label messageCreateTask;
     /** List tasks **/
@@ -197,6 +199,7 @@ public class MenuController implements Initializable {
             updateBut.setVisible(false);
         } catch (NullPointerException ignored){}
     }
+
     public void handlerCreateTask(ActionEvent actionEvent) throws RemoteException {
         String name = nameTaskTF.getText();
         String typeHash = hashTypeCB.getValue();
@@ -207,7 +210,7 @@ public class MenuController implements Initializable {
             int creditsProc = Integer.parseInt(creditsProcTaskTF.getText());
             int creditsFound = Integer.parseInt(creditsFoundTaskTF.getText());
             int delta = Integer.parseInt(deltaTaskTF.getText());
-            if (!name.isEmpty() && !hashPass.isEmpty()) {
+            if (!name.isEmpty() && !hashPass.isEmpty() && strategyRequisites()) {
                 delta = 500000;
                 hashPass.clear();
                 hashPass.add("4e2083e0fc093f7f0fcf43b145fb586e476cdce4e38533462160a3656ef63f4ad75c027d45ee5ccbf652c8745210a2b7a1e652c79f0e8be3c926f591c4a667db");
@@ -216,7 +219,8 @@ public class MenuController implements Initializable {
                 hashPass.add("26016268623f834338088a1492e3caf284ac00093fefef95ddfdb4f7ed34b5e7d80e7ceceef7902d20762f93323eefd2900d38eb065213612c94a3fecb13e4ac");
                 hashPass.add("681e29b8f594a0560a8568cd1ddef081feccfd564e164207b2151e14620092f9fbbb20c9f79daaf2a01e7dda846a326a02a1cb3ddb27f2c685e43d2c86f2c5ad");
                 hashPass.add("9ca5e00e64ca5f5e03b2cd02a38dee70d2d559608c8ffe1814029d3f2fa86bcc245a5eace3da57efa9f2dac58ac21750bf61ba0dc812b01b45b02010ea271a68");
-                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy);
+                hashPass.add("bdc247a1a0e28a586ed40744d281993d519abe981aaef33277d4877d167e1150816e9723d068a59509991ed0cdd8c5cea0f9ecd0ef23664db7cb85db5a0dbe12");
+                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy, strategyData());
                 if (taskSubjectRI != null) {
                     initializeCreateTask();
                     messageCreateTask.setWrapText(true);
@@ -230,6 +234,34 @@ public class MenuController implements Initializable {
             messageCreateTask.setWrapText(true);
             messageCreateTask.setText("Delta and credits have to be numbers!");
         }
+    }
+
+    public boolean strategyRequisites(){
+        return strategy1Requisites() || strategy2Requisites() || strategy3Requisites();
+    }
+
+    public boolean strategy1Requisites(){
+        return strategyCB.getValue().equals("Strategy 1");
+    }
+
+    public boolean strategy2Requisites(){
+        return strategyCB.getValue().equals("Strategy 2") && !lengthPassTaskTF.getText().isEmpty();
+    }
+
+    public boolean strategy3Requisites(){
+        return strategyCB.getValue().equals("Strategy 3") && !lengthPassTaskTF.getText().isEmpty()
+                && !alphabetTaskLabel.getText().isEmpty();
+    }
+
+    public HashMap<String, String> strategyData(){
+        HashMap<String, String> data = new HashMap<>();
+        if(strategy2Requisites()){
+            data.put("length", lengthPassTaskTF.getText());
+        }else if(strategy3Requisites()){
+            data.put("length", lengthPassTaskTF.getText());
+            data.put("alphabet", alphabetTaskLabel.getText());
+        }
+        return data;
     }
 
     public void handlerListTasksTab(Event event) throws RemoteException {
@@ -328,5 +360,26 @@ public class MenuController implements Initializable {
         infoOwnTaskTable.getItems().clear();
     }
 
-
+    public void handlerStrategyCB(ActionEvent actionEvent) {
+        switch (strategyCB.getValue()){
+            case "Strategy 1":
+                lengthPassTaskLabel.setVisible(false);
+                lengthPassTaskTF.setVisible(false);
+                alphabetTaskLabel.setVisible(false);
+                alphabetTaskTF.setVisible(false);
+                break;
+            case "Strategy 2":
+                lengthPassTaskLabel.setVisible(true);
+                lengthPassTaskTF.setVisible(true);
+                alphabetTaskLabel.setVisible(false);
+                alphabetTaskTF.setVisible(false);
+                break;
+            case "Strategy 3":
+                lengthPassTaskLabel.setVisible(true);
+                lengthPassTaskTF.setVisible(true);
+                alphabetTaskLabel.setVisible(true);
+                alphabetTaskTF.setVisible(true);
+                break;
+        }
+    }
 }

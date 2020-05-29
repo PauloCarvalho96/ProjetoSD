@@ -5,6 +5,7 @@ import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class UserSessionImpl extends UnicastRemoteObject implements UserSessionRI{
 
@@ -27,25 +28,23 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
 
     // cria nova task
     @Override
-    public TaskSubjectRI createTask(String name, String hashType, ArrayList<String> hashPass, Integer creditsProc, Integer creditsFound, Integer delta, String uname, int strategy) throws RemoteException {
+    public TaskSubjectRI createTask(String name, String hashType, ArrayList<String> hashPass, Integer creditsProc, Integer creditsFound, Integer delta, String uname, int strategy, HashMap<String, String> dataStrategy) throws RemoteException {
         /** verifica se existe taskgroup com nome dado */
         if(db.getTask(name) != null){
             return null;
         }
         TaskSubjectRI taskSubjectRI = null;
-
         switch (strategy){
             case 1:
                 taskSubjectRI = new TaskSubjectImplS1(name, hashType, hashPass, creditsProc, creditsFound, delta);
                 break;
             case 2:
-                taskSubjectRI = new TaskSubjectImplS2(name, hashType, hashPass, creditsProc, creditsFound, delta,3);
+                taskSubjectRI = new TaskSubjectImplS2(name, hashType, hashPass, creditsProc, creditsFound, delta, dataStrategy.get("length"));
                 break;
             case 3:
-                taskSubjectRI = new TaskSubjectImplS3(name, hashType, hashPass, creditsProc, creditsFound, delta);
+                taskSubjectRI = new TaskSubjectImplS3(name, hashType, hashPass, creditsProc, creditsFound, delta, dataStrategy.get("length"), dataStrategy.get("alphabet"));
                 break;
         }
-
         db.assocTaskToUser(uname, taskSubjectRI);  // adiciona task a DB
         return taskSubjectRI;
     }
