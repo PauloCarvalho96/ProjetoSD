@@ -13,12 +13,11 @@ import java.util.Iterator;
 public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubjectRI {
 
     public Integer wordsSize;
-    public String process;
 
     public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize) throws RemoteException {
         super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,2);
         this.wordsSize = wordsSize;
-        this.process = "Dividing";
+        this.setProcess("Dividing");
         createSubTasksDividing();
     }
 
@@ -173,10 +172,6 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
     @Override
     public Integer getStrategy() throws RemoteException {
         return this.strategy;
-    }
-
-    public String getProcess() throws RemoteException {
-        return process;
     }
 
     public Integer getWordsSize() {

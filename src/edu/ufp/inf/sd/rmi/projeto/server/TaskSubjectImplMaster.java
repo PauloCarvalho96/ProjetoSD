@@ -21,6 +21,7 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
     public ArrayList<WorkerObserverRI> workers = new ArrayList<>();// array de workers
     public ArrayList<Task> tasks = new ArrayList<>();// array tasks
     public ArrayList<Task> dividingTasks = new ArrayList<>();
+    public String process;
     public ArrayList<Result> result = new ArrayList<>();//array pass found
     public static final String url = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt";
     public ArrayList<String> paths = new ArrayList<>();
@@ -56,18 +57,6 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
         }
     }
 
-    public void detach(WorkerObserverRI obsRI) throws RemoteException {
-        this.workers.remove(obsRI);
-    }
-
-    public void setState(State state){
-        this.subjectState = state;
-    }
-
-    public boolean isAvailable() throws RemoteException {
-        return available;
-    }
-
     public Task getTaskFromArray() throws RemoteException {
         Task task = this.tasks.get(0);
         if(task != null && this.tasks.size() == 1){
@@ -86,7 +75,7 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
         Task task = this.dividingTasks.get(0);
         if(task != null && this.dividingTasks.size() == 1){
             this.dividingTasks.remove(0);
-            this.available = false;
+            this.setProcess("Hashing");
             return task;
         }
         if(task != null) {
@@ -94,5 +83,25 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
             return task;
         }
         return null;
+    }
+
+    public void detach(WorkerObserverRI obsRI) throws RemoteException {
+        this.workers.remove(obsRI);
+    }
+
+    public void setState(State state){
+        this.subjectState = state;
+    }
+
+    public boolean isAvailable() throws RemoteException {
+        return available;
+    }
+
+    public String getProcess() {
+        return process;
+    }
+
+    public void setProcess(String process) {
+        this.process = process;
     }
 }
