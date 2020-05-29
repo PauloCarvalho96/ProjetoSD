@@ -31,6 +31,10 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     }
 
     @Override
+    public String getProcess() throws RemoteException {
+        return null;
+    }
+    
     public Integer getStrategy() throws RemoteException {
         return this.strategy;
     }

@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 
 public class Task implements Serializable {
 
@@ -9,6 +10,7 @@ public class Task implements Serializable {
     private Integer delta;
     private TaskSubjectRI taskSubjectRI;
     private State state;
+    private Integer passLenght;
     public String alphabet;
     public Integer wordsSize;
 
@@ -41,6 +43,10 @@ public class Task implements Serializable {
 
     public TaskSubjectRI getTaskSubjectRI() {
         return taskSubjectRI;
+    }
+
+    public int getLenght() throws RemoteException {
+        return passLenght;
     }
 
     public String getAlphabet() {

@@ -21,6 +21,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private int creditsWon;
     private ArrayList<Thread> threads = new ArrayList<>();
     private int actualLine;
+    ArrayList<Integer> linesWithWordLength = new ArrayList<>();
 
     public WorkerObserverImpl(int id, String username, Integer n_threads) throws RemoteException {
         super();
@@ -31,7 +32,39 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.lastObserverState = new State("Available");
     }
 
-    /** threads vao fazer o trabalho */
+    private void doWorkDividing() throws RemoteException {
+        try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
+             FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
+            byte dataBuffer[] = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                fileOutputStream.write(dataBuffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+
+        int thread_size=n_threads;
+
+        int start = task.getStart();
+
+        int delta = task.getDelta();
+
+        int res = delta % thread_size;
+
+        delta = delta / thread_size;
+
+        for(int i = 0; i < thread_size ; i++ , start+=delta){
+            if(i==thread_size-1 && res!=0){
+                delta+=res;
+            }
+            threads.add(new Thread(new Dividing(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task)));
+            System.out.println("SIZE:"+threads.size());
+            threads.get(i).start();
+            System.out.println(threads.get(i).getId());
+        }
+    }
+
     private void doWork() throws RemoteException {
         int delta = 0;
         int start = 0;
@@ -238,4 +271,8 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         }
     }
 
+    @Override
+    public void setLinesWithWordLength(int line) throws RemoteException {
+        this.linesWithWordLength.add(line);
+    }
 }
