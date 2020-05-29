@@ -59,7 +59,7 @@ public class Dividing implements Runnable {
                     return;
                 }
 
-                if(st.length()== task.getPasslength() && !workerObserverRI.getStateWorker().getmsg().equals("Paused")){
+                if(st.length()== task.getWordsSize() && !workerObserverRI.getStateWorker().getmsg().equals("Paused")){
                     boolean found = false;
                     workerObserverRI.setLinesWithWordLength(line);
 

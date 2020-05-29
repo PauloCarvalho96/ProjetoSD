@@ -159,6 +159,11 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     @Override
+    public void setLinesWithWordLength(int line) throws RemoteException {
+        
+    }
+
+    @Override
     public void createFileTask(Task task) throws RemoteException {
         this.task = task;
         this.taskName = task.getTaskSubjectRI().getName();
