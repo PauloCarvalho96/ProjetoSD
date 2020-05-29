@@ -20,17 +20,14 @@ public class Dividing implements Runnable {
     String hashType;
     WorkerObserverRI workerObserverRI;
     Task task;
-    int wordLength;
-    ArrayList<Integer> linesWithWordLength = new ArrayList<>();
 
-    public Dividing(int start, int delta, int id, String hashType, WorkerObserverRI workerObserverRI, Task task,int wordLength) {
+    public Dividing(int start, int delta, int id, String hashType, WorkerObserverRI workerObserverRI, Task task) {
         this.start = start;
         this.delta = delta;
         this.id = id;
         this.hashType = hashType;
         this.workerObserverRI = workerObserverRI;
         this.task = task;
-        this.wordLength=wordLength;
 
     }
 
@@ -62,9 +59,9 @@ public class Dividing implements Runnable {
                     return;
                 }
 
-                if(st.length()==wordLength && !workerObserverRI.getStateWorker().getmsg().equals("Paused")){
+                if(st.length()== task.getPasslength() && !workerObserverRI.getStateWorker().getmsg().equals("Paused")){
                     boolean found = false;
-                    linesWithWordLength.add(line);
+                    workerObserverRI.setLinesWithWordLength(line);
 
                     found = true;
 
@@ -84,7 +81,6 @@ public class Dividing implements Runnable {
                 line++;
             }
             br.close();
-            workerObserverRI.setLinesWithWordLength(linesWithWordLength);
         } catch (IOException e) {
             e.printStackTrace();
         }

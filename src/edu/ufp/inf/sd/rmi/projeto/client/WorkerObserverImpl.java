@@ -29,7 +29,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private int actualLine;
     ArrayList<Integer> linesWithWordLength = new ArrayList<>();
 
-    public WorkerObserverImpl(int id, String username, Integer n_threads,int wordLength) throws RemoteException {
+    public WorkerObserverImpl(int id, String username, Integer n_threads) throws RemoteException {
         super();
         this.id = id;
         this.username = username;
@@ -68,8 +68,9 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         }
      }*/
 
-    /** threads vao fazer o trabalho */
-    private void doWorkDividing() throws RemoteException {
+    /** threads vao fazer o trabalho
+     * @return*/
+    private ArrayList<Integer> doWorkDividing() throws RemoteException {
         try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
              FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
             byte dataBuffer[] = new byte[1024];
@@ -95,7 +96,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             if(i==thread_size-1 && res!=0){
                 delta+=res;
             }
-            threads.add(new Thread(new Dividing(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task, wordLength)));
+            threads.add(new Thread(new Dividing(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task)));
             System.out.println("SIZE:"+threads.size());
             threads.get(i).start();
             System.out.println(threads.get(i).getId());
@@ -236,13 +237,10 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 break;
         }
     }
+
     @Override
-    public ArrayList<Integer> getLinesWithWordLength() {
-        return linesWithWordLength;
-    }
-    @Override
-    public void setLinesWithWordLength(ArrayList<Integer> linesWithWordLength) {
-        this.linesWithWordLength = linesWithWordLength;
+    public void setLinesWithWordLength(int line) {
+        this.linesWithWordLength.add(line);
     }
 
 }
