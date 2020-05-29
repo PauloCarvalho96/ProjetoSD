@@ -11,7 +11,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class MyThread implements Runnable {
+public class Dividing implements Runnable {
 
     int start;
     int delta;
@@ -20,7 +20,7 @@ public class MyThread implements Runnable {
     WorkerObserverRI workerObserverRI;
     Task task;
 
-    public MyThread(int start, int delta, int id,String hashType, WorkerObserverRI workerObserverRI,Task task) {
+    public Dividing(int start, int delta, int id, String hashType, WorkerObserverRI workerObserverRI, Task task) {
         this.start = start;
         this.delta = delta;
         this.id = id;

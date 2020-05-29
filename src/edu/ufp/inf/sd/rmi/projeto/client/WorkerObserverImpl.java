@@ -90,7 +90,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             if(i==thread_size-1 && res!=0){
                 delta+=res;
             }
-            threads.add(new Thread(new MyThread(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task)));
+            threads.add(new Thread(new Hashing(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task)));
             System.out.println("SIZE:"+threads.size());
             threads.get(i).start();
             System.out.println(threads.get(i).getId());

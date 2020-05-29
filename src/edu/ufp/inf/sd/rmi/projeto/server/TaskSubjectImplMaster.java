@@ -39,7 +39,6 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
     }
 
 
-
     public void attach(WorkerObserverRI obsRI) throws RemoteException {
         if(!this.workers.contains(obsRI)){
             this.workers.add(obsRI);
