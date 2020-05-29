@@ -37,13 +37,19 @@
                         <Label layoutX="671.0" layoutY="315.0" prefHeight="18.0" prefWidth="86.0" text="Hash type" />
                         <ComboBox fx:id="hashTypeCB" layoutX="841.0" layoutY="311.0" prefHeight="26.0" prefWidth="149.0" />
                         <Label layoutX="669.0" layoutY="368.0" prefHeight="18.0" prefWidth="86.0" text="Hash pass" />
-                        <TextArea fx:id="hashPassTA" layoutX="840.0" layoutY="358.0" prefHeight="12.0" prefWidth="488.0" />
+                        <TextArea fx:id="hashPassTA" layoutX="840.0" layoutY="358.0" prefHeight="38.0" prefWidth="502.0" />
                         <Label layoutX="669.0" layoutY="421.0" prefHeight="18.0" prefWidth="86.0" text="Strategy" />
-                        <ComboBox fx:id="strategyCB" layoutX="840.0" layoutY="417.0" prefHeight="26.0" prefWidth="149.0" />
+                        <ComboBox fx:id="strategyCB" layoutX="840.0" layoutY="417.0" onAction="#handlerStrategyCB" prefHeight="26.0" prefWidth="149.0" />
                         <Button fx:id="createTaskBut" layoutX="882.0" layoutY="554.0" mnemonicParsing="false" onAction="#handlerCreateTask" text="Create Task" />
                         <Label fx:id="messageCreateTask" layoutX="773.0" layoutY="475.0" prefHeight="67.0" prefWidth="295.0" />
-                     </children></AnchorPane>
-               </content></Tab>
+                        <Label fx:id="lengthPassTaskLabel" layoutX="1109.0" layoutY="421.0" prefHeight="18.0" prefWidth="86.0" text="Length pass" />
+                        <TextField fx:id="lengthPassTaskTF" layoutX="1194.0" layoutY="417.0" prefHeight="26.0" prefWidth="150.0" />
+                        <Label fx:id="alphabetTaskLabel" layoutX="1109.0" layoutY="466.0" prefHeight="18.0" prefWidth="86.0" text="Alphabet" />
+                        <TextField fx:id="alphabetTaskTF" layoutX="1195.0" layoutY="462.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
             <Tab fx:id="listTasksTab" onSelectionChanged="#handlerListTasksTab" text="List Tasks">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1018.0" prefWidth="1920.0">
