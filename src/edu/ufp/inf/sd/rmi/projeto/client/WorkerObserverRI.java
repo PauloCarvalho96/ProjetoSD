@@ -24,4 +24,5 @@ public interface WorkerObserverRI extends Remote {
     public int getActualLine() throws RemoteException;
     public void taskUpdated() throws RemoteException;
     public void setTask(Task task) throws RemoteException;
+    public void setLinesWithWordLength(int line) throws RemoteException;
 }

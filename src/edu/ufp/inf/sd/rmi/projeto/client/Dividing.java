@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 public class Dividing implements Runnable {
 
@@ -27,6 +28,7 @@ public class Dividing implements Runnable {
         this.hashType = hashType;
         this.workerObserverRI = workerObserverRI;
         this.task = task;
+
     }
 
     @Override
@@ -57,29 +59,12 @@ public class Dividing implements Runnable {
                     return;
                 }
 
-                if (line >= start && line < start + delta && !workerObserverRI.getStateWorker().getmsg().equals("Paused")) {
-                    switch (hashType) {
-                        case "SHA-512":
-                            hashFunction = MessageDigest.getInstance("SHA-512");
-                            hashFunction.reset();
-                            hashFunction.update(st.getBytes("utf8"));
-                            result = String.format("%0128x", new BigInteger(1, hashFunction.digest()));
-                            break;
-                        case "PBKDF2":
-                            break;
-                        case "BCrypt":
-                            break;
-                        case "SCrypt":
-                            break;
-                        default:
-                            System.out.println("Method not recognized");
-                    }
+                if(st.length()== task.getLenght() && !workerObserverRI.getStateWorker().getmsg().equals("Paused")){
                     boolean found = false;
-                    for (String s:workerObserverRI.getHashPass()) {
-                        if(workerObserverRI.match(s,result)){
-                            found = true;
-                        }
-                    }
+                    workerObserverRI.setLinesWithWordLength(line);
+
+                    found = true;
+
                     State state = new State("");
                     //System.out.println(st);
                     if(found){
@@ -96,7 +81,7 @@ public class Dividing implements Runnable {
                 line++;
             }
             br.close();
-        } catch (IOException | NoSuchAlgorithmException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -39,7 +39,7 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
                 taskSubjectRI = new TaskSubjectImplS1(name, hashType, hashPass, creditsProc, creditsFound, delta);
                 break;
             case 2:
-                taskSubjectRI = new TaskSubjectImplS2(name, hashType, hashPass, creditsProc, creditsFound, delta);
+                taskSubjectRI = new TaskSubjectImplS2(name, hashType, hashPass, creditsProc, creditsFound, delta,3);
                 break;
             case 3:
                 taskSubjectRI = new TaskSubjectImplS3(name, hashType, hashPass, creditsProc, creditsFound, delta);

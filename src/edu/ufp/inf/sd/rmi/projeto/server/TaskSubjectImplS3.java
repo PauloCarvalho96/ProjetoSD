@@ -53,6 +53,11 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     }
 
     @Override
+    public String getProcess() throws RemoteException {
+        return null;
+    }
+
+    @Override
     public void changeWorkerState(State state, String hash, String pass) throws RemoteException {
         switch (state.getmsg()){
             case "Found":

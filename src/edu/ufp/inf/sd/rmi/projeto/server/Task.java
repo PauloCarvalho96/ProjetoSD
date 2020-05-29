@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class Task implements Serializable {
@@ -10,13 +11,14 @@ public class Task implements Serializable {
     private Integer delta;
     private TaskSubjectRI taskSubjectRI;
     private State state;
+    private Integer passLenght;
 
     public Task(String url, Integer start, Integer delta, TaskSubjectRI taskSubjectRI) {
         this.url = url;
         this.start = start;
         this.delta = delta;
         this.taskSubjectRI = taskSubjectRI;
-        this.state = new State("Avalible"); // passwords por encontrar
+        this.state = new State("Available"); // passwords por encontrar
     }
 
     public String getUrl() {
@@ -35,5 +37,8 @@ public class Task implements Serializable {
         return taskSubjectRI;
     }
 
+    public int getLenght() throws RemoteException {
+        return passLenght;
+    }
 
 }

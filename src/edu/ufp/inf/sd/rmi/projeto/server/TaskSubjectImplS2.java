@@ -12,12 +12,16 @@ import java.util.Iterator;
 
 public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubjectRI {
 
-    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta) throws RemoteException {
+    public Integer passLenght;
+    public String process;
+
+    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer passLenght) throws RemoteException {
         super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta);
+        this.passLenght = passLenght;
+        this.process = "Dividing";
         createSubTasks();
     }
 
-    /** divide linhas para criar sub tasks */
     @Override
     public void createSubTasks() throws RemoteException{
         try {
@@ -106,7 +110,6 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
         }
     }
 
-
     @Override
     public void pause() throws RemoteException {
         if(!this.subjectState.getmsg().equals("Completed") || !this.subjectState.getmsg().equals("Paused")) {
@@ -159,4 +162,9 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
         this.notifyAllObservers();
         this.available = false;
     }
+
+    public String getProcess() throws RemoteException {
+        return process;
+    }
+
 }
