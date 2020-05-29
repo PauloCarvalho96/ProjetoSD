@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rmi.projeto.client;
 
 import edu.ufp.inf.sd.rmi.projeto.server.State;
 import edu.ufp.inf.sd.rmi.projeto.server.Task;
+import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectImplS3;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
 
 import java.io.*;
@@ -65,22 +66,35 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     /** threads vao fazer o trabalho */
     private void doWork() throws RemoteException {
-        try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
-             FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
-            byte dataBuffer[] = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-                fileOutputStream.write(dataBuffer, 0, bytesRead);
+        int delta = 0;
+        int start = 0;
+        if (!(task.getTaskSubjectRI() instanceof TaskSubjectImplS3)){
+            try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
+                 FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
+                byte dataBuffer[] = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                    fileOutputStream.write(dataBuffer, 0, bytesRead);
+                }
+            } catch (IOException e) {
+                System.out.println("Error");
             }
-        } catch (IOException e) {
-            System.out.println("Error");
+
+            start = task.getStart();
+
+            delta = task.getDelta();
+        }else{
+            System.out.println("\n\n\nOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n\n");
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader("file"+id+".txt"));
+                while (reader.readLine() != null) delta++;
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         int thread_size=n_threads;
-
-        int start = task.getStart();
-
-        int delta = task.getDelta();
 
         int res = delta % thread_size;
 
@@ -167,10 +181,64 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void setTask(Task task) throws RemoteException {
+        if(task.getTaskSubjectRI() instanceof TaskSubjectImplS3){
+            createFileTask(task);
+        }else{
+            this.task = task;
+            this.taskName = task.getTaskSubjectRI().getName();
+            this.wordsSize = task.getDelta();
+            doWork();
+        }
+    }
+
+    @Override
+    public void createFileTask(Task task) throws RemoteException {
         this.task = task;
         this.taskName = task.getTaskSubjectRI().getName();
-        this.wordsSize = task.getDelta();
+        this.wordsSize = task.getWordsSize();
+        try {
+            File file = new File("file"+id+".txt");
+            if (file.createNewFile()) {
+                System.out.println("File created: " + file.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+            FileWriter myWriter = new FileWriter("file"+id+".txt");
+            generateFileTask(myWriter,task.alphabet,"");
+            myWriter.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
         doWork();
+    }
+
+    @Override
+    public void generateFileTask(FileWriter file, String str, String ans) throws RemoteException {
+        // If string is empty
+        if (str.length() == 0) {
+            try {
+                file.write(ans);
+            } catch (IOException e) {
+                System.out.println("An error occurred while writing in file.");
+                e.printStackTrace();
+            }
+            System.out.print("\n"+ans);
+            return;
+        }
+        for (int i = 0; i < str.length(); i++) {
+
+            // ith character of str
+            char ch = str.charAt(i);
+
+            // Rest of the string after excluding
+            // the ith character
+            String ros = str.substring(0, i) +
+                    str.substring(i + 1);
+
+            // Recurvise call
+            generateFileTask(file,ros, ans + ch);
+        }
     }
 
     @Override
