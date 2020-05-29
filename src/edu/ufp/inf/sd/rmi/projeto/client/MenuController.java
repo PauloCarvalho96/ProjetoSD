@@ -254,7 +254,7 @@ public class MenuController implements Initializable {
 
     public boolean strategy3Requisites(){
         return strategyCB.getValue().equals("Strategy 3") && !lengthPassTaskTF.getText().isEmpty()
-                && !alphabetTaskLabel.getText().isEmpty();
+                && !alphabetTaskTF.getText().isEmpty();
     }
 
     public HashMap<String, String> strategyData(){
@@ -263,7 +263,7 @@ public class MenuController implements Initializable {
             data.put("length", lengthPassTaskTF.getText());
         }else if(strategy3Requisites()){
             data.put("length", lengthPassTaskTF.getText());
-            data.put("alphabet", alphabetTaskLabel.getText());
+            data.put("alphabet", alphabetTaskTF.getText());
         }
         return data;
     }
