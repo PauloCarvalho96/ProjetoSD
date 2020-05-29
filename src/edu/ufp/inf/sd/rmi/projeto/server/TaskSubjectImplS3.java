@@ -12,8 +12,13 @@ import java.util.Iterator;
 
 public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubjectRI {
 
-    public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta) throws RemoteException {
+    public int wordsSize;
+    public String alphabet;
+
+    public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize, String alphabet) throws RemoteException {
         super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta);
+        this.wordsSize = wordsSize;
+        this.alphabet = alphabet;
         createSubTasks();
     }
 
