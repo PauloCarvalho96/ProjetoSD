@@ -13,6 +13,7 @@ public class Task implements Serializable {
     private State state;
     private Integer passLenght;
     public String alphabet;
+    public Integer wordsSize;
 
     public Task(String url, Integer start, Integer delta, TaskSubjectRI taskSubjectRI) {
         this.url = url;
@@ -22,9 +23,10 @@ public class Task implements Serializable {
         this.state = new State("Available"); // passwords por encontrar
     }
 
-    public Task(TaskSubjectRI taskSubjectRI,String alphabet) {
+    public Task(TaskSubjectRI taskSubjectRI,String alphabet,Integer wordsSize) {
         this.alphabet = alphabet;
         this.taskSubjectRI = taskSubjectRI;
+        this.wordsSize = wordsSize;
         this.state = new State("Available"); // passwords por encontrar
     }
 
@@ -50,5 +52,9 @@ public class Task implements Serializable {
 
     public String getAlphabet() {
         return alphabet;
+    }
+
+    public Integer getWordsSize() {
+        return wordsSize;
     }
 }

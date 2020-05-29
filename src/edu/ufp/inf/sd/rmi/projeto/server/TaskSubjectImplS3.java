@@ -4,22 +4,21 @@ import edu.ufp.inf.sd.rmi.projeto.client.TrayIconDemo;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
 import java.awt.*;
-import java.io.*;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubjectRI {
-
     public Integer wordsSize;
     public String alphabet;
 
     public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize, String alphabet) throws RemoteException {
-        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta);
+        super(name, hashType, hashPass, creditsWordProcessed, creditsWordFound, delta);
+        System.out.println("\n\nPUTEDAS FRESCAS11111\n"+name);
         this.wordsSize = wordsSize;
         this.alphabet = alphabet;
         createSubTasks();
+        System.out.println("\n\nPUTEDAS FRESCAS22222\n"+this.getName());
+        System.out.println("\n\nPUTEDAS FRESCAS33333\n"+this.alphabet);
     }
 
     /** divide linhas para criar sub tasks */
@@ -27,6 +26,9 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     public void createSubTasks() throws RemoteException{
         //TODO: Comentar o que cada variavel é
         recursiveAlphabet(alphabet.toCharArray(), new char[wordsSize], 0, alphabet.length() - 1, 0, wordsSize);
+        for (Task task:tasks) {
+            System.out.println("\nAlphabet:    "+"\""+task.getAlphabet()+"\"");
+        }
     }
 
     @Override
@@ -143,20 +145,24 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
         this.available = false;
     }
 
-    public void recursiveAlphabet(char[] arr, char[] data, int start, int end, int index, int r)
+    public void recursiveAlphabet(char[] alphabet, char[] data, int start, int end, int index, int wordSize)
     {
-        if (index == r)
+        if (index == wordSize)
         {
             String str = new String(data);
-            Task task = new Task(this,str);
+            Task task = new Task(this,str,wordsSize);
             tasks.add(task);
             return;
         }
 
-        for (int i=start; i<=end && end-i+1 >= r-index; i++)
+        for (int i=start; i<=end && end-i+1 >= wordSize-index; i++)
         {
-            data[index] = arr[i];
-            recursiveAlphabet(arr, data, i+1, end, index+1, r);
+            data[index] = alphabet[i];
+            recursiveAlphabet(alphabet, data, i+1, end, index+1, wordSize);
         }
+    }
+
+    public Integer getWordsSize() {
+        return wordsSize;
     }
 }
