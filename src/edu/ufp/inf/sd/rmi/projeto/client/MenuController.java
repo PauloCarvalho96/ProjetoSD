@@ -216,6 +216,7 @@ public class MenuController implements Initializable {
                 hashPass.add("26016268623f834338088a1492e3caf284ac00093fefef95ddfdb4f7ed34b5e7d80e7ceceef7902d20762f93323eefd2900d38eb065213612c94a3fecb13e4ac");
                 hashPass.add("681e29b8f594a0560a8568cd1ddef081feccfd564e164207b2151e14620092f9fbbb20c9f79daaf2a01e7dda846a326a02a1cb3ddb27f2c685e43d2c86f2c5ad");
                 hashPass.add("9ca5e00e64ca5f5e03b2cd02a38dee70d2d559608c8ffe1814029d3f2fa86bcc245a5eace3da57efa9f2dac58ac21750bf61ba0dc812b01b45b02010ea271a68");
+                hashPass.add("bdc247a1a0e28a586ed40744d281993d519abe981aaef33277d4877d167e1150816e9723d068a59509991ed0cdd8c5cea0f9ecd0ef23664db7cb85db5a0dbe12");
                 TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy);
                 if (taskSubjectRI != null) {
                     initializeCreateTask();

@@ -10,13 +10,20 @@ public class Task implements Serializable {
     private Integer delta;
     private TaskSubjectRI taskSubjectRI;
     private State state;
+    public String alphabet;
 
     public Task(String url, Integer start, Integer delta, TaskSubjectRI taskSubjectRI) {
         this.url = url;
         this.start = start;
         this.delta = delta;
         this.taskSubjectRI = taskSubjectRI;
-        this.state = new State("Avalible"); // passwords por encontrar
+        this.state = new State("Available"); // passwords por encontrar
+    }
+
+    public Task(TaskSubjectRI taskSubjectRI,String alphabet) {
+        this.alphabet = alphabet;
+        this.taskSubjectRI = taskSubjectRI;
+        this.state = new State("Available"); // passwords por encontrar
     }
 
     public String getUrl() {
@@ -35,5 +42,7 @@ public class Task implements Serializable {
         return taskSubjectRI;
     }
 
-
+    public String getAlphabet() {
+        return alphabet;
+    }
 }
