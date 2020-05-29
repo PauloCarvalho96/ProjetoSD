@@ -65,13 +65,32 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         }
     }
 
-    private void doWorkHashing() throws RemoteException {
-        try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
-             FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
-            byte dataBuffer[] = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-                fileOutputStream.write(dataBuffer, 0, bytesRead);
+    private void doWork() throws RemoteException {
+        int delta = 0;
+        int start = 0;
+        if (task.getTaskSubjectRI().getStrategy() != 3){
+            try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
+                 FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
+                byte dataBuffer[] = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                    fileOutputStream.write(dataBuffer, 0, bytesRead);
+                }
+            } catch (IOException e) {
+                System.out.println("Error");
+            }
+
+            start = task.getStart();
+
+            delta = task.getDelta();
+        }else{
+            System.out.println("\n\n\nOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n\n");
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader("file"+id+".txt"));
+                while (reader.readLine() != null) delta++;
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 

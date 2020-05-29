@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 
 public class Task implements Serializable {
 
