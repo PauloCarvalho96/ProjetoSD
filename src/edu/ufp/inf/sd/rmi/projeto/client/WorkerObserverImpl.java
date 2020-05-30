@@ -21,7 +21,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private int creditsWon;
     private ArrayList<Thread> threads = new ArrayList<>();
     private int actualLine;
-    ArrayList<Integer> linesWithWordLength = new ArrayList<>();
+    private Integer n_threads_dividing;
 
     public WorkerObserverImpl(int id, String username, Integer n_threads) throws RemoteException {
         super();
@@ -30,6 +30,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.n_threads = n_threads;
         this.actualLine = 0;
         this.lastObserverState = new State("Available");
+        n_threads_dividing = this.n_threads;
     }
 
     private void doWorkDividing() throws RemoteException {
@@ -104,9 +105,9 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 delta+=res;
             }
             threads.add(new Thread(new Hashing(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task)));
-            System.out.println("SIZE:"+threads.size());
+//            System.out.println("SIZE:"+threads.size());
             threads.get(i).start();
-            System.out.println(threads.get(i).getId());
+//            System.out.println(threads.get(i).getId());
         }
     }
 
@@ -182,7 +183,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         if(task.getTaskSubjectRI().getStrategy() == 3){
             createFileTask(task);
         }else{
-            if(task.getTaskSubjectRI().getStrategy() == 2 && task.getTaskSubjectRI().getProcess().compareTo("Dividing")==0){
+            if(task.getTaskSubjectRI().getStrategy() == 2 && task.getTaskSubjectRI().getState().getProcess().compareTo("Dividing")==0){
                 this.task = task;
                 doWorkDividing();
             } else {
@@ -198,7 +199,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     public void createFileTask(Task task) throws RemoteException {
         this.task = task;
         this.taskName = task.getTaskSubjectRI().getName();
-        this.wordsSize = task.getWordsSize();
+//        this.wordsSize = task.getWordsSize();    S3
         try {
             File file = new File("file"+id+".txt");
             if (file.createNewFile()) {
@@ -270,9 +271,13 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     @Override
-    public void setLinesWithWordLength(int line) throws RemoteException {
-        System.out.println("\n"+line);
-        this.linesWithWordLength.add(line);
+    public Integer getN_threads_dividing() throws RemoteException {
+        return n_threads_dividing;
+    }
+
+    @Override
+    public void setN_threads_dividing(Integer n_threads_dividing) throws RemoteException {
+        this.n_threads_dividing = n_threads_dividing;
     }
 
 }

@@ -20,6 +20,8 @@ public class Dividing implements Runnable {
     String hashType;
     WorkerObserverRI workerObserverRI;
     Task task;
+    ArrayList<Integer> linesWithWordLength = new ArrayList<>();
+
 
     public Dividing(int start, int delta, int id, String hashType, WorkerObserverRI workerObserverRI, Task task) {
         this.start = start;
@@ -28,7 +30,6 @@ public class Dividing implements Runnable {
         this.hashType = hashType;
         this.workerObserverRI = workerObserverRI;
         this.task = task;
-
     }
 
     @Override
@@ -59,26 +60,16 @@ public class Dividing implements Runnable {
                     return;
                 }
 
-                if(st.length() == task.getWordsSize() && !workerObserverRI.getStateWorker().getmsg().equals("Paused")){
+                if(task.getWordsSize().contains(st.length()) && line >= start && line < start + delta && !workerObserverRI.getStateWorker().getmsg().equals("Paused")){
                     boolean found = false;
-                    workerObserverRI.setLinesWithWordLength(line+1);
-
-                    /*found = true;
-
-                    State state = new State("");
-                    if(found){
-                        state.setmsg(state.FOUND);
-                        this.workerObserverRI.updateFound(state,result,st, line);
-                    }else if(line % (delta * 0.1) == 0){
-                        state.setmsg(state.NOT_FOUND);
-                        this.workerObserverRI.updateNotFound(state, line);
-                    }*/
+                    linesWithWordLength.add(line+1);
                 }
                 if (line == start + delta) {
                     break;
                 }
                 line++;
             }
+            task.getTaskSubjectRI().finishDividing(linesWithWordLength,workerObserverRI);
             br.close();
         } catch (IOException e) {
             e.printStackTrace();

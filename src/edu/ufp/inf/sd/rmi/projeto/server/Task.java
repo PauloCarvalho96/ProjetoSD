@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rmi.projeto.server;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public class Task implements Serializable {
 
@@ -11,7 +12,9 @@ public class Task implements Serializable {
     private TaskSubjectRI taskSubjectRI;
     private State state;
     public String alphabet;
-    public Integer wordsSize;
+    public ArrayList<Integer> wordsSize = new ArrayList<>();
+    public Boolean isHashing;
+    public ArrayList<Integer> lines = new ArrayList<>();
 
     public Task(String url, Integer start, Integer delta, TaskSubjectRI taskSubjectRI) {
         this.url = url;
@@ -21,7 +24,7 @@ public class Task implements Serializable {
         this.state = new State("Available"); // passwords por encontrar
     }
 
-    public Task(TaskSubjectRI taskSubjectRI,String alphabet,Integer wordsSize) {
+    public Task(TaskSubjectRI taskSubjectRI,String alphabet,ArrayList<Integer> wordsSize) {
         this.alphabet = alphabet;
         this.taskSubjectRI = taskSubjectRI;
         this.wordsSize = wordsSize;
@@ -48,11 +51,11 @@ public class Task implements Serializable {
         return alphabet;
     }
 
-    public Integer getWordsSize() {
+    public ArrayList<Integer> getWordsSize() {
         return wordsSize;
     }
 
-    public void setWordsSize(Integer wordsSize) {
-        this.wordsSize = wordsSize;
+    public void setWordsSize(ArrayList<Integer> wordsSize) {
+        this.wordsSize.addAll(wordsSize);
     }
 }

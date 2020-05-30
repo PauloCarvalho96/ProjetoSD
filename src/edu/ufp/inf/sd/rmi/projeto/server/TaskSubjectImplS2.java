@@ -12,12 +12,14 @@ import java.util.Iterator;
 
 public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubjectRI {
 
-    public Integer wordsSize;
+    public ArrayList<Integer> wordsSize = new ArrayList<>();
 
-    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize) throws RemoteException {
+    ArrayList<Integer> lines = new ArrayList<>();
+
+    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, ArrayList<Integer> wordsSize) throws RemoteException {
         super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,2);
-        this.wordsSize = wordsSize;
-        this.setProcess("Dividing");
+        this.wordsSize.addAll(wordsSize);
+        this.subjectState.setProcess("Dividing");
         createSubTasksDividing();
     }
 
@@ -32,6 +34,7 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                         if(lines == start + delta - 1){
                             Task task = new Task(url,start,delta,this);
                             task.setWordsSize(wordsSize);
+                            task.isHashing = false;
                             dividingTasks.add(task);
                             start = lines + 1;
                         }
@@ -42,12 +45,9 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                     if(lastDelta != 0){
                         Task task = new Task(url,start,lastDelta,this);
                         task.setWordsSize(wordsSize);
+                        task.isHashing = false;
                         dividingTasks.add(task);
                         reader.close();
-                    }
-
-                    for (Task task:dividingTasks) {
-                        System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
                     }
                     break;
                 }catch (FileNotFoundException ignored){}
@@ -59,7 +59,51 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     @Override
     public void createSubTasks() throws RemoteException{
-
+        start = 0;
+        try {
+            for(String path: paths){
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader(path));
+                    int lines = 0;
+                    while (reader.readLine() != null) {
+                        if(lines == start + delta - 1){
+                            Task task = new Task(url,start,delta,this);
+                            task.isHashing = true;
+                            tasks.add(task);
+                            for (Integer l:this.lines) {
+                                if(l > start && l < start + delta +1){
+                                    task.lines.add(l);
+                                }
+                            }
+                            if(task.lines.isEmpty()){
+                                tasks.remove(task);
+                            }
+                            start = lines + 1;
+                        }
+                        lines++;
+                    }
+                    int lastDelta = delta;
+                    lastDelta = lines - start;
+                    if(lastDelta != 0){
+                        Task task = new Task(url,start,lastDelta,this);
+                        task.isHashing = true;
+                        tasks.add(task);
+                        for (Integer l:this.lines) {
+                            if(l > start && l < start + lastDelta +1){
+                                task.lines.add(l);
+                            }
+                        }
+                        if(task.lines.isEmpty()){
+                            tasks.remove(task);
+                        }
+                        reader.close();
+                    }
+                    break;
+                }catch (FileNotFoundException ignored){}
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -174,7 +218,24 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
         return this.strategy;
     }
 
-    public Integer getWordsSize() {
+    @Override
+    public void finishDividing(ArrayList<Integer> linesWithWordLength,WorkerObserverRI workerObserverRI) throws RemoteException {
+        lines.addAll(linesWithWordLength);
+
+        workerObserverRI.setN_threads_dividing(workerObserverRI.getN_threads_dividing()-1);
+        if(workerObserverRI.getN_threads_dividing()==0){
+            workers.remove(workerObserverRI);
+            System.out.println("finishing_Dividing");
+        }
+        if(dividingTasks.isEmpty() && workers.isEmpty()){
+            System.out.println("finishing_Dividing COMPLETE");
+            createSubTasks();
+            this.available = true;
+            this.subjectState.setProcess("Hashing");
+        }
+    }
+
+    public ArrayList<Integer> getWordsSize() {
         return wordsSize;
     }
 

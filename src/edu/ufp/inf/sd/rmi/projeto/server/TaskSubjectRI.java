@@ -10,7 +10,6 @@ import java.util.HashMap;
 
 public interface TaskSubjectRI extends Remote {
     public void attach(WorkerObserverRI obsRI) throws RemoteException;
-    public void attachToDividing(WorkerObserverRI obsRI) throws RemoteException;
     public void detach(WorkerObserverRI obsRI) throws RemoteException;
     public boolean isAvailable() throws RemoteException;
     public void changeWorkerState(State state, String hashPass,String pass) throws RemoteException;
@@ -24,6 +23,6 @@ public interface TaskSubjectRI extends Remote {
     public State getState() throws RemoteException;
     public ArrayList<Result> getResult() throws RemoteException;
     public void createSubTasks() throws RemoteException;
-    public String getProcess() throws RemoteException;
     public Integer getStrategy() throws RemoteException;
+    public void finishDividing(ArrayList<Integer> linesWithWordLength,WorkerObserverRI workerObserverRI) throws RemoteException;
 }

@@ -58,6 +58,7 @@ public class Hashing implements Runnable {
                 }
 
                 if (line >= start && line < start + delta && !workerObserverRI.getStateWorker().getmsg().equals("Paused")) {
+                    if (task.getTaskSubjectRI().getStrategy() == 2 && task.lines.contains(line + 1) || task.getTaskSubjectRI().getStrategy() != 2) {
                     switch (hashType) {
                         case "SHA-512":
                             hashFunction = MessageDigest.getInstance("SHA-512");
@@ -75,20 +76,21 @@ public class Hashing implements Runnable {
                             System.out.println("Method not recognized");
                     }
                     boolean found = false;
-                    for (String s:workerObserverRI.getHashPass()) {
-                        if(workerObserverRI.match(s,result)){
+                    for (String s : workerObserverRI.getHashPass()) {
+                        if (workerObserverRI.match(s, result)) {
                             found = true;
                         }
                     }
                     State state = new State("");
                     //System.out.println(st);
-                    if(found){
+                    if (found) {
                         state.setmsg(state.FOUND);
-                        this.workerObserverRI.updateFound(state,result,st, line);
-                    }else if(line % (delta * 0.1) == 0){
+                        this.workerObserverRI.updateFound(state, result, st, line);
+                    } else if (line % (delta * 0.1) == 0) {
                         state.setmsg(state.NOT_FOUND);
                         this.workerObserverRI.updateNotFound(state, line);
                     }
+                }
                 }
                 if (line == start + delta) {
                     break;

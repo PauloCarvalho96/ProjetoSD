@@ -17,11 +17,10 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
     public String status;
     public boolean available = true;
     public Integer start = 0;     //linha atual
-    public Integer delta;     //quantidade de linhas
+    public final Integer delta;     //quantidade de linhas
     public ArrayList<WorkerObserverRI> workers = new ArrayList<>();// array de workers
     public ArrayList<Task> tasks = new ArrayList<>();// array tasks
     public ArrayList<Task> dividingTasks = new ArrayList<>();
-    public String process;
     public ArrayList<Result> result = new ArrayList<>();//array pass found
     public static final String url = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt";
     public ArrayList<String> paths = new ArrayList<>();
@@ -45,15 +44,12 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
     public void attach(WorkerObserverRI obsRI) throws RemoteException {
         if(!this.workers.contains(obsRI)){
             this.workers.add(obsRI);
-            obsRI.setTask(getTaskFromArray());
-        }
-    }
+            if(this.subjectState.getProcess()!=null && this.subjectState.getProcess().compareTo("Dividing")==0){
+                obsRI.setTask(getTaskFromArrayDividing());
+            } else {
+                obsRI.setTask(getTaskFromArray());
+            }
 
-    /** for dividing */
-    public void attachToDividing(WorkerObserverRI obsRI) throws RemoteException{
-        if(!this.workers.contains(obsRI)){
-            this.workers.add(obsRI);
-            obsRI.setTask(getTaskFromArrayDividing());
         }
     }
 
@@ -75,7 +71,7 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
         Task task = this.dividingTasks.get(0);
         if(task != null && this.dividingTasks.size() == 1){
             this.dividingTasks.remove(0);
-            this.setProcess("Hashing");
+            this.available = false;
             return task;
         }
         if(task != null) {
@@ -97,11 +93,4 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
         return available;
     }
 
-    public String getProcess() {
-        return process;
-    }
-
-    public void setProcess(String process) {
-        this.process = process;
-    }
 }
