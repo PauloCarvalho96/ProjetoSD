@@ -103,6 +103,6 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
 
     @Override
     public int getSizeWorkersDB() throws RemoteException {
-        return db.allWorkers().size()+1;
+        return db.allWorkersUsers().size()+1;
     }
 }
