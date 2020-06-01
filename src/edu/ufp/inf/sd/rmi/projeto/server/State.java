@@ -8,6 +8,8 @@ public class State implements Serializable {
     
     private String msg;
 
+    private String process;
+
     //TASK & WORKER
     public final String PAUSED = "Paused";
     public final String COMPLETED = "Completed";
@@ -50,4 +52,11 @@ public class State implements Serializable {
         this.id = id;
     }
 
+    public String getProcess() {
+        return process;
+    }
+
+    public void setProcess(String process) {
+        this.process = process;
+    }
 }

@@ -22,6 +22,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private int creditsWon;
     private ArrayList<Thread> threads = new ArrayList<>();
     private int actualLine;
+    private Integer n_threads_dividing;
 
     public WorkerObserverImpl(int id, String username, Integer n_threads) throws RemoteException {
         super();
@@ -30,9 +31,40 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.n_threads = n_threads;
         this.actualLine = 0;
         this.lastObserverState = new State("Available");
+        n_threads_dividing = this.n_threads;
     }
 
-    /** threads vao fazer o trabalho */
+    private void doWorkDividing() throws RemoteException {
+        try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
+             FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
+            byte dataBuffer[] = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                fileOutputStream.write(dataBuffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+
+        int thread_size=n_threads;
+
+        int start = task.getStart();
+
+        int delta = task.getDelta();
+
+        int res = delta % thread_size;
+
+        delta = delta / thread_size;
+
+        for(int i = 0; i < thread_size ; i++ , start+=delta){
+            if(i==thread_size-1 && res!=0){
+                delta+=res;
+            }
+            threads.add(new Thread(new Dividing(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task)));
+            threads.get(i).start();
+        }
+    }
+
     private void doWork() throws RemoteException {
         int delta = 0;
         int start = 0;
@@ -51,6 +83,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             start = task.getStart();
 
             delta = task.getDelta();
+
         }else{
             createFileTask();
             try {
@@ -74,9 +107,9 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 delta+=res;
             }
             threads.add(new Thread(new Hashing(start-1,delta,i,task.getTaskSubjectRI().getHashType(),this,task)));
-            System.out.println("SIZE:"+threads.size());
+//            System.out.println("SIZE:"+threads.size());
             threads.get(i).start();
-            System.out.println(threads.get(i).getId());
+//            System.out.println(threads.get(i).getId());
         }
     }
 
@@ -110,7 +143,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void removeWorker() throws RemoteException {
-
     }
 
     @Override
@@ -150,14 +182,22 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void setTask(Task task) throws RemoteException {
-        this.task = task;
-        this.taskName = task.getTaskSubjectRI().getName();
-        this.wordsSize = task.getDelta();
-        doWork();
+        if(task.getTaskSubjectRI().getStrategy() == 2 && task.getTaskSubjectRI().getState().getProcess().compareTo("Dividing")==0){
+            this.task = task;
+            doWorkDividing();
+        } else {
+            this.task = task;
+            this.taskName = task.getTaskSubjectRI().getName();
+            this.wordsSize = task.getDelta();
+            doWork();
+        }
     }
 
     @Override
-    public void createFileTask() throws RemoteException {
+    public void createFileTask(Task task) throws RemoteException {
+        this.task = task;
+        this.taskName = task.getTaskSubjectRI().getName();
+//        this.wordsSize = task.getWordsSize();    S3
         try {
             File file = new File("file"+id+".txt");
             if (file.createNewFile()) {
@@ -231,6 +271,16 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 }
                 break;
         }
+    }
+
+    @Override
+    public Integer getN_threads_dividing() throws RemoteException {
+        return n_threads_dividing;
+    }
+
+    @Override
+    public void setN_threads_dividing(Integer n_threads_dividing) throws RemoteException {
+        this.n_threads_dividing = n_threads_dividing;
     }
 
 }

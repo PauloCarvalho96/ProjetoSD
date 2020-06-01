@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 public class Dividing implements Runnable {
 
@@ -19,6 +20,8 @@ public class Dividing implements Runnable {
     String hashType;
     WorkerObserverRI workerObserverRI;
     Task task;
+    ArrayList<Integer> linesWithWordLength = new ArrayList<>();
+
 
     public Dividing(int start, int delta, int id, String hashType, WorkerObserverRI workerObserverRI, Task task) {
         this.start = start;
@@ -57,46 +60,18 @@ public class Dividing implements Runnable {
                     return;
                 }
 
-                if (line >= start && line < start + delta && !workerObserverRI.getStateWorker().getmsg().equals("Paused")) {
-                    switch (hashType) {
-                        case "SHA-512":
-                            hashFunction = MessageDigest.getInstance("SHA-512");
-                            hashFunction.reset();
-                            hashFunction.update(st.getBytes("utf8"));
-                            result = String.format("%0128x", new BigInteger(1, hashFunction.digest()));
-                            break;
-                        case "PBKDF2":
-                            break;
-                        case "BCrypt":
-                            break;
-                        case "SCrypt":
-                            break;
-                        default:
-                            System.out.println("Method not recognized");
-                    }
+                if(task.getWordsSize().contains(st.length()) && line >= start && line < start + delta && !workerObserverRI.getStateWorker().getmsg().equals("Paused")){
                     boolean found = false;
-                    for (String s:workerObserverRI.getHashPass()) {
-                        if(workerObserverRI.match(s,result)){
-                            found = true;
-                        }
-                    }
-                    State state = new State("");
-                    //System.out.println(st);
-                    if(found){
-                        state.setmsg(state.FOUND);
-                        this.workerObserverRI.updateFound(state,result,st, line);
-                    }else if(line % (delta * 0.1) == 0){
-                        state.setmsg(state.NOT_FOUND);
-                        this.workerObserverRI.updateNotFound(state, line);
-                    }
+                    linesWithWordLength.add(line+1);
                 }
                 if (line == start + delta) {
                     break;
                 }
                 line++;
             }
+            task.getTaskSubjectRI().finishDividing(linesWithWordLength,workerObserverRI);
             br.close();
-        } catch (IOException | NoSuchAlgorithmException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

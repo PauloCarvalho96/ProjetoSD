@@ -201,7 +201,8 @@ public class MenuController implements Initializable {
         String typeHash = hashTypeCB.getValue();
         String[] stCB = strategyCB.getValue().split(" ");
         int strategy = Integer.parseInt(stCB[1]);
-        ArrayList<String> hashPass = new ArrayList<>(Arrays.asList(hashPassTA.getText().split(";")));
+        String[] ha = hashPassTA.getText().split(";");
+        ArrayList<String> hashPass = new ArrayList<>(Arrays.asList(ha));
         try {
             int creditsProc = Integer.parseInt(creditsProcTaskTF.getText());
             int creditsFound = Integer.parseInt(creditsFoundTaskTF.getText());
@@ -210,6 +211,7 @@ public class MenuController implements Initializable {
                 delta = 500000;
                 hashPass.clear();
                 /*
+                */
                 hashPass.add("4e2083e0fc093f7f0fcf43b145fb586e476cdce4e38533462160a3656ef63f4ad75c027d45ee5ccbf652c8745210a2b7a1e652c79f0e8be3c926f591c4a667db");
                 hashPass.add("91fae6a834ad600709174d63bb98d7ff8bc5b4dab65b83a53b640be44e1a78fbc9d5caac0c4ab53a9af0d77b79696fe460e98d87211cd66c16c436eeb9fb0b27");
                 hashPass.add("f9cd0599ad0623251da70f2a9c97a9a89c2f034e9ab7a93cef3702d3c1d9b377738c6410079ad6a74cef9b84b4396621b4d0954a4419c302d389ce4ddbb03573");
@@ -218,12 +220,27 @@ public class MenuController implements Initializable {
                 hashPass.add("9ca5e00e64ca5f5e03b2cd02a38dee70d2d559608c8ffe1814029d3f2fa86bcc245a5eace3da57efa9f2dac58ac21750bf61ba0dc812b01b45b02010ea271a68");
                 hashPass.add("bdc247a1a0e28a586ed40744d281993d519abe981aaef33277d4877d167e1150816e9723d068a59509991ed0cdd8c5cea0f9ecd0ef23664db7cb85db5a0dbe12");
                 hashPass.add("170c248082fd9075ae4705e182f6f6f2ccafdc431c92a1fbd0918d070a568e7eb5fe2c219baa0bfdcd52b9d60d09c16e4f8275bdfd65f3730eb7e72c9a331e75");
-                hashPass.add("d6f644b19812e97b5d871658d6d3400ecd4787faeb9b8990c1e7608288664be77257104a58d033bcf1a0e0945ff06468ebe53e2dff36e248424c7273117dac09");
-                */
-                //hashPass.add("9c5ca264523ba2aca1bc9520e3756395a5f73b7053cf6dbfe291ab9908d8b853f89d44707a6e5e5b99eceb115190d48ad71172bb31c702c2dd58fcc9bf76ca62");
-                //hashPass.add("9ca5e00e64ca5f5e03b2cd02a38dee70d2d559608c8ffe1814029d3f2fa86bcc245a5eace3da57efa9f2dac58ac21750bf61ba0dc812b01b45b02010ea271a68");
-                hashPass.add("524f2eb5015c0f491d35a9dd842e391c29b9721a1d513626b20761a5501912a77e81620097c5f0861d27da21a5cb8967fc8ff43c88e70a02d732b9744ec736c8");
-                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy, strategyData());
+                hashPass.add("a12b06cd9da058516b3f2743ddeb5418a1796a78cdb7f18e57bdcf4f86fdaba88cee951115901369f2dbf4b789fcc0b0a0d320b98c4dfa097a23bf5bb451e625");
+                HashMap<String, String> data = new HashMap<>();
+                if(strategy2Requisites()){
+                    String[] le = lengthPassTaskTF.getText().split(";");
+                    if(le.length != hashPass.size()){
+                        messageCreateTask.setWrapText(true);
+                        messageCreateTask.setText("Task was not created! Number of length pass is not the same as hash pass!");
+                        return;
+                    }
+                    data.put("length",lengthPassTaskTF.getText());
+                }else if(strategy3Requisites()){
+                    String[] le = lengthPassTaskTF.getText().split(";");
+                    if(le.length != hashPass.size()){
+                        messageCreateTask.setWrapText(true);
+                        messageCreateTask.setText("Task was not created! Number of length pass is not the same as hash pass!");
+                        return;
+                    }
+                    data.put("length",lengthPassTaskTF.getText());
+                    data.put("alphabet", alphabetTaskTF.getText());
+                }
+                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy, data);
                 if (taskSubjectRI != null) {
                     initializeCreateTask();
                     messageCreateTask.setWrapText(true);
@@ -254,17 +271,6 @@ public class MenuController implements Initializable {
     public boolean strategy3Requisites(){
         return strategyCB.getValue().equals("Strategy 3") && !lengthPassTaskTF.getText().isEmpty()
                 && !alphabetTaskTF.getText().isEmpty();
-    }
-
-    public HashMap<String, String> strategyData(){
-        HashMap<String, String> data = new HashMap<>();
-        if(strategy2Requisites()){
-            data.put("length", lengthPassTaskTF.getText());
-        }else if(strategy3Requisites()){
-            data.put("length", lengthPassTaskTF.getText());
-            data.put("alphabet", alphabetTaskTF.getText());
-        }
-        return data;
     }
 
     public void handlerListTasksTab(Event event) throws RemoteException {

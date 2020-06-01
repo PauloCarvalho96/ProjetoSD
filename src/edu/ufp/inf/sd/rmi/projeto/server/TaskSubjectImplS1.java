@@ -52,9 +52,13 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
         }
     }
 
-    @Override
     public Integer getStrategy() throws RemoteException {
         return this.strategy;
+    }
+
+    @Override
+    public void finishDividing(ArrayList<Integer> linesWithWordLength, WorkerObserverRI workerObserverRI) throws RemoteException {
+
     }
 
     @Override

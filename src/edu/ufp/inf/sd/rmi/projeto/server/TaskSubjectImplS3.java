@@ -30,10 +30,14 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
             tasks.add(task);
         }
     }
-
-    @Override
+    
     public Integer getStrategy() throws RemoteException {
         return this.strategy;
+    }
+
+    @Override
+    public void finishDividing(ArrayList<Integer> linesWithWordLength, WorkerObserverRI workerObserverRI) throws RemoteException {
+
     }
 
     @Override

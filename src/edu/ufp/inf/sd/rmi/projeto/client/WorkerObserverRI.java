@@ -28,4 +28,6 @@ public interface WorkerObserverRI extends Remote {
     public void setTask(Task task) throws RemoteException;
     public void createFileTask() throws RemoteException;
     public void generateFileTask(FileWriter myWriter) throws RemoteException;
+    public Integer getN_threads_dividing() throws RemoteException;
+    public void setN_threads_dividing(Integer n_threads_dividing) throws RemoteException;
 }

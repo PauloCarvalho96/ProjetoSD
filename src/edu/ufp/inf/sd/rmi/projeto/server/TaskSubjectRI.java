@@ -24,4 +24,5 @@ public interface TaskSubjectRI extends Remote {
     public ArrayList<Result> getResult() throws RemoteException;
     public void createSubTasks() throws RemoteException;
     public Integer getStrategy() throws RemoteException;
+    public void finishDividing(ArrayList<Integer> linesWithWordLength,WorkerObserverRI workerObserverRI) throws RemoteException;
 }
