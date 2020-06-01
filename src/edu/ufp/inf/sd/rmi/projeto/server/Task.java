@@ -31,7 +31,7 @@ public class Task implements Serializable {
         this.state = new State("Available"); // passwords por encontrar
     }
 
-    public Task(TaskSubjectRI taskSubjectRI,String alphabet,Integer wordsSize,Integer start, Integer delta){
+    public Task(TaskSubjectRI taskSubjectRI,String alphabet,ArrayList<Integer> wordsSize,Integer start, Integer delta){
         this.alphabet = alphabet;
         this.taskSubjectRI = taskSubjectRI;
         this.wordsSize = wordsSize;

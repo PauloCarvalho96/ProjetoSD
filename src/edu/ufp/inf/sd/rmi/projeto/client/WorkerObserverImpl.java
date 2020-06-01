@@ -192,12 +192,9 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             doWork();
         }
     }
-
+    
     @Override
-    public void createFileTask(Task task) throws RemoteException {
-        this.task = task;
-        this.taskName = task.getTaskSubjectRI().getName();
-//        this.wordsSize = task.getWordsSize();    S3
+    public void createFileTask() throws RemoteException {
         try {
             File file = new File("file"+id+".txt");
             if (file.createNewFile()) {
@@ -228,7 +225,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
         for (int i = task.getStart(); i <= task.getStart()+task.getDelta(); i++){
             StringBuilder ch = new StringBuilder(Integer.toString(i, task.getAlphabet().length()));
-            while(ch.length() != task.wordsSize){
+            while(ch.length() != task.wordsSize.get(0)){
                 ch.insert(0, "0");
             }
             StringBuilder pass = new StringBuilder();
