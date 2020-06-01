@@ -29,14 +29,14 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
             System.out.println(this.strategy);
         }
     }
-
-    @Override
-    public String getProcess() throws RemoteException {
-        return null;
-    }
     
     public Integer getStrategy() throws RemoteException {
         return this.strategy;
+    }
+
+    @Override
+    public void finishDividing(ArrayList<Integer> linesWithWordLength, WorkerObserverRI workerObserverRI) throws RemoteException {
+
     }
 
     @Override
@@ -153,8 +153,8 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
         if (index == wordSize)
         {
             String str = new String(data);
-            Task task = new Task(this,str,wordsSize);
-            tasks.add(task);
+//            Task task = new Task(this,str,wordsSize);     S3
+//            tasks.add(task);
             return;
         }
 

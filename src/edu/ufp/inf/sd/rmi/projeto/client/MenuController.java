@@ -209,7 +209,8 @@ public class MenuController implements Initializable {
         String typeHash = hashTypeCB.getValue();
         String[] stCB = strategyCB.getValue().split(" ");
         int strategy = Integer.parseInt(stCB[1]);
-        ArrayList<String> hashPass = new ArrayList<>(Arrays.asList(hashPassTA.getText().split(";")));
+        String[] ha = hashPassTA.getText().split(";");
+        ArrayList<String> hashPass = new ArrayList<>(Arrays.asList(ha));
         try {
             int creditsProc = Integer.parseInt(creditsProcTaskTF.getText());
             int creditsFound = Integer.parseInt(creditsFoundTaskTF.getText());
@@ -227,7 +228,27 @@ public class MenuController implements Initializable {
                 hashPass.add("bdc247a1a0e28a586ed40744d281993d519abe981aaef33277d4877d167e1150816e9723d068a59509991ed0cdd8c5cea0f9ecd0ef23664db7cb85db5a0dbe12");
                 */
                 hashPass.add("170c248082fd9075ae4705e182f6f6f2ccafdc431c92a1fbd0918d070a568e7eb5fe2c219baa0bfdcd52b9d60d09c16e4f8275bdfd65f3730eb7e72c9a331e75");
-                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy, strategyData());
+                hashPass.add("a12b06cd9da058516b3f2743ddeb5418a1796a78cdb7f18e57bdcf4f86fdaba88cee951115901369f2dbf4b789fcc0b0a0d320b98c4dfa097a23bf5bb451e625");
+                HashMap<String, String> data = new HashMap<>();
+                if(strategy2Requisites()){
+                    String[] le = lengthPassTaskTF.getText().split(";");
+                    if(le.length != hashPass.size()){
+                        messageCreateTask.setWrapText(true);
+                        messageCreateTask.setText("Task was not created! Number of length pass is not the same as hash pass!");
+                        return;
+                    }
+                    data.put("length",lengthPassTaskTF.getText());
+                }else if(strategy3Requisites()){
+                    String[] le = lengthPassTaskTF.getText().split(";");
+                    if(le.length != hashPass.size()){
+                        messageCreateTask.setWrapText(true);
+                        messageCreateTask.setText("Task was not created! Number of length pass is not the same as hash pass!");
+                        return;
+                    }
+                    data.put("length",lengthPassTaskTF.getText());
+                    data.put("alphabet", alphabetTaskTF.getText());
+                }
+                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy, data);
                 if (taskSubjectRI != null) {
                     initializeCreateTask();
                     messageCreateTask.setWrapText(true);
@@ -260,17 +281,6 @@ public class MenuController implements Initializable {
                 && !alphabetTaskTF.getText().isEmpty();
     }
 
-    public HashMap<String, String> strategyData(){
-        HashMap<String, String> data = new HashMap<>();
-        if(strategy2Requisites()){
-            data.put("length", lengthPassTaskTF.getText());
-        }else if(strategy3Requisites()){
-            data.put("length", lengthPassTaskTF.getText());
-            data.put("alphabet", alphabetTaskTF.getText());
-        }
-        return data;
-    }
-
     public void handlerListTasksTab(Event event) throws RemoteException {
         listTasks();
     }
@@ -294,7 +304,7 @@ public class MenuController implements Initializable {
                     int n_threads = numberThreadsSpinner.getValue();
                    WorkerObserverRI workerObserverRI = new WorkerObserverImpl(this.client.userSessionRI.getSizeWorkersDB(), client.username, n_threads);
                    this.client.userSessionRI.createWorker(workerObserverRI, client.username);
-                   taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
+                   taskSubjectRI.attach(workerObserverRI);
                    initializeTableViewListTasks();
                    listTasks();
                    messageJoinTask.setWrapText(true);
