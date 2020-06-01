@@ -27,6 +27,15 @@ public class Task implements Serializable {
         this.state = new State("Available"); // passwords por encontrar
     }
 
+    public Task(TaskSubjectRI taskSubjectRI,String alphabet,Integer wordsSize,Integer start, Integer delta){
+        this.alphabet = alphabet;
+        this.taskSubjectRI = taskSubjectRI;
+        this.wordsSize = wordsSize;
+        this.state = new State("Available"); // passwords por encontrar
+        this.start = start;
+        this.delta = delta;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -49,5 +58,9 @@ public class Task implements Serializable {
 
     public Integer getWordsSize() {
         return wordsSize;
+    }
+
+    public void setStart(Integer start) {
+        this.start = start;
     }
 }

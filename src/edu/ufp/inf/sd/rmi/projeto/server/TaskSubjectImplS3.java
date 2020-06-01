@@ -22,11 +22,12 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     @Override
     public void createSubTasks() throws RemoteException{
         //TODO: Comentar o que cada variavel é
-        recursiveAlphabet(alphabet.toCharArray(), new char[wordsSize], 0, alphabet.length() - 1, 0, wordsSize);
-        for (Task task:tasks) {
-            System.out.println("\nAlphabet:    "+"\""+task.getAlphabet()+"\"");
-            System.out.println("\n\nQUAL ÉEEEEE: ");
-            System.out.println(this.strategy);
+        int percentagens = 10;
+        double range_size = Math.pow(alphabet.length(),wordsSize);
+        Integer range_ammount = Math.toIntExact(Math.round(range_size / percentagens));
+        for (int i = 0; i < percentagens ; i++){
+            Task task = new Task(this,alphabet,wordsSize,i*range_ammount+i,range_ammount);
+            tasks.add(task);
         }
     }
 
@@ -142,23 +143,6 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
         this.status = this.subjectState.COMPLETED;
         this.notifyAllObservers();
         this.available = false;
-    }
-
-    public void recursiveAlphabet(char[] alphabet, char[] data, int start, int end, int index, int wordSize)
-    {
-        if (index == wordSize)
-        {
-            String str = new String(data);
-            Task task = new Task(this,str,wordsSize);
-            tasks.add(task);
-            return;
-        }
-
-        for (int i=start; i<=end && end-i+1 >= wordSize-index; i++)
-        {
-            data[index] = alphabet[i];
-            recursiveAlphabet(alphabet, data, i+1, end, index+1, wordSize);
-        }
     }
 
     public Integer getWordsSize() {

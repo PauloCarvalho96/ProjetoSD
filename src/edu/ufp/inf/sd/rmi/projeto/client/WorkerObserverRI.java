@@ -26,6 +26,6 @@ public interface WorkerObserverRI extends Remote {
     public int getActualLine() throws RemoteException;
     public void taskUpdated() throws RemoteException;
     public void setTask(Task task) throws RemoteException;
-    public void createFileTask(Task task) throws RemoteException;
-    public void generateFileTask(FileWriter file, String str, String ans) throws RemoteException;
+    public void createFileTask() throws RemoteException;
+    public void generateFileTask(FileWriter myWriter) throws RemoteException;
 }

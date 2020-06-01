@@ -7,6 +7,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObserverRI {
@@ -36,7 +37,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         int delta = 0;
         int start = 0;
         if (task.getTaskSubjectRI().getStrategy() != 3){
-            try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
+            try (BufferedInputStream in = new BufferedInputStream(new URL(task.getUrl()).openStream());
                  FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
                 byte dataBuffer[] = new byte[1024];
                 int bytesRead;
@@ -51,7 +52,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
             delta = task.getDelta();
         }else{
-            System.out.println("\n\n\nOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n\n");
+            createFileTask();
             try {
                 BufferedReader reader = new BufferedReader(new FileReader("file"+id+".txt"));
                 while (reader.readLine() != null) delta++;
@@ -59,6 +60,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            task.setStart(0);
         }
 
         int thread_size=n_threads;
@@ -148,21 +150,14 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void setTask(Task task) throws RemoteException {
-        if(task.getTaskSubjectRI().getStrategy() == 3){
-            createFileTask(task);
-        }else{
-            this.task = task;
-            this.taskName = task.getTaskSubjectRI().getName();
-            this.wordsSize = task.getDelta();
-            doWork();
-        }
+        this.task = task;
+        this.taskName = task.getTaskSubjectRI().getName();
+        this.wordsSize = task.getDelta();
+        doWork();
     }
 
     @Override
-    public void createFileTask(Task task) throws RemoteException {
-        this.task = task;
-        this.taskName = task.getTaskSubjectRI().getName();
-        this.wordsSize = task.getWordsSize();
+    public void createFileTask() throws RemoteException {
         try {
             File file = new File("file"+id+".txt");
             if (file.createNewFile()) {
@@ -171,40 +166,45 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                 System.out.println("File already exists.");
             }
             FileWriter myWriter = new FileWriter("file"+id+".txt");
-            generateFileTask(myWriter,task.alphabet,"");
+            generateFileTask(myWriter);
             myWriter.close();
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        doWork();
     }
 
     @Override
-    public void generateFileTask(FileWriter file, String str, String ans) throws RemoteException {
-        // If string is empty
-        if (str.length() == 0) {
+    public void generateFileTask(FileWriter myWriter) throws RemoteException {
+        HashMap<Integer, Character> ha = new HashMap<>();
+
+        char[] alphabet_aux = this.task.getAlphabet().toCharArray();
+        for(int i = 0; i < task.getAlphabet().length() ; i++){
+            ha.put(i, alphabet_aux[i]);
+        }
+        int error = 0;
+        for (int i = task.getStart(); i <= task.getStart()+task.getDelta(); i++){
+            StringBuilder ch = new StringBuilder(Integer.toString(i, task.getAlphabet().length()));
+            System.out.println("num:"+ch);
+            while(ch.length() != task.wordsSize){
+                ch.insert(0, "0");
+            }
+            StringBuilder pass = new StringBuilder();
+            for(char s: ch.toString().toCharArray()){
+                System.out.println(s);
+                try{
+                    pass.append(ha.get(Integer.parseInt(String.valueOf(s))));
+                } catch(NumberFormatException ex){
+                    pass.append(ha.get(i+error));
+                    error++;
+                }
+            }
+            System.out.println(pass);
             try {
-                file.write(ans+"\n");
+                myWriter.write(pass+"\n");
             } catch (IOException e) {
-                System.out.println("An error occurred while writing in file.");
                 e.printStackTrace();
             }
-            System.out.print("\n"+ans);
-            return;
-        }
-        for (int i = 0; i < str.length(); i++) {
-
-            // ith character of str
-            char ch = str.charAt(i);
-
-            // Rest of the string after excluding
-            // the ith character
-            String ros = str.substring(0, i) +
-                    str.substring(i + 1);
-
-            // Recurvise call
-            generateFileTask(file,ros, ans + ch);
         }
     }
 

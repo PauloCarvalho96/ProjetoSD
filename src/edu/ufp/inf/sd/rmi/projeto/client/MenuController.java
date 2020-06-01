@@ -42,8 +42,6 @@ public class MenuController implements Initializable {
     /** Join task **/
     public Label nameTaskSelectedLabel;
     public Spinner<Integer> numberThreadsSpinner;
-    public TextField maxLengthWordTF;
-    public TextField maxWordsTF;
     public Button joinTaskBut;
     public Label messageJoinTask;
     /** List own tasks **/
@@ -185,12 +183,6 @@ public class MenuController implements Initializable {
         strategyCB.setValue("Strategy 1");
     }
 
-    public void initializeListTasks(){
-        maxLengthWordTF.clear();
-        maxWordsTF.clear();
-        numberThreadsSpinner.getValueFactory().setValue(1);
-    }
-
     public void handleExit(ActionEvent actionEvent) {
         System.exit(0);
     }
@@ -225,8 +217,9 @@ public class MenuController implements Initializable {
                 hashPass.add("681e29b8f594a0560a8568cd1ddef081feccfd564e164207b2151e14620092f9fbbb20c9f79daaf2a01e7dda846a326a02a1cb3ddb27f2c685e43d2c86f2c5ad");
                 hashPass.add("9ca5e00e64ca5f5e03b2cd02a38dee70d2d559608c8ffe1814029d3f2fa86bcc245a5eace3da57efa9f2dac58ac21750bf61ba0dc812b01b45b02010ea271a68");
                 hashPass.add("bdc247a1a0e28a586ed40744d281993d519abe981aaef33277d4877d167e1150816e9723d068a59509991ed0cdd8c5cea0f9ecd0ef23664db7cb85db5a0dbe12");
-                */
                 hashPass.add("170c248082fd9075ae4705e182f6f6f2ccafdc431c92a1fbd0918d070a568e7eb5fe2c219baa0bfdcd52b9d60d09c16e4f8275bdfd65f3730eb7e72c9a331e75");
+                 */
+                hashPass.add("d6f644b19812e97b5d871658d6d3400ecd4787faeb9b8990c1e7608288664be77257104a58d033bcf1a0e0945ff06468ebe53e2dff36e248424c7273117dac09");
                 TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy, strategyData());
                 if (taskSubjectRI != null) {
                     initializeCreateTask();
@@ -285,25 +278,16 @@ public class MenuController implements Initializable {
 
     /** associar worker a um taskgroup */
     public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {
-        if(!maxLengthWordTF.getText().isEmpty() && !maxWordsTF.getText().isEmpty()) {
-            try {
-                //int maxLength = Integer.getInteger(maxLengthWordTF.getText());
-                //int maxWords = Integer.getInteger(maxWordsTF.getText());
-                TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
-                if (taskSubjectRI != null && taskSubjectRI.isAvailable()) {
-                    int n_threads = numberThreadsSpinner.getValue();
-                   WorkerObserverRI workerObserverRI = new WorkerObserverImpl(this.client.userSessionRI.getSizeWorkersDB(), client.username, n_threads);
-                   this.client.userSessionRI.createWorker(workerObserverRI, client.username);
-                   taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
-                   initializeTableViewListTasks();
-                   listTasks();
-                   messageJoinTask.setWrapText(true);
-                   messageJoinTask.setText("Worker was created with success!");
-                }
-            }catch (IllegalArgumentException e){
-                messageJoinTask.setWrapText(true);
-                messageJoinTask.setText("Max length word and max words have to be numbers!");
-            }
+        TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
+        if (taskSubjectRI != null && taskSubjectRI.isAvailable()) {
+            int n_threads = numberThreadsSpinner.getValue();
+            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(this.client.userSessionRI.getSizeWorkersDB(), client.username, n_threads);
+            this.client.userSessionRI.createWorker(workerObserverRI, client.username);
+            taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
+            initializeTableViewListTasks();
+            listTasks();
+            messageJoinTask.setWrapText(true);
+            messageJoinTask.setText("Worker was created with success!");
         }
     }
 
