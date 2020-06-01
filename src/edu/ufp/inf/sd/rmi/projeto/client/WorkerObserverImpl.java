@@ -182,21 +182,21 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         for(int i = 0; i < task.getAlphabet().length() ; i++){
             ha.put(i, alphabet_aux[i]);
         }
-        int error = 0;
+        for (int i = 0 ; i < ha.size() ; i++){
+            System.out.println("Para i: "+i+" temos :"+ha.get(i));
+        }
+
         for (int i = task.getStart(); i <= task.getStart()+task.getDelta(); i++){
             StringBuilder ch = new StringBuilder(Integer.toString(i, task.getAlphabet().length()));
-            System.out.println("num:"+ch);
             while(ch.length() != task.wordsSize){
                 ch.insert(0, "0");
             }
             StringBuilder pass = new StringBuilder();
             for(char s: ch.toString().toCharArray()){
-                System.out.println(s);
-                try{
+                if(Character.isLetter(s)){
+                    pass.append(ha.get(Integer.parseInt(Integer.toString(Integer.parseInt(String.valueOf(s), task.getAlphabet().length()),10))));
+                }else{
                     pass.append(ha.get(Integer.parseInt(String.valueOf(s))));
-                } catch(NumberFormatException ex){
-                    pass.append(ha.get(i+error));
-                    error++;
                 }
             }
             System.out.println(pass);

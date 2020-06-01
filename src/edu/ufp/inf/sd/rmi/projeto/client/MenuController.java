@@ -218,8 +218,11 @@ public class MenuController implements Initializable {
                 hashPass.add("9ca5e00e64ca5f5e03b2cd02a38dee70d2d559608c8ffe1814029d3f2fa86bcc245a5eace3da57efa9f2dac58ac21750bf61ba0dc812b01b45b02010ea271a68");
                 hashPass.add("bdc247a1a0e28a586ed40744d281993d519abe981aaef33277d4877d167e1150816e9723d068a59509991ed0cdd8c5cea0f9ecd0ef23664db7cb85db5a0dbe12");
                 hashPass.add("170c248082fd9075ae4705e182f6f6f2ccafdc431c92a1fbd0918d070a568e7eb5fe2c219baa0bfdcd52b9d60d09c16e4f8275bdfd65f3730eb7e72c9a331e75");
-                 */
                 hashPass.add("d6f644b19812e97b5d871658d6d3400ecd4787faeb9b8990c1e7608288664be77257104a58d033bcf1a0e0945ff06468ebe53e2dff36e248424c7273117dac09");
+                */
+                //hashPass.add("9c5ca264523ba2aca1bc9520e3756395a5f73b7053cf6dbfe291ab9908d8b853f89d44707a6e5e5b99eceb115190d48ad71172bb31c702c2dd58fcc9bf76ca62");
+                //hashPass.add("9ca5e00e64ca5f5e03b2cd02a38dee70d2d559608c8ffe1814029d3f2fa86bcc245a5eace3da57efa9f2dac58ac21750bf61ba0dc812b01b45b02010ea271a68");
+                hashPass.add("524f2eb5015c0f491d35a9dd842e391c29b9721a1d513626b20761a5501912a77e81620097c5f0861d27da21a5cb8967fc8ff43c88e70a02d732b9744ec736c8");
                 TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy, strategyData());
                 if (taskSubjectRI != null) {
                     initializeCreateTask();
