@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rmi.projeto.client;
 
 import edu.ufp.inf.sd.rmi.projeto.server.Result;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -183,7 +184,9 @@ public class MenuController implements Initializable {
         strategyCB.setValue("Strategy 1");
     }
 
-    public void handleExit(ActionEvent actionEvent) {
+    public void handleExit(ActionEvent actionEvent) throws RemoteException {
+        client.userSessionRI.logout(client.username, client.userSessionRI);
+        Platform.exit();
         System.exit(0);
     }
 
@@ -208,7 +211,7 @@ public class MenuController implements Initializable {
             int creditsFound = Integer.parseInt(creditsFoundTaskTF.getText());
             int delta = Integer.parseInt(deltaTaskTF.getText());
             if (!name.isEmpty() && !hashPass.isEmpty() && strategyRequisites()) {
-                delta = 500000;
+                delta = 100000;
                 hashPass.clear();
 
                 // aaa

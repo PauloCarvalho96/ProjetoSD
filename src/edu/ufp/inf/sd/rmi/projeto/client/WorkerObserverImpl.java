@@ -39,12 +39,15 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
              FileOutputStream fileOutputStream = new FileOutputStream("file"+id+".txt")) {
             byte dataBuffer[] = new byte[1024];
             int bytesRead;
+            System.out.println("0000000000000000000000");
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
             }
+            System.out.println("111111111111111111111");
         } catch (IOException e) {
             System.out.println("Error");
         }
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
         int thread_size=n_threads;
 

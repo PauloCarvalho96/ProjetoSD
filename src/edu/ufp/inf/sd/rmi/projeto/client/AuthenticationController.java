@@ -1,7 +1,9 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -10,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -102,7 +105,7 @@ public class AuthenticationController implements Initializable {
             this.client.username = username;
             if (sessionRI != null) {
                 this.client.userSessionRI = sessionRI;
-                goToChoiceScene(actionEvent);
+                goToMenuScene(actionEvent);
             } else {
                 messageLoginRegister.setWrapText(true);
                 messageLoginRegister.setText("Login didn't succeeded! Username doesn't exist or data don't match...");
@@ -110,7 +113,7 @@ public class AuthenticationController implements Initializable {
         }
     }
 
-    public void goToChoiceScene(ActionEvent actionEvent) throws IOException {
+    public void goToMenuScene(ActionEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("layouts/menu.fxml"));
         Parent root = loader.load();
@@ -120,9 +123,21 @@ public class AuthenticationController implements Initializable {
         menuController.initData(this.client);
         Stage primaryStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         primaryStage.setMaximized(true);
-        primaryStage.setTitle("Choice");
+        primaryStage.setTitle("Menu");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream( "logo/logo.png" )));
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent e) {
+                try {
+                    client.userSessionRI.logout(client.username, client.userSessionRI);
+                } catch (RemoteException remoteException) {
+                    remoteException.printStackTrace();
+                }
+                Platform.exit();
+                System.exit(0);
+            }
+        });
     }
 }
