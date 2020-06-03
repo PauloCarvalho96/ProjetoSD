@@ -12,17 +12,19 @@ import java.util.Iterator;
 
 public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubjectRI {
 
-    public int wordsSize;
+    public ArrayList<Integer> wordsSize = new ArrayList<>();
 
-    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize) throws RemoteException {
-        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta);
-        this.wordsSize = wordsSize;
-        createSubTasks();
+    public ArrayList<Integer> lines = new ArrayList<>();
+
+    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, ArrayList<Integer> wordsSize) throws RemoteException {
+        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,2);
+        this.wordsSize.addAll(wordsSize);
+        this.subjectState.setProcess("Dividing");
+        createSubTasksDividing();
     }
 
-    /** divide linhas para criar sub tasks */
-    @Override
-    public void createSubTasks() throws RemoteException{
+    /** Tasks para divisao do ficheiro por linhas */
+    public void createSubTasksDividing(){
         try {
             for(String path: paths){
                 try {
@@ -31,7 +33,9 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                     while (reader.readLine() != null) {
                         if(lines == start + delta - 1){
                             Task task = new Task(url,start,delta,this);
-                            tasks.add(task);
+                            task.setWordsSize(wordsSize);
+                            task.isHashing = false;
+                            dividingTasks.add(task);
                             start = lines + 1;
                         }
                         lines++;
@@ -40,12 +44,59 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                     lastDelta = lines - start;
                     if(lastDelta != 0){
                         Task task = new Task(url,start,lastDelta,this);
-                        tasks.add(task);
+                        task.setWordsSize(wordsSize);
+                        task.isHashing = false;
+                        dividingTasks.add(task);
                         reader.close();
                     }
+                    break;
+                }catch (FileNotFoundException ignored){}
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-                    for (Task task:tasks) {
-                        System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
+    @Override
+    public void createSubTasks() throws RemoteException{
+        start = 0;
+        try {
+            for(String path: paths){
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader(path));
+                    int lines = 0;
+                    while (reader.readLine() != null) {
+                        if(lines == start + delta - 1){
+                            Task task = new Task(url,start,delta,this);
+                            task.isHashing = true;
+                            tasks.add(task);
+                            for (Integer l:this.lines) {
+                                if(l > start && l < start + delta +1){
+                                    task.lines.add(l);
+                                }
+                            }
+                            if(task.lines.isEmpty()){
+                                tasks.remove(task);
+                            }
+                            start = lines + 1;
+                        }
+                        lines++;
+                    }
+                    int lastDelta = delta;
+                    lastDelta = lines - start;
+                    if(lastDelta != 0){
+                        Task task = new Task(url,start,lastDelta,this);
+                        task.isHashing = true;
+                        tasks.add(task);
+                        for (Integer l:this.lines) {
+                            if(l > start && l < start + lastDelta +1){
+                                task.lines.add(l);
+                            }
+                        }
+                        if(task.lines.isEmpty()){
+                            tasks.remove(task);
+                        }
+                        reader.close();
                     }
                     break;
                 }catch (FileNotFoundException ignored){}
@@ -109,7 +160,6 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
         }
     }
 
-
     @Override
     public void pause() throws RemoteException {
         if(!this.subjectState.getmsg().equals("Completed") || !this.subjectState.getmsg().equals("Paused")) {
@@ -130,23 +180,32 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
     }
 
     @Override
+    public void stop() throws RemoteException {
+        this.hashPass.clear();
+        this.subjectState.setmsg("Completed");
+        this.status = this.subjectState.COMPLETED;
+        this.notifyAllObservers();
+        this.available = false;
+    }
+
+    @Override
     public String getHashType() throws RemoteException {
-        return null;
+        return this.hashType;
     }
 
     @Override
     public ArrayList<String> getHashPass() throws RemoteException {
-        return null;
+        return this.hashPass;
     }
 
     @Override
     public String getName() throws RemoteException {
-        return null;
+        return this.name;
     }
 
     @Override
     public State getState() throws RemoteException {
-        return null;
+        return this.subjectState;
     }
 
     @Override
@@ -155,11 +214,29 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
     }
 
     @Override
-    public void stop() throws RemoteException {
-        this.hashPass.clear();
-        this.subjectState.setmsg("Completed");
-        this.status = this.subjectState.COMPLETED;
-        this.notifyAllObservers();
-        this.available = false;
+    public Integer getStrategy() throws RemoteException {
+        return this.strategy;
     }
+
+    @Override
+    public void finishDividing(ArrayList<Integer> linesWithWordLength,WorkerObserverRI workerObserverRI) throws RemoteException {
+        lines.addAll(linesWithWordLength);
+
+        workerObserverRI.setN_threads_dividing(workerObserverRI.getN_threads_dividing()-1);
+        if(workerObserverRI.getN_threads_dividing()==0){
+            workers.remove(workerObserverRI);
+            System.out.println("finishing_Dividing");
+        }
+        if(dividingTasks.isEmpty() && workers.isEmpty()){
+            System.out.println("finishing_Dividing COMPLETE");
+            createSubTasks();
+            this.available = true;
+            this.subjectState.setProcess("Hashing");
+        }
+    }
+
+    public ArrayList<Integer> getWordsSize() {
+        return wordsSize;
+    }
+
 }

@@ -39,15 +39,16 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
                 taskSubjectRI = new TaskSubjectImplS1(name, hashType, hashPass, creditsProc, creditsFound, delta);
                 break;
             case 2:
-                taskSubjectRI = new TaskSubjectImplS2(name, hashType, hashPass, creditsProc, creditsFound, delta, Integer.parseInt(dataStrategy.get("length")));
+                String[] s2 = dataStrategy.get("length").split(";");
+                ArrayList<Integer> len2 = new ArrayList<>();
+                for(String st:s2){
+                    len2.add(Integer.parseInt(st));
+                }
+                taskSubjectRI = new TaskSubjectImplS2(name, hashType, hashPass, creditsProc, creditsFound, delta, len2);
                 break;
             case 3:
-                TaskSubjectImplS3 taskSubjectImplS3 = new TaskSubjectImplS3(name, hashType, hashPass, creditsProc, creditsFound, delta, Integer.parseInt(dataStrategy.get("length")), dataStrategy.get("alphabet"));
-                taskSubjectRI = taskSubjectImplS3;
-                System.out.println("\n\nPUTEDAS FRESCAS1\n"+taskSubjectRI.getName());
-                System.out.println("\n\nPUTEDAS FRESCAS2\n"+taskSubjectRI.getHashType());
-                System.out.println("\n\nPUTEDAS FRESCAS3\n"+taskSubjectRI.getHashPass());
-                System.out.println("\n\nPUTEDAS FRESCAS4\n"+taskSubjectImplS3.alphabet);
+                int wordsize = Integer.parseInt(dataStrategy.get("length"));
+                taskSubjectRI = new TaskSubjectImplS3(name, hashType, hashPass, creditsProc, creditsFound, delta,wordsize , dataStrategy.get("alphabet"));
                 break;
         }
         db.assocTaskToUser(uname, taskSubjectRI);  // adiciona task a DB
@@ -102,6 +103,6 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
 
     @Override
     public int getSizeWorkersDB() throws RemoteException {
-        return db.allWorkers().size()+1;
+        return db.allWorkersUsers().size()+1;
     }
 }

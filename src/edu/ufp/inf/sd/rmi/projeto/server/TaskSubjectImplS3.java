@@ -12,23 +12,34 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     public String alphabet;
 
     public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize, String alphabet) throws RemoteException {
-        super(name, hashType, hashPass, creditsWordProcessed, creditsWordFound, delta);
-        System.out.println("\n\nPUTEDAS FRESCAS11111\n"+name);
+        super(name, hashType, hashPass, creditsWordProcessed, creditsWordFound, delta,3);
         this.wordsSize = wordsSize;
         this.alphabet = alphabet;
         createSubTasks();
-        System.out.println("\n\nPUTEDAS FRESCAS22222\n"+this.getName());
-        System.out.println("\n\nPUTEDAS FRESCAS33333\n"+this.alphabet);
     }
 
     /** divide linhas para criar sub tasks */
     @Override
     public void createSubTasks() throws RemoteException{
         //TODO: Comentar o que cada variavel é
-        recursiveAlphabet(alphabet.toCharArray(), new char[wordsSize], 0, alphabet.length() - 1, 0, wordsSize);
-        for (Task task:tasks) {
-            System.out.println("\nAlphabet:    "+"\""+task.getAlphabet()+"\"");
+        int percentagens = 10;
+        double range_size = Math.pow(alphabet.length(),wordsSize);
+        Integer range_ammount = Math.toIntExact(Math.round(range_size / percentagens));
+        ArrayList<Integer> wordsize = new ArrayList<>();
+        wordsize.add(wordsSize);
+        for (int i = 0; i < percentagens ; i++){
+            Task task = new Task(this,alphabet,wordsize,i*range_ammount+i,range_ammount);
+            tasks.add(task);
         }
+    }
+    
+    public Integer getStrategy() throws RemoteException {
+        return this.strategy;
+    }
+
+    @Override
+    public void finishDividing(ArrayList<Integer> linesWithWordLength, WorkerObserverRI workerObserverRI) throws RemoteException {
+
     }
 
     @Override
@@ -107,22 +118,22 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
 
     @Override
     public String getHashType() throws RemoteException {
-        return null;
+        return this.hashType;
     }
 
     @Override
     public ArrayList<String> getHashPass() throws RemoteException {
-        return null;
+        return this.hashPass;
     }
 
     @Override
     public String getName() throws RemoteException {
-        return null;
+        return this.name;
     }
 
     @Override
     public State getState() throws RemoteException {
-        return null;
+        return this.subjectState;
     }
 
     @Override
@@ -138,23 +149,6 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
         this.status = this.subjectState.COMPLETED;
         this.notifyAllObservers();
         this.available = false;
-    }
-
-    public void recursiveAlphabet(char[] alphabet, char[] data, int start, int end, int index, int wordSize)
-    {
-        if (index == wordSize)
-        {
-            String str = new String(data);
-            Task task = new Task(this,str,wordsSize);
-            tasks.add(task);
-            return;
-        }
-
-        for (int i=start; i<=end && end-i+1 >= wordSize-index; i++)
-        {
-            data[index] = alphabet[i];
-            recursiveAlphabet(alphabet, data, i+1, end, index+1, wordSize);
-        }
     }
 
     public Integer getWordsSize() {
