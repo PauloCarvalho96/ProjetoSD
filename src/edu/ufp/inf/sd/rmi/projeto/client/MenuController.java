@@ -10,6 +10,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.*;
@@ -183,7 +186,7 @@ public class MenuController implements Initializable {
         strategyCB.setValue("Strategy 1");
     }
 
-    public void handleExit(ActionEvent actionEvent) {
+    public void handleExit(ActionEvent actionEvent) throws RemoteException {
         System.exit(0);
     }
 
@@ -208,7 +211,7 @@ public class MenuController implements Initializable {
             int creditsFound = Integer.parseInt(creditsFoundTaskTF.getText());
             int delta = Integer.parseInt(deltaTaskTF.getText());
             if (!name.isEmpty() && !hashPass.isEmpty() && strategyRequisites()) {
-                delta = 500000;
+                delta = 100000;
                 hashPass.clear();
 
                 // aaa

@@ -65,7 +65,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         }
     }
 
-    private void doWork() throws RemoteException {
+    public void doWork() throws RemoteException {
         int delta = 0;
         int start = 0;
         if (task.getTaskSubjectRI().getStrategy() != 3){
