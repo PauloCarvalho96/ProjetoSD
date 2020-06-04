@@ -19,20 +19,22 @@ public class Hashing implements Runnable {
     String hashType;
     WorkerObserverImpl workerObserver;
     Task task;
+    String file_name;
 
-    public Hashing(int start, int delta, int id, String hashType, WorkerObserverImpl workerObserver, Task task) {
+    public Hashing(int start, int delta, int id, String hashType, WorkerObserverImpl workerObserver, Task task,String file_name) {
         this.start = start;
         this.delta = delta;
         this.id = id;
         this.hashType = hashType;
         this.workerObserver = workerObserver;
         this.task = task;
+        this.file_name = file_name;
     }
 
     @Override
     public void run() {
         try {
-            File file = new File("file"+workerObserver.getId()+".txt");
+            File file = new File(file_name);
 
             int line = 0;
 
@@ -43,7 +45,6 @@ public class Hashing implements Runnable {
             MessageDigest hashFunction;
 
             while ((st = br.readLine()) != null) {
-                System.out.println("EU SOU "+id);
                 while (workerObserver.getStateWorker().getmsg().equals("Paused")){
                     try {
                         System.out.println("\nTOU A DORMIR!");
@@ -54,7 +55,7 @@ public class Hashing implements Runnable {
                 }
 
                 if(workerObserver.getStateWorker().getmsg().equals("Completed")){////stop thread
-                    return;
+                    break;
                 }
 
                 if (line >= start && line < start + delta && !workerObserver.getStateWorker().getmsg().equals("Paused")) {

@@ -106,8 +106,8 @@ public class DBMockup implements Serializable {
         return workers;
     }
 
-    public HashMap<String, ArrayList<WorkerObserverRI>> allWorkersUsers(){
-        return userWorkers;
+    public ArrayList<WorkerObserverRI> allWorkersUsers(String name){
+        return userWorkers.get(name);
     }
 
     public User getUser(String uname) throws RemoteException {

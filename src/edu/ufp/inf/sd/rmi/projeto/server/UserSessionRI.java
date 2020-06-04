@@ -18,6 +18,6 @@ public interface UserSessionRI extends Remote {
         public void stopTask(TaskSubjectRI taskSubjectRI,String uname) throws RemoteException;
         public ArrayList<WorkerObserverRI> getWorkersRI(String uname) throws RemoteException;
         public ArrayList<TaskSubjectRI> getTasksRI(String uname) throws RemoteException;
-        public int getSizeWorkersDB() throws RemoteException;
+        public int getSizeWorkersDB(String name) throws RemoteException;
 
 }

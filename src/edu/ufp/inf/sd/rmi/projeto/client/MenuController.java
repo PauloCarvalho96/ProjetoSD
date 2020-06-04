@@ -297,7 +297,9 @@ public class MenuController implements Initializable {
         TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
         if (taskSubjectRI != null && taskSubjectRI.isAvailable()) {
             int n_threads = numberThreadsSpinner.getValue();
-            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(this.client.userSessionRI.getSizeWorkersDB(), client.username, n_threads);
+            System.out.println("Worker size modafoca: "+this.client.userSessionRI.getSizeWorkersDB(this.client.username));
+            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(
+                    this.client.userSessionRI.getSizeWorkersDB(this.client.username) + 1, client.username, n_threads);
             this.client.userSessionRI.createWorker(workerObserverRI, client.username);
             taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
             initializeTableViewListTasks();
