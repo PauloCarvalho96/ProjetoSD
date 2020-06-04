@@ -39,7 +39,6 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
 
     @Override
     public void finishDividing(ArrayList<Integer> linesWithWordLength, WorkerObserverRI workerObserverRI) throws RemoteException {
-
     }
 
     @Override

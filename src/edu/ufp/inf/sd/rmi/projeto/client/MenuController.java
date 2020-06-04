@@ -214,11 +214,17 @@ public class MenuController implements Initializable {
             int creditsFound = Integer.parseInt(creditsFoundTaskTF.getText());
             int delta = Integer.parseInt(deltaTaskTF.getText());
             if (!name.isEmpty() && !hashPass.isEmpty() && strategyRequisites()) {
-                delta = 100000;
+                delta = 500000;
                 hashPass.clear();
 
                 // aaa
-                hashPass.add("d6f644b19812e97b5d871658d6d3400ecd4787faeb9b8990c1e7608288664be77257104a58d033bcf1a0e0945ff06468ebe53e2dff36e248424c7273117dac09");
+                //hashPass.add("d6f644b19812e97b5d871658d6d3400ecd4787faeb9b8990c1e7608288664be77257104a58d033bcf1a0e0945ff06468ebe53e2dff36e248424c7273117dac09");
+
+                // 120bu57fu119
+                //hashPass.add("7d579f6d59b9a450c43e9a3d211f912528ed46d0ccabde15de3ad1f7a28b5947a0b30173489810b1f16cd13e62d4bf901e9f34ea80533252daa2406fc5cd446e");
+
+                // 13m31
+                hashPass.add("f4c0701bf17c326b3e18680ac15833d07d10715c7653203b6faf68b51d532106a9d8a3f49c939610c3482182ea0e02e90d7ba474c0c8f48e37bdadfedaf024bd");
 
                 HashMap<String, String> data = new HashMap<>();
                 if(strategy2Requisites()){

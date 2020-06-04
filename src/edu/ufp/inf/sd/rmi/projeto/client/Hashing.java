@@ -17,22 +17,22 @@ public class Hashing implements Runnable {
     int delta;
     int id;
     String hashType;
-    WorkerObserverRI workerObserverRI;
+    WorkerObserverImpl workerObserver;
     Task task;
 
-    public Hashing(int start, int delta, int id, String hashType, WorkerObserverRI workerObserverRI, Task task) {
+    public Hashing(int start, int delta, int id, String hashType, WorkerObserverImpl workerObserver, Task task) {
         this.start = start;
         this.delta = delta;
         this.id = id;
         this.hashType = hashType;
-        this.workerObserverRI = workerObserverRI;
+        this.workerObserver = workerObserver;
         this.task = task;
     }
 
     @Override
     public void run() {
         try {
-            File file = new File("file"+workerObserverRI.getId()+".txt");
+            File file = new File("file"+workerObserver.getId()+".txt");
 
             int line = 0;
 
@@ -43,8 +43,8 @@ public class Hashing implements Runnable {
             MessageDigest hashFunction;
 
             while ((st = br.readLine()) != null) {
-
-                if(workerObserverRI.getStateWorker().getmsg().equals("Paused")){////pause thread
+                System.out.println("EU SOU "+id);
+                while (workerObserver.getStateWorker().getmsg().equals("Paused")){
                     try {
                         System.out.println("\nTOU A DORMIR!");
                         Thread.sleep(1000);
@@ -53,11 +53,11 @@ public class Hashing implements Runnable {
                     }
                 }
 
-                if(workerObserverRI.getStateWorker().getmsg().equals("Completed")){////stop thread
+                if(workerObserver.getStateWorker().getmsg().equals("Completed")){////stop thread
                     return;
                 }
 
-                if (line >= start && line < start + delta && !workerObserverRI.getStateWorker().getmsg().equals("Paused")) {
+                if (line >= start && line < start + delta && !workerObserver.getStateWorker().getmsg().equals("Paused")) {
                     if (task.getTaskSubjectRI().getStrategy() == 2 && task.lines.contains(line + 1) || task.getTaskSubjectRI().getStrategy() != 2) {
                     switch (hashType) {
                         case "SHA-512":
@@ -76,8 +76,8 @@ public class Hashing implements Runnable {
                             System.out.println("Method not recognized");
                     }
                     boolean found = false;
-                    for (String s : workerObserverRI.getHashPass()) {
-                        if (workerObserverRI.match(s, result)) {
+                    for (String s : workerObserver.getHashPass()) {
+                        if (workerObserver.match(s, result)) {
                             found = true;
                         }
                     }
@@ -85,10 +85,10 @@ public class Hashing implements Runnable {
                     //System.out.println(st);
                     if (found) {
                         state.setmsg(state.FOUND);
-                        this.workerObserverRI.updateFound(state, result, st, line);
+                        this.workerObserver.updateFound(state, result, st, line);
                     } else if (line % (delta * 0.1) == 0) {
                         state.setmsg(state.NOT_FOUND);
-                        this.workerObserverRI.updateNotFound(state, line);
+                        this.workerObserver.updateNotFound(state, line);
                     }
                 }
                 }
