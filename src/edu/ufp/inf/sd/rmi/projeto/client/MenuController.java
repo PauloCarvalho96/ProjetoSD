@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rmi.projeto.client;
 
 import edu.ufp.inf.sd.rmi.projeto.server.Result;
 import edu.ufp.inf.sd.rmi.projeto.server.TaskSubjectRI;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -187,6 +188,8 @@ public class MenuController implements Initializable {
     }
 
     public void handleExit(ActionEvent actionEvent) throws RemoteException {
+        client.userSessionRI.logout(client.username, client.userSessionRI);
+        Platform.exit();
         System.exit(0);
     }
 

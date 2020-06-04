@@ -79,7 +79,7 @@ public class DBMockup implements Serializable {
 
     // remove sessao
     public void removeSession(String uname,UserSessionRI sessionRI){
-        sessions.remove(uname,sessionRI);
+        sessions.remove(uname);
     }
 
     /** nao esta a eliminar da DB */
