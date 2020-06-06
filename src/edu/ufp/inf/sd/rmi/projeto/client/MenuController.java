@@ -10,6 +10,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import sun.plugin.ClassLoaderInfo;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -82,12 +84,32 @@ public class MenuController implements Initializable {
     /** Update all **/
     public Button updateBut;
 
+    /** Credits */
+    public Label creditsText;
+    public Label actualCredits;
+    public Label costCreditsTask;
+
     private Client client;
 
-    public void initData(Client client){ this.client = client; }
+    public void initData(Client client){
+        this.client = client;
+
+        /** inicializa créditos do user */
+        try {
+            actualCredits.setText(String.valueOf(client.userSessionRI.getUserCreditsDB(client.username)));
+            /** default cost */
+            int taskCredits = 1000000;
+            checkUserCreditsToCreateTask(taskCredits);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) { initializeComboBoxAndTableView(); }
+    public void initialize(URL location, ResourceBundle resources) {
+        initializeComboBoxAndTableView();
+    }
 
     public void initializeComboBoxAndTableView(){
         initializeComboBox();
@@ -212,6 +234,7 @@ public class MenuController implements Initializable {
         try {
             int creditsProc = Integer.parseInt(creditsProcTaskTF.getText());
             int creditsFound = Integer.parseInt(creditsFoundTaskTF.getText());
+            int taskCredits = 1000000;
             int delta = Integer.parseInt(deltaTaskTF.getText());
             if (!name.isEmpty() && !hashPass.isEmpty() && strategyRequisites()) {
                 delta = 500000;
@@ -228,6 +251,7 @@ public class MenuController implements Initializable {
 
                 HashMap<String, String> data = new HashMap<>();
                 if(strategy2Requisites()){
+                    taskCredits = 2000000;
                     String[] le = lengthPassTaskTF.getText().split(";");
                     if(le.length != hashPass.size()){
                         messageCreateTask.setWrapText(true);
@@ -236,6 +260,7 @@ public class MenuController implements Initializable {
                     }
                     data.put("length",lengthPassTaskTF.getText());
                 }else if(strategy3Requisites()){
+                    taskCredits = 3000000;
                     String le = lengthPassTaskTF.getText();
                     try {
                         Integer.parseInt(le);
@@ -247,9 +272,22 @@ public class MenuController implements Initializable {
                     data.put("length",lengthPassTaskTF.getText());
                     data.put("alphabet", alphabetTaskTF.getText());
                 }
-                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy, data);
+
+                /** se não tiver creditos suficientes */
+                if(client.userSessionRI.getUserCreditsDB(client.username) < taskCredits){
+                    messageCreateTask.setWrapText(true);
+                    messageCreateTask.setText("You dont have enough credits to create task!");
+                    return;
+                }
+
+                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy, data,taskCredits);
                 if (taskSubjectRI != null) {
                     initializeCreateTask();
+                    client.userSessionRI.setUserCreditsDB(client.username,client.userSessionRI.getUserCreditsDB(client.username)-taskCredits);
+                    actualCredits.setText(String.valueOf(client.userSessionRI.getUserCreditsDB(client.username)));
+                    taskCredits = 1000000;
+                    checkUserCreditsToCreateTask(taskCredits);
+                    costCreditsTask.setText(String.valueOf(taskCredits));
                     messageCreateTask.setWrapText(true);
                     messageCreateTask.setText("Task was created successfully.");
                 } else {
@@ -376,19 +414,38 @@ public class MenuController implements Initializable {
                 lengthPassTaskTF.setVisible(false);
                 alphabetTaskLabel.setVisible(false);
                 alphabetTaskTF.setVisible(false);
+                int taskCredits1 = 1000000;
+                checkUserCreditsToCreateTask(taskCredits1);
                 break;
             case "Strategy 2":
                 lengthPassTaskLabel.setVisible(true);
                 lengthPassTaskTF.setVisible(true);
                 alphabetTaskLabel.setVisible(false);
                 alphabetTaskTF.setVisible(false);
+                int taskCredits2 = 2000000;
+                checkUserCreditsToCreateTask(taskCredits2);
                 break;
             case "Strategy 3":
                 lengthPassTaskLabel.setVisible(true);
                 lengthPassTaskTF.setVisible(true);
                 alphabetTaskLabel.setVisible(true);
                 alphabetTaskTF.setVisible(true);
+                int taskCredits3 = 3000000;
+                checkUserCreditsToCreateTask(taskCredits3);
                 break;
+        }
+    }
+
+    public void checkUserCreditsToCreateTask(Integer taskCredits){
+        costCreditsTask.setText(String.valueOf(taskCredits));
+        try {
+            if(client.userSessionRI.getUserCreditsDB(client.username)<taskCredits){
+                costCreditsTask.setTextFill(Color.RED);
+            } else {
+                costCreditsTask.setTextFill(Color.GREEN);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 }

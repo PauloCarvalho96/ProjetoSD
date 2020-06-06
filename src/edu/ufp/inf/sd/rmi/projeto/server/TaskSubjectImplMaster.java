@@ -13,6 +13,7 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
     public ArrayList<String> hashPass;
     public Integer creditsWordProcessed;
     public Integer creditsWordFound;
+    public Integer taskCredits;
     public State subjectState = new State();
     public String status;
     public boolean available = true;
@@ -26,16 +27,18 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
     public ArrayList<String> paths = new ArrayList<>();
     public Integer strategy = 0;
 
-    protected TaskSubjectImplMaster(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta,Integer strategy) throws RemoteException {
+    protected TaskSubjectImplMaster(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta,Integer strategy,Integer taskCredits) throws RemoteException {
         this.name = name;
         this.hashType = hashType;
         this.hashPass = hashPass;
+        this.taskCredits = taskCredits;
         this.creditsWordProcessed = creditsWordProcessed;
         this.creditsWordFound = creditsWordFound;
         this.delta = delta;
         this.subjectState.setmsg("Available");
         this.status = this.subjectState.AVAILABLE;
         this.strategy = strategy;
+        System.out.println("PLAFOND: "+this.taskCredits);
         paths.add("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
         paths.add("C:\\Users\\Rui\\Documents\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
         paths.add("C:\\Users\\tmsl9\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");

@@ -16,8 +16,8 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     public ArrayList<Integer> lines = new ArrayList<>();
 
-    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, ArrayList<Integer> wordsSize) throws RemoteException {
-        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,2);
+    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, ArrayList<Integer> wordsSize,Integer taskCredits) throws RemoteException {
+        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,2,taskCredits);
         this.wordsSize.addAll(wordsSize);
         this.subjectState.setProcess("Dividing");
         createSubTasksDividing();

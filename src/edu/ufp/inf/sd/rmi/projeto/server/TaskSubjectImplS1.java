@@ -12,8 +12,8 @@ import java.util.Iterator;
 
 public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubjectRI {
 
-    public TaskSubjectImplS1(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta) throws RemoteException {
-        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,1);
+    public TaskSubjectImplS1(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta,Integer taskCredits) throws RemoteException {
+        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,1,taskCredits);
         createSubTasks();
     }
 

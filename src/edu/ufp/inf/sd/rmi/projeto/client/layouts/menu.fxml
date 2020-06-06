@@ -41,11 +41,15 @@
                         <Label layoutX="669.0" layoutY="421.0" prefHeight="18.0" prefWidth="86.0" text="Strategy" />
                         <ComboBox fx:id="strategyCB" layoutX="840.0" layoutY="417.0" onAction="#handlerStrategyCB" prefHeight="26.0" prefWidth="149.0" />
                         <Button fx:id="createTaskBut" layoutX="882.0" layoutY="554.0" mnemonicParsing="false" onAction="#handlerCreateTask" text="Create Task" />
-                        <Label fx:id="messageCreateTask" layoutX="773.0" layoutY="475.0" prefHeight="67.0" prefWidth="295.0" />
+                        <Label fx:id="messageCreateTask" layoutX="773.0" layoutY="500.0" prefHeight="42.0" prefWidth="295.0" />
                         <Label fx:id="lengthPassTaskLabel" layoutX="1109.0" layoutY="421.0" prefHeight="18.0" prefWidth="86.0" text="Length pass" />
                         <TextField fx:id="lengthPassTaskTF" layoutX="1194.0" layoutY="417.0" prefHeight="26.0" prefWidth="150.0" />
                         <Label fx:id="alphabetTaskLabel" layoutX="1109.0" layoutY="466.0" prefHeight="18.0" prefWidth="86.0" text="Alphabet" />
                         <TextField fx:id="alphabetTaskTF" layoutX="1195.0" layoutY="462.0" />
+                        <Label fx:id="creditsText" layoutX="998.0" layoutY="30.0" text="Credits:" />
+                        <Label fx:id="actualCredits" layoutX="1047.0" layoutY="30.0" prefHeight="17.0" prefWidth="82.0" textFill="RED" />
+                        <Label layoutX="669.0" layoutY="479.0" text="Cost" />
+                        <Label fx:id="costCreditsTask" layoutX="841.0" layoutY="479.0" prefHeight="17.0" prefWidth="155.0" textFill="RED" />
                      </children>
                   </AnchorPane>
                </content>
