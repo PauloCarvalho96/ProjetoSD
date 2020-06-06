@@ -291,8 +291,8 @@ public class MenuController implements Initializable {
                     messageCreateTask.setText("You dont have enough credits to create task!");
                     return;
                 }
-
-                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy, data,taskCredits,client);
+                String url = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt"; //PARA TESTES
+                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy, data,taskCredits,client,url);
                 if (taskSubjectRI != null) {
                     initializeCreateTask();
                     client.userSessionRI.setUserCreditsDB(client.username,client.userSessionRI.getUserCreditsDB(client.username)-taskCredits);

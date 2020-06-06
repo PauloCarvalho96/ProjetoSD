@@ -11,7 +11,7 @@ import java.util.HashMap;
 public interface UserSessionRI extends Remote {
         public void logout(String uname,UserSessionRI userSessionRI) throws RemoteException;
         public ArrayList<TaskSubjectRI> listTasks() throws RemoteException;
-        public TaskSubjectRI createTask(String name, String hashType, ArrayList<String> hashPass, Integer creditsProc, Integer creditsFound, Integer delta, String uname, int strategy, HashMap<String, String> dataStrategy, Integer taskCredits, Client client) throws RemoteException;
+        public TaskSubjectRI createTask(String name, String hashType, ArrayList<String> hashPass, Integer creditsProc, Integer creditsFound, Integer delta, String uname, int strategy, HashMap<String, String> dataStrategy, Integer taskCredits, Client client,String url) throws RemoteException;
         public void createWorker(WorkerObserverRI workerObserverRI, String uname) throws RemoteException;
         public void joinTask(String task, WorkerObserverRI workerObserverRI) throws RemoteException;
         public void pauseTask(TaskSubjectRI taskSubjectRI) throws RemoteException;

@@ -37,6 +37,7 @@ public class Hashing implements Runnable {
             File file = new File(file_name);
 
             int line = 0;
+            int n_check_words = 0;
 
             BufferedReader br = new BufferedReader(new FileReader(file));
             String st;
@@ -59,6 +60,9 @@ public class Hashing implements Runnable {
                 }
 
                 if (line >= start && line < start + delta && !workerObserver.getStateWorker().getmsg().equals("Paused")) {
+
+                    n_check_words++;
+
                     if (task.getTaskSubjectRI().getStrategy() == 2 && task.lines.contains(line + 1) || task.getTaskSubjectRI().getStrategy() != 2) {
                     switch (hashType) {
                         case "SHA-512":
@@ -91,12 +95,12 @@ public class Hashing implements Runnable {
                         client.userSessionRI.setUserCreditsDB(client.username,userCredits+10);
                         this.workerObserver.updateFound(state, result, st, line);
                     } else if (line % (delta * 0.1) == 0) {
-                        int creditsToUser = (int) Math.round(delta*0.1);
                         Client client = workerObserver.getClient();
                         int userCredits = client.userSessionRI.getUserCreditsDB(client.username);
-                        client.userSessionRI.setUserCreditsDB(client.username,userCredits+creditsToUser);
+                        client.userSessionRI.setUserCreditsDB(client.username,userCredits+n_check_words);
                         state.setmsg(state.NOT_FOUND);
                         this.workerObserver.updateNotFound(state, line);
+                        n_check_words = 0;
                     }
                 }
                 }
