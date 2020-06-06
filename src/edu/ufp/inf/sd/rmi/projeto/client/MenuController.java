@@ -224,7 +224,10 @@ public class MenuController implements Initializable {
                 //hashPass.add("7d579f6d59b9a450c43e9a3d211f912528ed46d0ccabde15de3ad1f7a28b5947a0b30173489810b1f16cd13e62d4bf901e9f34ea80533252daa2406fc5cd446e");
 
                 // 13m31
-                hashPass.add("f4c0701bf17c326b3e18680ac15833d07d10715c7653203b6faf68b51d532106a9d8a3f49c939610c3482182ea0e02e90d7ba474c0c8f48e37bdadfedaf024bd");
+                //hashPass.add("f4c0701bf17c326b3e18680ac15833d07d10715c7653203b6faf68b51d532106a9d8a3f49c939610c3482182ea0e02e90d7ba474c0c8f48e37bdadfedaf024bd");
+
+                //41k
+                hashPass.add("47150a22fa31bb0450e9c59c0426d8d63510d89fac8308f097bef572a1038bb266785eb83a8f3f62bda3bb3930d3e742602f24b0e0b0b87ec86148af9c9bc66c");
 
                 HashMap<String, String> data = new HashMap<>();
                 if(strategy2Requisites()){
@@ -297,7 +300,6 @@ public class MenuController implements Initializable {
         TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
         if (taskSubjectRI != null && taskSubjectRI.isAvailable()) {
             int n_threads = numberThreadsSpinner.getValue();
-            System.out.println("Worker size modafoca: "+this.client.userSessionRI.getSizeWorkersDB(this.client.username));
             WorkerObserverRI workerObserverRI = new WorkerObserverImpl(
                     this.client.userSessionRI.getSizeWorkersDB(this.client.username) + 1, client.username, n_threads);
             this.client.userSessionRI.createWorker(workerObserverRI, client.username);

@@ -10,7 +10,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubjectRI {
+public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubjectRI , Runnable {
 
     public TaskSubjectImplS1(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta) throws RemoteException {
         super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,1);
@@ -20,36 +20,9 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
     /** divide linhas para criar sub tasks */
     @Override
     public void createSubTasks() throws RemoteException{
-        try {
-            for(String path: paths){
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(path));
-                    int lines = 0;
-                    while (reader.readLine() != null) {
-                        if(lines == start + delta - 1){
-                            Task task = new Task(url,start,delta,this);
-                            tasks.add(task);
-                            start = lines + 1;
-                        }
-                        lines++;
-                    }
-                    int lastDelta = delta;
-                    lastDelta = lines - start;
-                    if(lastDelta != 0){
-                        Task task = new Task(url,start,lastDelta,this);
-                        tasks.add(task);
-                        reader.close();
-                    }
-
-                    for (Task task:tasks) {
-                        System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
-                    }
-                    break;
-                }catch (FileNotFoundException ignored){}
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Runnable runnable = this;
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
     public Integer getStrategy() throws RemoteException {
@@ -57,9 +30,7 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
     }
 
     @Override
-    public void finishDividing(ArrayList<Integer> linesWithWordLength, WorkerObserverRI workerObserverRI) throws RemoteException {
-
-    }
+    public void finishDividing(ArrayList<Integer> linesWithWordLength, WorkerObserverRI workerObserverRI) throws RemoteException {}
 
     @Override
     public void changeWorkerState(State state, String hash, String pass) throws RemoteException {
@@ -166,5 +137,39 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
     @Override
     public ArrayList<Result> getResult() throws RemoteException {
         return result;
+    }
+
+    @Override
+    public void run() {
+        try {
+            for(String path: paths){
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader(path));
+                    int lines = 0;
+                    while (reader.readLine() != null) {
+                        if(lines == start + delta - 1){
+                            Task task = new Task(url,start,delta,this);
+                            tasks.add(task);
+                            start = lines + 1;
+                        }
+                        lines++;
+                    }
+                    int lastDelta = delta;
+                    lastDelta = lines - start;
+                    if(lastDelta != 0){
+                        Task task = new Task(url,start,lastDelta,this);
+                        tasks.add(task);
+                        reader.close();
+                    }
+
+                    for (Task task:tasks) {
+                        System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
+                    }
+                    break;
+                }catch (FileNotFoundException ignored){}
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
