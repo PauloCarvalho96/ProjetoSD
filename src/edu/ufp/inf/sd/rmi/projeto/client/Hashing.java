@@ -83,11 +83,19 @@ public class Hashing implements Runnable {
                         }
                     }
                     State state = new State("");
-                    //System.out.println(st);
                     if (found) {
                         state.setmsg(state.FOUND);
+                        Client client = workerObserver.getClient();
+                        int userCredits = client.userSessionRI.getUserCreditsDB(client.username);
+                        /** atualiza creditos do client */
+                        client.userSessionRI.setUserCreditsDB(client.username,userCredits+10);
+                        System.out.println("CLIENT CREDITS: "+client.userSessionRI.getUserCreditsDB(client.username));
                         this.workerObserver.updateFound(state, result, st, line);
                     } else if (line % (delta * 0.1) == 0) {
+                        int creditsToUser = (int) Math.round(delta*0.1);
+                        Client client = workerObserver.getClient();
+                        int userCredits = client.userSessionRI.getUserCreditsDB(client.username);
+                        client.userSessionRI.setUserCreditsDB(client.username,userCredits+creditsToUser);
                         state.setmsg(state.NOT_FOUND);
                         this.workerObserver.updateNotFound(state, line);
                     }

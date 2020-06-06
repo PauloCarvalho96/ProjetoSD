@@ -14,7 +14,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     private State lastObserverState;
     private int id;
-    private String username;    // username do user
+    private Client client;    // dono do worker
     private Integer n_threads;      // nº de threads para trabalharem na task
     private String taskName;
     private Task task;      //tarefa
@@ -25,14 +25,14 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private Integer n_threads_dividing;
     private String file_name;
 
-    public WorkerObserverImpl(int id, String username, Integer n_threads) throws RemoteException {
+    public WorkerObserverImpl(int id, Client client, Integer n_threads) throws RemoteException {
         super();
         this.id = id;
-        this.username = username;
+        this.client = client;
         this.n_threads = n_threads;
         this.actualLine = 0;
         this.lastObserverState = new State("Available");
-        this.file_name="file_"+username+"_"+id+".txt";
+        this.file_name="file_"+client.username+"_"+id+".txt";
         n_threads_dividing = this.n_threads;
     }
 
@@ -278,4 +278,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.n_threads_dividing = n_threads_dividing;
     }
 
+    public Client getClient() {
+        return client;
+    }
 }
