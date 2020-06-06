@@ -83,6 +83,9 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
             case "Paused":
                 System.out.println("PAUSED!");
                 break;
+            case "Line Found":
+                this.taskCredits--;
+                break;
         }
         this.notifyAllObservers();
     }

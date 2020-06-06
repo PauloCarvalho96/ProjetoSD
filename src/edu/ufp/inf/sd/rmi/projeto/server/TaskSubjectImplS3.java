@@ -164,7 +164,7 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     public void run() {
         int percentagens = 10;
         double range_size = Math.pow(alphabet.length(),wordsSize);
-        Integer range_ammount = Math.toIntExact(Math.round(range_size / percentagens));
+        int range_ammount = Math.toIntExact(Math.round(range_size / percentagens));
         ArrayList<Integer> wordsize = new ArrayList<>();
         wordsize.add(wordsSize);
         for (int i = 0; i < percentagens ; i++){
