@@ -18,24 +18,26 @@ public class Dividing implements Runnable {
     int delta;
     int id;
     String hashType;
-    WorkerObserverRI workerObserverRI;
+    WorkerObserverImpl workerObserver;
     Task task;
     ArrayList<Integer> linesWithWordLength = new ArrayList<>();
+    String file_name;
 
 
-    public Dividing(int start, int delta, int id, String hashType, WorkerObserverRI workerObserverRI, Task task) {
+    public Dividing(int start, int delta, int id, String hashType, WorkerObserverImpl workerObserver, Task task,String file_name) {
         this.start = start;
         this.delta = delta;
         this.id = id;
         this.hashType = hashType;
-        this.workerObserverRI = workerObserverRI;
+        this.workerObserver = workerObserver;
         this.task = task;
+        this.file_name = file_name;
     }
 
     @Override
     public void run() {
         try {
-            File file = new File("file"+workerObserverRI.getId()+".txt");
+            File file = new File(file_name);
 
             int line = 0;
 
@@ -47,7 +49,7 @@ public class Dividing implements Runnable {
 
             while ((st = br.readLine()) != null) {
 
-                if(workerObserverRI.getStateWorker().getmsg().equals("Paused")){////pause thread
+                while(workerObserver.getStateWorker().getmsg().equals("Paused")){////pause thread
                     try {
                         System.out.println("\nTOU A DORMIR!");
                         Thread.sleep(1000);
@@ -56,11 +58,11 @@ public class Dividing implements Runnable {
                     }
                 }
 
-                if(workerObserverRI.getStateWorker().getmsg().equals("Completed")){////stop thread
+                if(workerObserver.getStateWorker().getmsg().equals("Completed")){////stop thread
                     return;
                 }
 
-                if(task.getWordsSize().contains(st.length()) && line >= start && line < start + delta && !workerObserverRI.getStateWorker().getmsg().equals("Paused")){
+                if(task.getWordsSize().contains(st.length()) && line >= start && line < start + delta && !workerObserver.getStateWorker().getmsg().equals("Paused")){
                     boolean found = false;
                     linesWithWordLength.add(line+1);
                 }
@@ -69,7 +71,7 @@ public class Dividing implements Runnable {
                 }
                 line++;
             }
-            task.getTaskSubjectRI().finishDividing(linesWithWordLength,workerObserverRI);
+            task.getTaskSubjectRI().finishDividing(linesWithWordLength,workerObserver);
             br.close();
         } catch (IOException e) {
             e.printStackTrace();

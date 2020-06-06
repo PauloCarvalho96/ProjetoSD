@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import edu.ufp.inf.sd.rmi.projeto.client.Client;
 import edu.ufp.inf.sd.rmi.projeto.client.TrayIconDemo;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
@@ -10,14 +11,14 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubjectRI {
+public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubjectRI, Runnable {
 
     public ArrayList<Integer> wordsSize = new ArrayList<>();
 
     public ArrayList<Integer> lines = new ArrayList<>();
 
-    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, ArrayList<Integer> wordsSize) throws RemoteException {
-        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,2);
+    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, ArrayList<Integer> wordsSize, Integer taskCredits, Client client) throws RemoteException {
+        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,2,taskCredits,client);
         this.wordsSize.addAll(wordsSize);
         this.subjectState.setProcess("Dividing");
         createSubTasksDividing();
@@ -25,91 +26,26 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     /** Tasks para divisao do ficheiro por linhas */
     public void createSubTasksDividing(){
-        try {
-            for(String path: paths){
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(path));
-                    int lines = 0;
-                    while (reader.readLine() != null) {
-                        if(lines == start + delta - 1){
-                            Task task = new Task(url,start,delta,this);
-                            task.setWordsSize(wordsSize);
-                            task.isHashing = false;
-                            dividingTasks.add(task);
-                            start = lines + 1;
-                        }
-                        lines++;
-                    }
-                    int lastDelta = delta;
-                    lastDelta = lines - start;
-                    if(lastDelta != 0){
-                        Task task = new Task(url,start,lastDelta,this);
-                        task.setWordsSize(wordsSize);
-                        task.isHashing = false;
-                        dividingTasks.add(task);
-                        reader.close();
-                    }
-                    break;
-                }catch (FileNotFoundException ignored){}
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Runnable runnable = this;
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
     @Override
     public void createSubTasks() throws RemoteException{
-        start = 0;
-        try {
-            for(String path: paths){
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(path));
-                    int lines = 0;
-                    while (reader.readLine() != null) {
-                        if(lines == start + delta - 1){
-                            Task task = new Task(url,start,delta,this);
-                            task.isHashing = true;
-                            tasks.add(task);
-                            for (Integer l:this.lines) {
-                                if(l > start && l < start + delta +1){
-                                    task.lines.add(l);
-                                }
-                            }
-                            if(task.lines.isEmpty()){
-                                tasks.remove(task);
-                            }
-                            start = lines + 1;
-                        }
-                        lines++;
-                    }
-                    int lastDelta = delta;
-                    lastDelta = lines - start;
-                    if(lastDelta != 0){
-                        Task task = new Task(url,start,lastDelta,this);
-                        task.isHashing = true;
-                        tasks.add(task);
-                        for (Integer l:this.lines) {
-                            if(l > start && l < start + lastDelta +1){
-                                task.lines.add(l);
-                            }
-                        }
-                        if(task.lines.isEmpty()){
-                            tasks.remove(task);
-                        }
-                        reader.close();
-                    }
-                    break;
-                }catch (FileNotFoundException ignored){}
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Runnable runnable = this;
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
     @Override
     public void changeWorkerState(State state, String hash, String pass) throws RemoteException {
         switch (state.getmsg()){
             case "Found":
+
+                /** retira ao plafond da task */
+                this.taskCredits-=10;
+
                 for (int i = 0; i < this.hashPass.size() ; i ++){
                     if(this.hashPass.get(i).compareTo(hash)==0){
                         this.result.add(new Result(hash,pass));
@@ -128,6 +64,12 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                         e.printStackTrace();
                     }
                     available = false;
+
+                    /** entrega resto do plafound ao dono da task */
+                    int credits = this.client.userSessionRI.getUserCreditsDB(client.username);
+                    credits += this.taskCredits;
+                    this.client.userSessionRI.setUserCreditsDB(client.username,credits);
+
                 }else{
                     System.out.println("NOT COMPLETE");
                     this.subjectState.setmsg("Working");
@@ -139,6 +81,8 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                 if(!this.subjectState.getmsg().equals("Completed") && !this.subjectState.getmsg().equals("Paused")) {
                     this.subjectState.setmsg("Working");
                     this.status = this.subjectState.WORKING;
+                    int creditsToTask = (int) Math.round(delta*0.1);
+                    this.taskCredits-=creditsToTask;
                 }
                 break;
             case "Paused":
@@ -237,6 +181,88 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     public ArrayList<Integer> getWordsSize() {
         return wordsSize;
+    }
+
+    @Override
+    public void run() {
+        if(this.subjectState.getProcess().compareTo("Dividing") == 0){
+            try {
+                for(String path: paths){
+                    try {
+                        BufferedReader reader = new BufferedReader(new FileReader(path));
+                        int lines = 0;
+                        while (reader.readLine() != null) {
+                            if(lines == start + delta - 1){
+                                Task task = new Task(url,start,delta,this);
+                                task.setWordsSize(wordsSize);
+                                task.isHashing = false;
+                                dividingTasks.add(task);
+                                start = lines + 1;
+                            }
+                            lines++;
+                        }
+                        int lastDelta = delta;
+                        lastDelta = lines - start;
+                        if(lastDelta != 0){
+                            Task task = new Task(url,start,lastDelta,this);
+                            task.setWordsSize(wordsSize);
+                            task.isHashing = false;
+                            dividingTasks.add(task);
+                            reader.close();
+                        }
+                        break;
+                    }catch (FileNotFoundException ignored){}
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            start = 0;
+            try {
+                for(String path: paths){
+                    try {
+                        BufferedReader reader = new BufferedReader(new FileReader(path));
+                        int lines = 0;
+                        while (reader.readLine() != null) {
+                            if(lines == start + delta - 1){
+                                Task task = new Task(url,start,delta,this);
+                                task.isHashing = true;
+                                tasks.add(task);
+                                for (Integer l:this.lines) {
+                                    if(l > start && l < start + delta +1){
+                                        task.lines.add(l);
+                                    }
+                                }
+                                if(task.lines.isEmpty()){
+                                    tasks.remove(task);
+                                }
+                                start = lines + 1;
+                            }
+                            lines++;
+                        }
+                        int lastDelta = delta;
+                        lastDelta = lines - start;
+                        if(lastDelta != 0){
+                            Task task = new Task(url,start,lastDelta,this);
+                            task.isHashing = true;
+                            tasks.add(task);
+                            for (Integer l:this.lines) {
+                                if(l > start && l < start + lastDelta +1){
+                                    task.lines.add(l);
+                                }
+                            }
+                            if(task.lines.isEmpty()){
+                                tasks.remove(task);
+                            }
+                            reader.close();
+                        }
+                        break;
+                    }catch (FileNotFoundException ignored){}
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

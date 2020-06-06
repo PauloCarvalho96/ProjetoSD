@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import edu.ufp.inf.sd.rmi.projeto.client.Client;
 import edu.ufp.inf.sd.rmi.projeto.client.TrayIconDemo;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
@@ -7,12 +8,12 @@ import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubjectRI {
+public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubjectRI, Runnable{
     public Integer wordsSize;
     public String alphabet;
 
-    public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize, String alphabet) throws RemoteException {
-        super(name, hashType, hashPass, creditsWordProcessed, creditsWordFound, delta,3);
+    public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize, String alphabet, Integer taskCredits, Client client) throws RemoteException {
+        super(name, hashType, hashPass, creditsWordProcessed, creditsWordFound, delta,3,taskCredits,client);
         this.wordsSize = wordsSize;
         this.alphabet = alphabet;
         createSubTasks();
@@ -21,16 +22,9 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     /** divide linhas para criar sub tasks */
     @Override
     public void createSubTasks() throws RemoteException{
-        //TODO: Comentar o que cada variavel é
-        int percentagens = 10;
-        double range_size = Math.pow(alphabet.length(),wordsSize);
-        Integer range_ammount = Math.toIntExact(Math.round(range_size / percentagens));
-        ArrayList<Integer> wordsize = new ArrayList<>();
-        wordsize.add(wordsSize);
-        for (int i = 0; i < percentagens ; i++){
-            Task task = new Task(this,alphabet,wordsize,i*range_ammount+i,range_ammount);
-            tasks.add(task);
-        }
+        Runnable runnable = this;
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
     
     public Integer getStrategy() throws RemoteException {
@@ -39,13 +33,16 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
 
     @Override
     public void finishDividing(ArrayList<Integer> linesWithWordLength, WorkerObserverRI workerObserverRI) throws RemoteException {
-
     }
 
     @Override
     public void changeWorkerState(State state, String hash, String pass) throws RemoteException {
         switch (state.getmsg()){
             case "Found":
+
+                /** retira ao plafond da task */
+                this.taskCredits-=10;
+
                 for (int i = 0; i < this.hashPass.size() ; i ++){
                     if(this.hashPass.get(i).compareTo(hash)==0){
                         this.result.add(new Result(hash,pass));
@@ -64,6 +61,12 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
                         e.printStackTrace();
                     }
                     available = false;
+
+                    /** entrega resto do plafound ao dono da task */
+                    int credits = this.client.userSessionRI.getUserCreditsDB(client.username);
+                    credits += this.taskCredits;
+                    this.client.userSessionRI.setUserCreditsDB(client.username,credits);
+
                 }else{
                     System.out.println("NOT COMPLETE");
                     this.subjectState.setmsg("Working");
@@ -75,6 +78,8 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
                 if(!this.subjectState.getmsg().equals("Completed") && !this.subjectState.getmsg().equals("Paused")) {
                     this.subjectState.setmsg("Working");
                     this.status = this.subjectState.WORKING;
+                    int creditsToTask = (int) Math.round(delta*0.1);
+                    this.taskCredits-=creditsToTask;
                 }
                 break;
             case "Paused":
@@ -153,5 +158,18 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
 
     public Integer getWordsSize() {
         return wordsSize;
+    }
+
+    @Override
+    public void run() {
+        int percentagens = 10;
+        double range_size = Math.pow(alphabet.length(),wordsSize);
+        Integer range_ammount = Math.toIntExact(Math.round(range_size / percentagens));
+        ArrayList<Integer> wordsize = new ArrayList<>();
+        wordsize.add(wordsSize);
+        for (int i = 0; i < percentagens ; i++){
+            Task task = new Task(this,alphabet,wordsize,i*range_ammount+i,range_ammount);
+            tasks.add(task);
+        }
     }
 }

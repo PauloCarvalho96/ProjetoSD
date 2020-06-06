@@ -5,6 +5,8 @@ import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 
+import java.beans.Transient;
+import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -13,12 +15,12 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client {
+public class Client implements Serializable {
 
     /**
      * Context for connecting a RMI client to a RMI Servant
      */
-    private SetupContextRMI contextRMI;
+    private transient SetupContextRMI contextRMI;
     /**
      * Remote interface that will hold the Servant proxy
      */

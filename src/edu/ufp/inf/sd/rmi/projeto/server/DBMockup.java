@@ -31,14 +31,17 @@ public class DBMockup implements Serializable {
         userWorkers = new HashMap<>();
         userTasks = new HashMap<>();
         User user = new User("1","1");
+        user.setCredits(10000000);
         users.add(user);
         userWorkers.put(user.getUname(), new ArrayList<>());
         userTasks.put(user.getUname(), new ArrayList<>());
         User user1 = new User("2","2");
         users.add(user1);
+        user1.setCredits(0);
         userWorkers.put(user1.getUname(), new ArrayList<>());
         userTasks.put(user1.getUname(), new ArrayList<>());
         User user2 = new User("3","3");
+        user2.setCredits(3000000);
         users.add(user2);
         userWorkers.put(user2.getUname(), new ArrayList<>());
         userTasks.put(user2.getUname(), new ArrayList<>());
@@ -79,7 +82,7 @@ public class DBMockup implements Serializable {
 
     // remove sessao
     public void removeSession(String uname,UserSessionRI sessionRI){
-        sessions.remove(uname,sessionRI);
+        sessions.remove(uname);
     }
 
     /** nao esta a eliminar da DB */
@@ -106,8 +109,8 @@ public class DBMockup implements Serializable {
         return workers;
     }
 
-    public HashMap<String, ArrayList<WorkerObserverRI>> allWorkersUsers(){
-        return userWorkers;
+    public ArrayList<WorkerObserverRI> allWorkersUsers(String name){
+        return userWorkers.get(name);
     }
 
     public User getUser(String uname) throws RemoteException {
