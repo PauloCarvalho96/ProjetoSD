@@ -6,15 +6,18 @@ import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
 import java.awt.*;
 import java.io.*;
+import java.net.URL;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubjectRI , Runnable {
 
-    public TaskSubjectImplS1(String name, String hashType, ArrayList<String> hashPass, Integer delta, Integer taskCredits, Client client, String url) throws RemoteException {
-        super(name,hashType,hashPass, delta,1,taskCredits,client,url);
+    public String url;
+    public String path_file = "file_"+this.name;
+
+    public TaskSubjectImplS1(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer taskCredits, Client client,String url) throws RemoteException {
+        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,1,taskCredits,client);
+        this.url = url;
         createSubTasks();
     }
 
@@ -82,6 +85,9 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
                 break;
             case "Paused":
                 System.out.println("PAUSED!");
+                break;
+            case "Line Found":
+                this.taskCredits--;
                 break;
         }
         this.notifyAllObservers();
@@ -155,31 +161,37 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
     @Override
     public void run() {
         try {
-            System.out.println("\n\n\n\n\n\nPATHHHHHHHHHHHHHHHHHHH:"+path);
-            System.out.println("\n\n\n\n\n\nURL:"+url);
-            BufferedReader reader = new BufferedReader(new FileReader(path));
-            int lines = 0;
-            while (reader.readLine() != null) {
-                if(lines == start + delta - 1){
-                    Task task = new Task(path,start,delta,this);
-                    tasks.add(task);
-                    start = lines + 1;
-                }
-                lines++;
-            }
-            int lastDelta = delta;
-            lastDelta = lines - start;
-            if(lastDelta != 0){
-                Task task = new Task(path,start,lastDelta,this);
-                tasks.add(task);
-                reader.close();
-            }
+            try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
+                 FileOutputStream fileOutputStream = new FileOutputStream(path_file)) {
+                    BufferedReader reader = new BufferedReader(new FileReader(path_file));
+                    byte dataBuffer[] = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                        fileOutputStream.write(dataBuffer, 0, bytesRead);
+                    }
 
-            for (Task task:tasks) {
-                System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
-            }
-        }catch (Exception ignored){
-
+                    int lines = 0;
+                    while (reader.readLine() != null) {
+                        if(lines == start + delta - 1){
+                            Task task = new Task(url,start,delta,this);
+                            tasks.add(task);
+                            start = lines + 1;
+                        }
+                        lines++;
+                    }
+                    int lastDelta = delta;
+                    lastDelta = lines - start;
+                    if(lastDelta != 0){
+                        Task task = new Task(url,start,lastDelta,this);
+                        tasks.add(task);
+                        reader.close();
+                    }
+                    for (Task task:tasks) {
+                        System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
+                    }
+                }catch (FileNotFoundException ignored){}
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

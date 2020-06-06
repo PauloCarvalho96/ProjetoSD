@@ -8,9 +8,7 @@ import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubjectRI, Runnable {
 
@@ -18,10 +16,14 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     public ArrayList<Integer> lines = new ArrayList<>();
 
-    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer delta, ArrayList<Integer> wordsSize, Integer taskCredits, Client client, String url) throws RemoteException {
-        super(name,hashType,hashPass, delta,2,taskCredits,client,url);
+    public String url;
+    public String path_file = "file_"+this.name;
+
+    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, ArrayList<Integer> wordsSize, Integer taskCredits, Client client,String url) throws RemoteException {
+        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,2,taskCredits,client);
         this.wordsSize.addAll(wordsSize);
         this.subjectState.setProcess("Dividing");
+        this.url = url;
         createSubTasksDividing();
     }
 
@@ -197,8 +199,16 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
     @Override
     public void run() {
         if(this.subjectState.getProcess().compareTo("Dividing") == 0){
-                    try {
-                        BufferedReader reader = new BufferedReader(new FileReader(path));
+            try {
+                try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
+                     FileOutputStream fileOutputStream = new FileOutputStream("file_"+this.name)) {
+                        BufferedReader reader = new BufferedReader(new FileReader("file_"+this.name));
+                        byte dataBuffer[] = new byte[1024];
+                        int bytesRead;
+                        while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                            fileOutputStream.write(dataBuffer, 0, bytesRead);
+                        }
+
                         int lines = 0;
                         while (reader.readLine() != null) {
                             if(lines == start + delta - 1){
@@ -219,11 +229,21 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                             dividingTasks.add(task);
                             reader.close();
                         }
-                    }catch (Exception ignored){}
+                    }catch (FileNotFoundException ignored){}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }else{
             start = 0;
             try {
-                        BufferedReader reader = new BufferedReader(new FileReader(path));
+                try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
+                     FileOutputStream fileOutputStream = new FileOutputStream("file_"+this.name)) {
+                        BufferedReader reader = new BufferedReader(new FileReader("file_"+this.name));
+                        byte dataBuffer[] = new byte[1024];
+                        int bytesRead;
+                        while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                            fileOutputStream.write(dataBuffer, 0, bytesRead);
+                        }
                         int lines = 0;
                         while (reader.readLine() != null) {
                             if(lines == start + delta - 1){
@@ -258,8 +278,11 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                             }
                             reader.close();
                         }
-                    }catch (Exception ignored){}
-                }
+                    }catch (FileNotFoundException ignored){}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
