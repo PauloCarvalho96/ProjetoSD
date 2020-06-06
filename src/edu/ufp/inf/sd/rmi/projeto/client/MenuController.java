@@ -24,8 +24,7 @@ public class MenuController implements Initializable {
     /** Create task **/
     public Tab createTaskTab;
     public TextField nameTaskTF;
-    public TextField creditsProcTaskTF;
-    public TextField creditsFoundTaskTF;
+    public TextField urlTaskTF;
     public ComboBox<String> hashTypeCB;
     public TextArea hashPassTA;
     public TextField deltaTaskTF;
@@ -202,8 +201,6 @@ public class MenuController implements Initializable {
     public void initializeCreateTask(){
         nameTaskTF.clear();
         hashPassTA.clear();
-        creditsFoundTaskTF.clear();
-        creditsProcTaskTF.clear();
         deltaTaskTF.clear();
         hashTypeCB.setValue("SHA-512");
         strategyCB.setValue("Strategy 1");
@@ -230,10 +227,9 @@ public class MenuController implements Initializable {
         String[] stCB = strategyCB.getValue().split(" ");
         int strategy = Integer.parseInt(stCB[1]);
         String[] ha = hashPassTA.getText().split(";");
+        String url = urlTaskTF.getText();
         ArrayList<String> hashPass = new ArrayList<>(Arrays.asList(ha));
         try {
-            int creditsProc = Integer.parseInt(creditsProcTaskTF.getText());
-            int creditsFound = Integer.parseInt(creditsFoundTaskTF.getText());
             int taskCredits = 2000000;
             int delta = Integer.parseInt(deltaTaskTF.getText());
             if (!name.isEmpty() && !hashPass.isEmpty() && strategyRequisites()) {
@@ -247,7 +243,7 @@ public class MenuController implements Initializable {
                 //hashPass.add("7d579f6d59b9a450c43e9a3d211f912528ed46d0ccabde15de3ad1f7a28b5947a0b30173489810b1f16cd13e62d4bf901e9f34ea80533252daa2406fc5cd446e");
 
                 // 13m31
-                //hashPass.add("f4c0701bf17c326b3e18680ac15833d07d10715c7653203b6faf68b51d532106a9d8a3f49c939610c3482182ea0e02e90d7ba474c0c8f48e37bdadfedaf024bd");
+                hashPass.add("f4c0701bf17c326b3e18680ac15833d07d10715c7653203b6faf68b51d532106a9d8a3f49c939610c3482182ea0e02e90d7ba474c0c8f48e37bdadfedaf024bd");
 
                 //41k
                 hashPass.add("47150a22fa31bb0450e9c59c0426d8d63510d89fac8308f097bef572a1038bb266785eb83a8f3f62bda3bb3930d3e742602f24b0e0b0b87ec86148af9c9bc66c");
@@ -292,7 +288,7 @@ public class MenuController implements Initializable {
                     return;
                 }
 
-                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, creditsProc, creditsFound, delta, client.username, strategy, data,taskCredits,client);
+                TaskSubjectRI taskSubjectRI = this.client.userSessionRI.createTask(name, typeHash, hashPass, delta, client.username, strategy, data,taskCredits,client,url);
                 if (taskSubjectRI != null) {
                     initializeCreateTask();
                     client.userSessionRI.setUserCreditsDB(client.username,client.userSessionRI.getUserCreditsDB(client.username)-taskCredits);

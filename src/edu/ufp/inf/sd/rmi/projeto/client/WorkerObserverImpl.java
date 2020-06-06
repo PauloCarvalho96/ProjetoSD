@@ -24,6 +24,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private int actualLine;
     private Integer n_threads_dividing;
     private String file_name;
+    private String url;
 
     public WorkerObserverImpl(int id, Client client, Integer n_threads) throws RemoteException {
         super();
@@ -33,11 +34,12 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.actualLine = 0;
         this.lastObserverState = new State("Available");
         this.file_name="file_"+client.username+"_"+id+".txt";
-        n_threads_dividing = this.n_threads;
+        this.n_threads_dividing = this.n_threads;
     }
 
     private void doWorkDividing() throws RemoteException {
-        try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt").openStream());
+        System.out.println("\n\n\n\n\nURLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL:"+url);
+        try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
              FileOutputStream fileOutputStream = new FileOutputStream(file_name)) {
             byte dataBuffer[] = new byte[1024];
             int bytesRead;
@@ -68,6 +70,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     }
 
     public void doWork() throws RemoteException {
+        System.out.println("\n\n\n\n\nURLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL:"+url);
         int delta = 0;
         int start = 0;
         if (task.getTaskSubjectRI().getStrategy() != 3){
@@ -182,6 +185,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     @Override
     public void setTask(Task task) throws RemoteException {
+        this.url = task.getUrl();
         if(task.getTaskSubjectRI().getStrategy() == 2 && task.getTaskSubjectRI().getState().getProcess().compareTo("Dividing")==0){
             this.task = task;
             doWorkDividing();

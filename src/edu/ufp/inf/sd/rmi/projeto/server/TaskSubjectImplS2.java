@@ -6,6 +6,7 @@ import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
 import java.awt.*;
 import java.io.*;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -17,8 +18,8 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     public ArrayList<Integer> lines = new ArrayList<>();
 
-    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, ArrayList<Integer> wordsSize, Integer taskCredits, Client client) throws RemoteException {
-        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,2,taskCredits,client);
+    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer delta, ArrayList<Integer> wordsSize, Integer taskCredits, Client client, String url) throws RemoteException {
+        super(name,hashType,hashPass, delta,2,taskCredits,client,url);
         this.wordsSize.addAll(wordsSize);
         this.subjectState.setProcess("Dividing");
         createSubTasksDividing();
@@ -33,6 +34,16 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     @Override
     public void createSubTasks() throws RemoteException{
+        try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
+             FileOutputStream fileOutputStream = new FileOutputStream(path)) {
+            byte dataBuffer[] = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                fileOutputStream.write(dataBuffer, 0, bytesRead);
+            }
+        }catch(Exception e){
+
+        }
         Runnable runnable = this;
         Thread thread = new Thread(runnable);
         thread.start();
@@ -186,8 +197,6 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
     @Override
     public void run() {
         if(this.subjectState.getProcess().compareTo("Dividing") == 0){
-            try {
-                for(String path: paths){
                     try {
                         BufferedReader reader = new BufferedReader(new FileReader(path));
                         int lines = 0;
@@ -210,17 +219,10 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                             dividingTasks.add(task);
                             reader.close();
                         }
-                        break;
-                    }catch (FileNotFoundException ignored){}
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                    }catch (Exception ignored){}
         }else{
             start = 0;
             try {
-                for(String path: paths){
-                    try {
                         BufferedReader reader = new BufferedReader(new FileReader(path));
                         int lines = 0;
                         while (reader.readLine() != null) {
@@ -256,13 +258,8 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                             }
                             reader.close();
                         }
-                        break;
-                    }catch (FileNotFoundException ignored){}
+                    }catch (Exception ignored){}
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 }

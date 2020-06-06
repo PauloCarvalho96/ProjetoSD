@@ -13,8 +13,8 @@ import java.util.Iterator;
 
 public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubjectRI , Runnable {
 
-    public TaskSubjectImplS1(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer taskCredits, Client client) throws RemoteException {
-        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,1,taskCredits,client);
+    public TaskSubjectImplS1(String name, String hashType, ArrayList<String> hashPass, Integer delta, Integer taskCredits, Client client, String url) throws RemoteException {
+        super(name,hashType,hashPass, delta,1,taskCredits,client,url);
         createSubTasks();
     }
 
@@ -155,34 +155,31 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
     @Override
     public void run() {
         try {
-            for(String path: paths){
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(path));
-                    int lines = 0;
-                    while (reader.readLine() != null) {
-                        if(lines == start + delta - 1){
-                            Task task = new Task(url,start,delta,this);
-                            tasks.add(task);
-                            start = lines + 1;
-                        }
-                        lines++;
-                    }
-                    int lastDelta = delta;
-                    lastDelta = lines - start;
-                    if(lastDelta != 0){
-                        Task task = new Task(url,start,lastDelta,this);
-                        tasks.add(task);
-                        reader.close();
-                    }
-
-                    for (Task task:tasks) {
-                        System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
-                    }
-                    break;
-                }catch (FileNotFoundException ignored){}
+            System.out.println("\n\n\n\n\n\nPATHHHHHHHHHHHHHHHHHHH:"+path);
+            System.out.println("\n\n\n\n\n\nURL:"+url);
+            BufferedReader reader = new BufferedReader(new FileReader(path));
+            int lines = 0;
+            while (reader.readLine() != null) {
+                if(lines == start + delta - 1){
+                    Task task = new Task(path,start,delta,this);
+                    tasks.add(task);
+                    start = lines + 1;
+                }
+                lines++;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            int lastDelta = delta;
+            lastDelta = lines - start;
+            if(lastDelta != 0){
+                Task task = new Task(path,start,lastDelta,this);
+                tasks.add(task);
+                reader.close();
+            }
+
+            for (Task task:tasks) {
+                System.out.println("\nStart: " + task.getStart() + "\nDelta: " + task.getDelta() + "\n");
+            }
+        }catch (Exception ignored){
+
         }
     }
 }

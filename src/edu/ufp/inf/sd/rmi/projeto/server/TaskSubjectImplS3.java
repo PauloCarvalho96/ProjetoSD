@@ -12,8 +12,8 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     public Integer wordsSize;
     public String alphabet;
 
-    public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize, String alphabet, Integer taskCredits, Client client) throws RemoteException {
-        super(name, hashType, hashPass, creditsWordProcessed, creditsWordFound, delta,3,taskCredits,client);
+    public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer delta, Integer wordsSize, String alphabet, Integer taskCredits, Client client, String url) throws RemoteException {
+        super(name, hashType, hashPass,delta,3,taskCredits,client,url);
         this.wordsSize = wordsSize;
         this.alphabet = alphabet;
         createSubTasks();
