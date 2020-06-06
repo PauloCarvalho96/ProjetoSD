@@ -28,18 +28,16 @@
                      <children>
                         <Label layoutX="671.0" layoutY="146.0" prefHeight="18.0" prefWidth="82.0" text="Name" />
                         <TextField fx:id="nameTaskTF" layoutX="841.0" layoutY="143.0" />
-                        <Label layoutX="671.0" layoutY="190.0" prefHeight="0.0" prefWidth="153.0" text="Credits per word processed" />
-                        <TextField fx:id="creditsProcTaskTF" layoutX="840.0" layoutY="186.0" />
-                        <Label layoutX="671.0" layoutY="232.0" prefHeight="18.0" prefWidth="146.0" text="Credits per word found" />
-                        <TextField fx:id="creditsFoundTaskTF" layoutX="840.0" layoutY="229.0" />
-                        <Label layoutX="671.0" layoutY="274.0" prefHeight="18.0" prefWidth="82.0" text="Delta" />
-                        <TextField fx:id="deltaTaskTF" layoutX="841.0" layoutY="271.0" />
-                        <Label layoutX="671.0" layoutY="315.0" prefHeight="18.0" prefWidth="86.0" text="Hash type" />
-                        <ComboBox fx:id="hashTypeCB" layoutX="841.0" layoutY="311.0" prefHeight="26.0" prefWidth="149.0" />
-                        <Label layoutX="669.0" layoutY="368.0" prefHeight="18.0" prefWidth="86.0" text="Hash pass" />
-                        <TextArea fx:id="hashPassTA" layoutX="840.0" layoutY="358.0" prefHeight="38.0" prefWidth="502.0" />
-                        <Label layoutX="669.0" layoutY="421.0" prefHeight="18.0" prefWidth="86.0" text="Strategy" />
-                        <ComboBox fx:id="strategyCB" layoutX="840.0" layoutY="417.0" onAction="#handlerStrategyCB" prefHeight="26.0" prefWidth="149.0" />
+                        <Label layoutX="671.0" layoutY="190.0" prefHeight="0.0" prefWidth="153.0" text="URL" />
+                        <TextField fx:id="urlTextBox" layoutX="840.0" layoutY="186.0" prefHeight="25.0" prefWidth="507.0" />
+                        <Label fx:id="deltaTaskLabel" layoutX="669.0" layoutY="236.0" prefHeight="18.0" prefWidth="82.0" text="Delta" />
+                        <TextField fx:id="deltaTaskTF" layoutX="840.0" layoutY="232.0" />
+                        <Label layoutX="667.0" layoutY="283.0" prefHeight="18.0" prefWidth="86.0" text="Hash type" />
+                        <ComboBox fx:id="hashTypeCB" layoutX="840.0" layoutY="279.0" prefHeight="26.0" prefWidth="149.0" />
+                        <Label layoutX="667.0" layoutY="330.0" prefHeight="18.0" prefWidth="86.0" text="Hash pass" />
+                        <TextArea fx:id="hashPassTA" layoutX="837.0" layoutY="320.0" prefHeight="38.0" prefWidth="502.0" />
+                        <Label layoutX="667.0" layoutY="380.0" prefHeight="18.0" prefWidth="86.0" text="Strategy" />
+                        <ComboBox fx:id="strategyCB" layoutX="837.0" layoutY="376.0" onAction="#handlerStrategyCB" prefHeight="26.0" prefWidth="149.0" />
                         <Button fx:id="createTaskBut" layoutX="882.0" layoutY="554.0" mnemonicParsing="false" onAction="#handlerCreateTask" text="Create Task" />
                         <Label fx:id="messageCreateTask" layoutX="773.0" layoutY="500.0" prefHeight="42.0" prefWidth="295.0" />
                         <Label fx:id="lengthPassTaskLabel" layoutX="1109.0" layoutY="421.0" prefHeight="18.0" prefWidth="86.0" text="Length pass" />

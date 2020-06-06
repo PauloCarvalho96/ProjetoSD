@@ -12,8 +12,8 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     public Integer wordsSize;
     public String alphabet;
 
-    public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, Integer wordsSize, String alphabet, Integer taskCredits, Client client) throws RemoteException {
-        super(name, hashType, hashPass, creditsWordProcessed, creditsWordFound, delta,3,taskCredits,client);
+    public TaskSubjectImplS3(String name, String hashType, ArrayList<String> hashPass, Integer delta, Integer wordsSize, String alphabet, Integer taskCredits, Client client) throws RemoteException {
+        super(name, hashType, hashPass, delta,3,taskCredits,client);
         this.wordsSize = wordsSize;
         this.alphabet = alphabet;
         createSubTasks();
@@ -78,7 +78,7 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
                 if(!this.subjectState.getmsg().equals("Completed") && !this.subjectState.getmsg().equals("Paused")) {
                     this.subjectState.setmsg("Working");
                     this.status = this.subjectState.WORKING;
-                    int creditsToTask = (int) Math.round(delta*0.1);
+                    int creditsToTask = state.getN_credits();
                     this.taskCredits-=creditsToTask;
                 }
                 break;

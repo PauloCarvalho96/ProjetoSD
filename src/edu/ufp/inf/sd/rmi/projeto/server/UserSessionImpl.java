@@ -29,7 +29,7 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
 
     // cria nova task
     @Override
-    public TaskSubjectRI createTask(String name, String hashType, ArrayList<String> hashPass, Integer creditsProc, Integer creditsFound, Integer delta, String uname, int strategy, HashMap<String, String> dataStrategy, Integer taskCredits, Client client,String url) throws RemoteException {
+    public TaskSubjectRI createTask(String name, String hashType, ArrayList<String> hashPass, Integer delta, String uname, int strategy, HashMap<String, String> dataStrategy, Integer taskCredits, Client client,String url) throws RemoteException {
         /** verifica se existe taskgroup com nome dado */
         if(db.getTask(name) != null){
             return null;
@@ -37,7 +37,7 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
         TaskSubjectRI taskSubjectRI = null;
         switch (strategy){
             case 1:
-                taskSubjectRI = new TaskSubjectImplS1(name, hashType, hashPass, creditsProc, creditsFound, delta,taskCredits,client,url);
+                taskSubjectRI = new TaskSubjectImplS1(name, hashType, hashPass, delta,taskCredits,client,url);
                 break;
             case 2:
                 String[] s2 = dataStrategy.get("length").split(";");
@@ -45,11 +45,11 @@ public class UserSessionImpl extends UnicastRemoteObject implements UserSessionR
                 for(String st:s2){
                     len2.add(Integer.parseInt(st));
                 }
-                taskSubjectRI = new TaskSubjectImplS2(name, hashType, hashPass, creditsProc, creditsFound, delta, len2,taskCredits,client,url);
+                taskSubjectRI = new TaskSubjectImplS2(name, hashType, hashPass, delta, len2,taskCredits,client,url);
                 break;
             case 3:
                 int wordsize = Integer.parseInt(dataStrategy.get("length"));
-                taskSubjectRI = new TaskSubjectImplS3(name, hashType, hashPass, creditsProc, creditsFound, delta,wordsize , dataStrategy.get("alphabet"),taskCredits,client);
+                taskSubjectRI = new TaskSubjectImplS3(name, hashType, hashPass, delta,wordsize , dataStrategy.get("alphabet"),taskCredits,client);
                 break;
         }
         db.assocTaskToUser(uname, taskSubjectRI);  // adiciona task a DB
