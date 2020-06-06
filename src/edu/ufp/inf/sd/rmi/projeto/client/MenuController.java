@@ -253,7 +253,7 @@ public class MenuController implements Initializable {
                 hashPass.add("47150a22fa31bb0450e9c59c0426d8d63510d89fac8308f097bef572a1038bb266785eb83a8f3f62bda3bb3930d3e742602f24b0e0b0b87ec86148af9c9bc66c");
 
                 // 13m13
-                hashPass.add("a1d4fb6228007348c7c976a910ce6c7182a3c099622c9fe4d4baf7e55176b045d4e2b93c76e28d6462efbdb2f5fbf1a80fa604628e95ddf74afdc6a1a49ec1f4");
+//                hashPass.add("a1d4fb6228007348c7c976a910ce6c7182a3c099622c9fe4d4baf7e55176b045d4e2b93c76e28d6462efbdb2f5fbf1a80fa604628e95ddf74afdc6a1a49ec1f4");
 
                 // BANKEY
 //                hashPass.add("7859a9046763901b0b3e1da874b3230ccc9a6d34a8527bd208980b39c6c7991bbd274179fae8f01c3408504284c45824c11b5e7e42ac8e142e542e3e18944f45");
