@@ -22,6 +22,7 @@ public class DBMockup implements Serializable {
     // hashmap user to tasks
     private HashMap<String, ArrayList<TaskSubjectRI>> userTasks;
 
+
     public DBMockup() {
         users = new ArrayList<>();
         sessions = new HashMap<>();
@@ -103,6 +104,10 @@ public class DBMockup implements Serializable {
 
     public ArrayList<WorkerObserverRI> allWorkers(){
         return workers;
+    }
+
+    public HashMap<String, ArrayList<WorkerObserverRI>> allWorkersUsers(){
+        return userWorkers;
     }
 
     public User getUser(String uname) throws RemoteException {

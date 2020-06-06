@@ -74,11 +74,7 @@
                               <SpinnerValueFactory.IntegerSpinnerValueFactory max="10" min="1" />
                            </valueFactory>
                         </Spinner>
-                        <Label layoutX="817.0" layoutY="205.0" prefHeight="18.0" prefWidth="131.0" text="Max length word" />
-                        <TextField fx:id="maxLengthWordTF" layoutX="965.0" layoutY="249.0" />
-                        <Label layoutX="817.0" layoutY="252.0" prefHeight="18.0" prefWidth="86.0" text="Max words" />
-                        <TextField fx:id="maxWordsTF" layoutX="964.0" layoutY="202.0" />
-                        <Button fx:id="joinTaskBut" layoutX="1015.0" layoutY="373.0" mnemonicParsing="false" onAction="#handlerJoinTask" prefHeight="20.0" prefWidth="48.0" text="Join" />
+                        <Button fx:id="joinTaskBut" layoutX="1015.0" layoutY="350.0" mnemonicParsing="false" onAction="#handlerJoinTask" prefHeight="20.0" prefWidth="48.0" text="Join" />
                      </children>
                   </AnchorPane>
                </content>

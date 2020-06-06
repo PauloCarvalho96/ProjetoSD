@@ -42,8 +42,6 @@ public class MenuController implements Initializable {
     /** Join task **/
     public Label nameTaskSelectedLabel;
     public Spinner<Integer> numberThreadsSpinner;
-    public TextField maxLengthWordTF;
-    public TextField maxWordsTF;
     public Button joinTaskBut;
     public Label messageJoinTask;
     /** List own tasks **/
@@ -185,12 +183,6 @@ public class MenuController implements Initializable {
         strategyCB.setValue("Strategy 1");
     }
 
-    public void initializeListTasks(){
-        maxLengthWordTF.clear();
-        maxWordsTF.clear();
-        numberThreadsSpinner.getValueFactory().setValue(1);
-    }
-
     public void handleExit(ActionEvent actionEvent) {
         System.exit(0);
     }
@@ -218,17 +210,10 @@ public class MenuController implements Initializable {
             if (!name.isEmpty() && !hashPass.isEmpty() && strategyRequisites()) {
                 delta = 500000;
                 hashPass.clear();
-                /*
-                hashPass.add("4e2083e0fc093f7f0fcf43b145fb586e476cdce4e38533462160a3656ef63f4ad75c027d45ee5ccbf652c8745210a2b7a1e652c79f0e8be3c926f591c4a667db");
-                hashPass.add("91fae6a834ad600709174d63bb98d7ff8bc5b4dab65b83a53b640be44e1a78fbc9d5caac0c4ab53a9af0d77b79696fe460e98d87211cd66c16c436eeb9fb0b27");
-                hashPass.add("f9cd0599ad0623251da70f2a9c97a9a89c2f034e9ab7a93cef3702d3c1d9b377738c6410079ad6a74cef9b84b4396621b4d0954a4419c302d389ce4ddbb03573");
-                hashPass.add("26016268623f834338088a1492e3caf284ac00093fefef95ddfdb4f7ed34b5e7d80e7ceceef7902d20762f93323eefd2900d38eb065213612c94a3fecb13e4ac");
-                hashPass.add("681e29b8f594a0560a8568cd1ddef081feccfd564e164207b2151e14620092f9fbbb20c9f79daaf2a01e7dda846a326a02a1cb3ddb27f2c685e43d2c86f2c5ad");
-                hashPass.add("9ca5e00e64ca5f5e03b2cd02a38dee70d2d559608c8ffe1814029d3f2fa86bcc245a5eace3da57efa9f2dac58ac21750bf61ba0dc812b01b45b02010ea271a68");
-                hashPass.add("bdc247a1a0e28a586ed40744d281993d519abe981aaef33277d4877d167e1150816e9723d068a59509991ed0cdd8c5cea0f9ecd0ef23664db7cb85db5a0dbe12");
-                */
-                hashPass.add("170c248082fd9075ae4705e182f6f6f2ccafdc431c92a1fbd0918d070a568e7eb5fe2c219baa0bfdcd52b9d60d09c16e4f8275bdfd65f3730eb7e72c9a331e75");
-                hashPass.add("a12b06cd9da058516b3f2743ddeb5418a1796a78cdb7f18e57bdcf4f86fdaba88cee951115901369f2dbf4b789fcc0b0a0d320b98c4dfa097a23bf5bb451e625");
+
+                // aaa
+                hashPass.add("d6f644b19812e97b5d871658d6d3400ecd4787faeb9b8990c1e7608288664be77257104a58d033bcf1a0e0945ff06468ebe53e2dff36e248424c7273117dac09");
+
                 HashMap<String, String> data = new HashMap<>();
                 if(strategy2Requisites()){
                     String[] le = lengthPassTaskTF.getText().split(";");
@@ -239,10 +224,12 @@ public class MenuController implements Initializable {
                     }
                     data.put("length",lengthPassTaskTF.getText());
                 }else if(strategy3Requisites()){
-                    String[] le = lengthPassTaskTF.getText().split(";");
-                    if(le.length != hashPass.size()){
+                    String le = lengthPassTaskTF.getText();
+                    try {
+                        Integer.parseInt(le);
+                    } catch (IllegalArgumentException e){
+                        messageCreateTask.setText("Task was not created! Length pass has to be a number!");
                         messageCreateTask.setWrapText(true);
-                        messageCreateTask.setText("Task was not created! Number of length pass is not the same as hash pass!");
                         return;
                     }
                     data.put("length",lengthPassTaskTF.getText());
@@ -295,25 +282,16 @@ public class MenuController implements Initializable {
 
     /** associar worker a um taskgroup */
     public void handlerJoinTask(ActionEvent actionEvent) throws RemoteException {
-        if(!maxLengthWordTF.getText().isEmpty() && !maxWordsTF.getText().isEmpty()) {
-            try {
-                //int maxLength = Integer.getInteger(maxLengthWordTF.getText());
-                //int maxWords = Integer.getInteger(maxWordsTF.getText());
-                TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
-                if (taskSubjectRI != null && taskSubjectRI.isAvailable()) {
-                    int n_threads = numberThreadsSpinner.getValue();
-                   WorkerObserverRI workerObserverRI = new WorkerObserverImpl(this.client.userSessionRI.getSizeWorkersDB(), client.username, n_threads);
-                   this.client.userSessionRI.createWorker(workerObserverRI, client.username);
-                   taskSubjectRI.attach(workerObserverRI);
-                   initializeTableViewListTasks();
-                   listTasks();
-                   messageJoinTask.setWrapText(true);
-                   messageJoinTask.setText("Worker was created with success!");
-                }
-            }catch (IllegalArgumentException e){
-                messageJoinTask.setWrapText(true);
-                messageJoinTask.setText("Max length word and max words have to be numbers!");
-            }
+        TaskSubjectRI taskSubjectRI = tasksTable.getSelectionModel().getSelectedItem();
+        if (taskSubjectRI != null && taskSubjectRI.isAvailable()) {
+            int n_threads = numberThreadsSpinner.getValue();
+            WorkerObserverRI workerObserverRI = new WorkerObserverImpl(this.client.userSessionRI.getSizeWorkersDB(), client.username, n_threads);
+            this.client.userSessionRI.createWorker(workerObserverRI, client.username);
+            taskSubjectRI.attach(workerObserverRI);     // adiciona worker na task
+            initializeTableViewListTasks();
+            listTasks();
+            messageJoinTask.setWrapText(true);
+            messageJoinTask.setText("Worker was created with success!");
         }
     }
 

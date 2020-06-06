@@ -14,7 +14,7 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     public ArrayList<Integer> wordsSize = new ArrayList<>();
 
-    ArrayList<Integer> lines = new ArrayList<>();
+    public ArrayList<Integer> lines = new ArrayList<>();
 
     public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, ArrayList<Integer> wordsSize) throws RemoteException {
         super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,2);
