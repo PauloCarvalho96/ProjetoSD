@@ -11,7 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubjectRI {
+public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubjectRI, Runnable {
 
     public ArrayList<Integer> wordsSize = new ArrayList<>();
 
@@ -26,85 +26,16 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     /** Tasks para divisao do ficheiro por linhas */
     public void createSubTasksDividing(){
-        try {
-            for(String path: paths){
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(path));
-                    int lines = 0;
-                    while (reader.readLine() != null) {
-                        if(lines == start + delta - 1){
-                            Task task = new Task(url,start,delta,this);
-                            task.setWordsSize(wordsSize);
-                            task.isHashing = false;
-                            dividingTasks.add(task);
-                            start = lines + 1;
-                        }
-                        lines++;
-                    }
-                    int lastDelta = delta;
-                    lastDelta = lines - start;
-                    if(lastDelta != 0){
-                        Task task = new Task(url,start,lastDelta,this);
-                        task.setWordsSize(wordsSize);
-                        task.isHashing = false;
-                        dividingTasks.add(task);
-                        reader.close();
-                    }
-                    break;
-                }catch (FileNotFoundException ignored){}
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Runnable runnable = this;
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
     @Override
     public void createSubTasks() throws RemoteException{
-        start = 0;
-        try {
-            for(String path: paths){
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(path));
-                    int lines = 0;
-                    while (reader.readLine() != null) {
-                        if(lines == start + delta - 1){
-                            Task task = new Task(url,start,delta,this);
-                            task.isHashing = true;
-                            tasks.add(task);
-                            for (Integer l:this.lines) {
-                                if(l > start && l < start + delta +1){
-                                    task.lines.add(l);
-                                }
-                            }
-                            if(task.lines.isEmpty()){
-                                tasks.remove(task);
-                            }
-                            start = lines + 1;
-                        }
-                        lines++;
-                    }
-                    int lastDelta = delta;
-                    lastDelta = lines - start;
-                    if(lastDelta != 0){
-                        Task task = new Task(url,start,lastDelta,this);
-                        task.isHashing = true;
-                        tasks.add(task);
-                        for (Integer l:this.lines) {
-                            if(l > start && l < start + lastDelta +1){
-                                task.lines.add(l);
-                            }
-                        }
-                        if(task.lines.isEmpty()){
-                            tasks.remove(task);
-                        }
-                        reader.close();
-                    }
-                    break;
-                }catch (FileNotFoundException ignored){}
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Runnable runnable = this;
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
     @Override
@@ -250,6 +181,88 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     public ArrayList<Integer> getWordsSize() {
         return wordsSize;
+    }
+
+    @Override
+    public void run() {
+        if(this.subjectState.getProcess().compareTo("Dividing") == 0){
+            try {
+                for(String path: paths){
+                    try {
+                        BufferedReader reader = new BufferedReader(new FileReader(path));
+                        int lines = 0;
+                        while (reader.readLine() != null) {
+                            if(lines == start + delta - 1){
+                                Task task = new Task(url,start,delta,this);
+                                task.setWordsSize(wordsSize);
+                                task.isHashing = false;
+                                dividingTasks.add(task);
+                                start = lines + 1;
+                            }
+                            lines++;
+                        }
+                        int lastDelta = delta;
+                        lastDelta = lines - start;
+                        if(lastDelta != 0){
+                            Task task = new Task(url,start,lastDelta,this);
+                            task.setWordsSize(wordsSize);
+                            task.isHashing = false;
+                            dividingTasks.add(task);
+                            reader.close();
+                        }
+                        break;
+                    }catch (FileNotFoundException ignored){}
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            start = 0;
+            try {
+                for(String path: paths){
+                    try {
+                        BufferedReader reader = new BufferedReader(new FileReader(path));
+                        int lines = 0;
+                        while (reader.readLine() != null) {
+                            if(lines == start + delta - 1){
+                                Task task = new Task(url,start,delta,this);
+                                task.isHashing = true;
+                                tasks.add(task);
+                                for (Integer l:this.lines) {
+                                    if(l > start && l < start + delta +1){
+                                        task.lines.add(l);
+                                    }
+                                }
+                                if(task.lines.isEmpty()){
+                                    tasks.remove(task);
+                                }
+                                start = lines + 1;
+                            }
+                            lines++;
+                        }
+                        int lastDelta = delta;
+                        lastDelta = lines - start;
+                        if(lastDelta != 0){
+                            Task task = new Task(url,start,lastDelta,this);
+                            task.isHashing = true;
+                            tasks.add(task);
+                            for (Integer l:this.lines) {
+                                if(l > start && l < start + lastDelta +1){
+                                    task.lines.add(l);
+                                }
+                            }
+                            if(task.lines.isEmpty()){
+                                tasks.remove(task);
+                            }
+                            reader.close();
+                        }
+                        break;
+                    }catch (FileNotFoundException ignored){}
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

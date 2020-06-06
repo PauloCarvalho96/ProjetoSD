@@ -8,7 +8,7 @@ import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubjectRI {
+public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubjectRI, Runnable{
     public Integer wordsSize;
     public String alphabet;
 
@@ -22,16 +22,9 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     /** divide linhas para criar sub tasks */
     @Override
     public void createSubTasks() throws RemoteException{
-        //TODO: Comentar o que cada variavel é
-        int percentagens = 10;
-        double range_size = Math.pow(alphabet.length(),wordsSize);
-        Integer range_ammount = Math.toIntExact(Math.round(range_size / percentagens));
-        ArrayList<Integer> wordsize = new ArrayList<>();
-        wordsize.add(wordsSize);
-        for (int i = 0; i < percentagens ; i++){
-            Task task = new Task(this,alphabet,wordsize,i*range_ammount+i,range_ammount);
-            tasks.add(task);
-        }
+        Runnable runnable = this;
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
     
     public Integer getStrategy() throws RemoteException {
@@ -165,5 +158,18 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
 
     public Integer getWordsSize() {
         return wordsSize;
+    }
+
+    @Override
+    public void run() {
+        int percentagens = 10;
+        double range_size = Math.pow(alphabet.length(),wordsSize);
+        Integer range_ammount = Math.toIntExact(Math.round(range_size / percentagens));
+        ArrayList<Integer> wordsize = new ArrayList<>();
+        wordsize.add(wordsSize);
+        for (int i = 0; i < percentagens ; i++){
+            Task task = new Task(this,alphabet,wordsize,i*range_ammount+i,range_ammount);
+            tasks.add(task);
+        }
     }
 }
