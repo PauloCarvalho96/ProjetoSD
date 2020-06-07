@@ -19,7 +19,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private String taskName;
     private Task task;      //tarefa
     private int wordsSize;
-    private int creditsWon;
     private ArrayList<Thread> threads = new ArrayList<>();
     private int actualLine;
     private Integer n_threads_dividing;
@@ -90,7 +89,9 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             createFileTask();
             try {
                 BufferedReader reader = new BufferedReader(new FileReader(file_name));
-                while (reader.readLine() != null) delta++;
+                while (reader.readLine() != null){
+                    delta++;
+                }
                 reader.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -184,6 +185,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     public void setTask(Task task) throws RemoteException {
         if(task.getTaskSubjectRI().getStrategy() == 2 && task.getTaskSubjectRI().getState().getProcess().compareTo("Dividing")==0){
             this.task = task;
+            this.taskName = task.getTaskSubjectRI().getName();
             doWorkDividing();
         } else {
             this.task = task;
@@ -265,6 +267,12 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                     System.out.println("\nPaused!!\n");
                 }
                 break;
+            case "Incompleted":
+                if(!this.lastObserverState.getmsg().equals("Incompleted")) {
+                    this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
+                    System.out.println("\nWorker all incompleted!!\n");
+                }
+                break;
         }
     }
 
@@ -280,5 +288,10 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     public Client getClient() {
         return client;
+    }
+
+    @Override
+    public Integer getN_threads() throws RemoteException {
+        return n_threads;
     }
 }

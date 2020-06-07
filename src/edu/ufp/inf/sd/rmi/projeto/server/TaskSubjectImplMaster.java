@@ -39,10 +39,6 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
         this.subjectState.setmsg("Available");
         this.status = this.subjectState.AVAILABLE;
         this.strategy = strategy;
-        System.out.println("PLAFOND: "+this.taskCredits);
-        paths.add("C:\\Users\\Paulo\\Documents\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
-        paths.add("C:\\Users\\Rui\\Documents\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
-        paths.add("C:\\Users\\tmsl9\\GitHub\\ProjetoSD\\src\\edu\\ufp\\inf\\sd\\rmi\\projeto\\server\\passwords_to_verify.txt");
     }
 
     public void attach(WorkerObserverRI obsRI) throws RemoteException {
@@ -53,7 +49,6 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
             } else {
                 obsRI.setTask(getTaskFromArray());
             }
-
         }
     }
 

@@ -55,7 +55,7 @@ public class Hashing implements Runnable {
                     }
                 }
 
-                if(workerObserver.getStateWorker().getmsg().equals("Completed")){////stop thread
+                if(workerObserver.getStateWorker().getmsg().equals("Completed") || workerObserver.getStateWorker().getmsg().equals("Incompleted")){////stop thread
                     break;
                 }
 
