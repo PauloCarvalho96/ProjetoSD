@@ -63,8 +63,6 @@ public class Dividing implements Runnable {
                 }
 
                 if(task.getWordsSize().contains(st.length()) && line >= start && line < start + delta && !workerObserver.getStateWorker().getmsg().equals("Paused")){
-                    boolean found = false;
-                    linesWithWordLength.add(line+1); // não entendi o line+1
                     State state = new State("");
                     Client client = workerObserver.getClient();
                     int userCredits = client.userSessionRI.getUserCreditsDB(client.username);
