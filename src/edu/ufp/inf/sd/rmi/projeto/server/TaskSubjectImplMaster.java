@@ -29,14 +29,12 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
     public ArrayList<String> paths = new ArrayList<>();
     public Integer strategy = 0;
 
-    protected TaskSubjectImplMaster(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta,Integer strategy,Integer taskCredits,Client client) throws RemoteException {
+    protected TaskSubjectImplMaster(String name, String hashType, ArrayList<String> hashPass, Integer delta,Integer strategy,Integer taskCredits,Client client) throws RemoteException {
         this.name = name;
         this.client = client;
         this.hashType = hashType;
         this.hashPass = hashPass;
         this.taskCredits = taskCredits;
-        this.creditsWordProcessed = creditsWordProcessed;
-        this.creditsWordFound = creditsWordFound;
         this.delta = delta;
         this.subjectState.setmsg("Available");
         this.status = this.subjectState.AVAILABLE;

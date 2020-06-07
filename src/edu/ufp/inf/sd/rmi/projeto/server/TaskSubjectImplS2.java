@@ -6,10 +6,9 @@ import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 
 import java.awt.*;
 import java.io.*;
+import java.net.URL;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubjectRI, Runnable {
 
@@ -17,10 +16,14 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     public ArrayList<Integer> lines = new ArrayList<>();
 
-    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer creditsWordProcessed, Integer creditsWordFound, Integer delta, ArrayList<Integer> wordsSize, Integer taskCredits, Client client) throws RemoteException {
-        super(name,hashType,hashPass, creditsWordProcessed, creditsWordFound, delta,2,taskCredits,client);
+    public String url;
+    public String path_file = "file_"+this.name;
+
+    public TaskSubjectImplS2(String name, String hashType, ArrayList<String> hashPass, Integer delta, ArrayList<Integer> wordsSize, Integer taskCredits, Client client,String url) throws RemoteException {
+        super(name,hashType,hashPass, delta,2,taskCredits,client);
         this.wordsSize.addAll(wordsSize);
         this.subjectState.setProcess("Dividing");
+        this.url = url;
         createSubTasksDividing();
     }
 
@@ -81,12 +84,15 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                 if(!this.subjectState.getmsg().equals("Completed") && !this.subjectState.getmsg().equals("Paused")) {
                     this.subjectState.setmsg("Working");
                     this.status = this.subjectState.WORKING;
-                    int creditsToTask = (int) Math.round(delta*0.1);
+                    int creditsToTask = state.getN_credits();
                     this.taskCredits-=creditsToTask;
                 }
                 break;
             case "Paused":
                 System.out.println("PAUSED!");
+                break;
+            case "Line Found":
+                this.taskCredits--;
                 break;
         }
         this.notifyAllObservers();
@@ -187,9 +193,15 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
     public void run() {
         if(this.subjectState.getProcess().compareTo("Dividing") == 0){
             try {
-                for(String path: paths){
-                    try {
-                        BufferedReader reader = new BufferedReader(new FileReader(path));
+                try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
+                     FileOutputStream fileOutputStream = new FileOutputStream("file_"+this.name)) {
+                        BufferedReader reader = new BufferedReader(new FileReader("file_"+this.name));
+                        byte dataBuffer[] = new byte[1024];
+                        int bytesRead;
+                        while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                            fileOutputStream.write(dataBuffer, 0, bytesRead);
+                        }
+
                         int lines = 0;
                         while (reader.readLine() != null) {
                             if(lines == start + delta - 1){
@@ -210,18 +222,21 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                             dividingTasks.add(task);
                             reader.close();
                         }
-                        break;
                     }catch (FileNotFoundException ignored){}
-                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }else{
             start = 0;
             try {
-                for(String path: paths){
-                    try {
-                        BufferedReader reader = new BufferedReader(new FileReader(path));
+                try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
+                     FileOutputStream fileOutputStream = new FileOutputStream("file_"+this.name)) {
+                        BufferedReader reader = new BufferedReader(new FileReader("file_"+this.name));
+                        byte dataBuffer[] = new byte[1024];
+                        int bytesRead;
+                        while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                            fileOutputStream.write(dataBuffer, 0, bytesRead);
+                        }
                         int lines = 0;
                         while (reader.readLine() != null) {
                             if(lines == start + delta - 1){
@@ -256,9 +271,7 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
                             }
                             reader.close();
                         }
-                        break;
                     }catch (FileNotFoundException ignored){}
-                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
