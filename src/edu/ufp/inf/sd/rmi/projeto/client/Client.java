@@ -5,7 +5,6 @@ import edu.ufp.inf.sd.rmi.projeto.server.UserFactoryRI;
 import edu.ufp.inf.sd.rmi.projeto.server.UserSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 
-import java.beans.Transient;
 import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;

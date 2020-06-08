@@ -55,7 +55,7 @@ public class Hashing implements Runnable {
                     }
                 }
 
-                if(workerObserver.getStateWorker().getmsg().equals("Completed")){////stop thread
+                if(workerObserver.getStateWorker().getmsg().equals("Completed") || workerObserver.getStateWorker().getmsg().equals("Incompleted")){////stop thread
                     break;
                 }
 
@@ -99,12 +99,20 @@ public class Hashing implements Runnable {
                         int userCredits = client.userSessionRI.getUserCreditsDB(client.username);
                         client.userSessionRI.setUserCreditsDB(client.username,userCredits+n_check_words);
                         state.setmsg(state.NOT_FOUND);
+                        state.setN_credits(n_check_words);
                         this.workerObserver.updateNotFound(state, line);
                         n_check_words = 0;
                     }
                 }
                 }
                 if (line == start + delta) {
+                    State state = new State("");
+                    Client client = workerObserver.getClient();
+                    int userCredits = client.userSessionRI.getUserCreditsDB(client.username);
+                    client.userSessionRI.setUserCreditsDB(client.username,userCredits+n_check_words);
+                    state.setN_credits(n_check_words);
+                    state.setmsg(state.NOT_FOUND);
+                    this.workerObserver.updateNotFound(state, line);
                     break;
                 }
                 line++;

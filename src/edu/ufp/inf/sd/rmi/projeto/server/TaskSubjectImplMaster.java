@@ -25,11 +25,11 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
     public ArrayList<Task> tasks = new ArrayList<>();// array tasks
     public ArrayList<Task> dividingTasks = new ArrayList<>();
     public ArrayList<Result> result = new ArrayList<>();//array pass found
-    public String url;
-    public String path;
+    public static final String url = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/darkc0de.txt";
+    public ArrayList<String> paths = new ArrayList<>();
     public Integer strategy = 0;
 
-    protected TaskSubjectImplMaster(String name, String hashType, ArrayList<String> hashPass, Integer delta,Integer strategy,Integer taskCredits,Client client, String url) throws RemoteException {
+    protected TaskSubjectImplMaster(String name, String hashType, ArrayList<String> hashPass, Integer delta,Integer strategy,Integer taskCredits,Client client) throws RemoteException {
         this.name = name;
         this.client = client;
         this.hashType = hashType;
@@ -39,9 +39,6 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
         this.subjectState.setmsg("Available");
         this.status = this.subjectState.AVAILABLE;
         this.strategy = strategy;
-        this.url = url;
-        this.path = "file_"+this.name+".txt";
-        System.out.println("PLAFOND: "+this.taskCredits);
     }
 
     public void attach(WorkerObserverRI obsRI) throws RemoteException {
@@ -52,7 +49,6 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
             } else {
                 obsRI.setTask(getTaskFromArray());
             }
-
         }
     }
 

@@ -64,11 +64,12 @@ public class Dividing implements Runnable {
 
                 if(task.getWordsSize().contains(st.length()) && line >= start && line < start + delta && !workerObserver.getStateWorker().getmsg().equals("Paused")){
                     State state = new State("");
-                    state.setmsg("Line Found");
                     Client client = workerObserver.getClient();
                     int userCredits = client.userSessionRI.getUserCreditsDB(client.username);
                     client.userSessionRI.setUserCreditsDB(client.username,userCredits+1);
                     linesWithWordLength.add(line+1);
+                    state.setmsg("Line Found");
+                    this.workerObserver.updateNotFound(state, line);
                 }
                 if (line == start + delta) {
                     break;
