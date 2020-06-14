@@ -75,7 +75,7 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
                 break;
             /** Se nao encontrar nenhuma palavra no range */
             case "Not Found":
-                if(!this.subjectState.getmsg().equals("Completed") && !this.subjectState.getmsg().equals("Paused")) {
+                if(!this.subjectState.getmsg().equals("Completed") || !this.subjectState.getmsg().equals("Incompleted") || !this.subjectState.getmsg().equals("Paused")) {
                     this.subjectState.setmsg("Working");
                     this.status = this.subjectState.WORKING;
                     int creditsToTask = state.getN_credits();
@@ -104,7 +104,7 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
 
     @Override
     public void pause() throws RemoteException {
-        if(!this.subjectState.getmsg().equals("Completed") || !this.subjectState.getmsg().equals("Paused")) {
+        if(!this.subjectState.getmsg().equals("Completed") || !this.subjectState.getmsg().equals("Incompleted") || !this.subjectState.getmsg().equals("Paused")) {
             System.out.println("PAUSED");
             this.subjectState.setmsg("Paused");
             this.status = this.subjectState.PAUSED;
@@ -150,8 +150,9 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
     @Override
     public void stop() throws RemoteException {
         this.hashPass.clear();
-        this.subjectState.setmsg("Completed");
-        this.status = this.subjectState.COMPLETED;
+        this.subjectState.setmsg("Incompleted");
+        this.status = this.subjectState.INCOMPLETED;
+        System.out.println("Incompleted");
         this.notifyAllObservers();
         this.available = false;
     }

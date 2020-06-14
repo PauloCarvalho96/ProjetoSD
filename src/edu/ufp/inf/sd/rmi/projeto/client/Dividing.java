@@ -72,13 +72,6 @@ public class Dividing implements Runnable {
                     this.workerObserver.updateNotFound(state, line);
                 }
                 if (line == start + delta) {
-//                    State state = new State("");
-//                    Client client = workerObserver.getClient();
-//                    int userCredits = client.userSessionRI.getUserCreditsDB(client.username);
-//                    client.userSessionRI.setUserCreditsDB(client.username,userCredits+1);
-//                    linesWithWordLength.add(line+1);
-//                    state.setmsg("Line Found");
-//                    this.workerObserver.updateNotFound(state, line);
                     break;
                 }
                 line++;
