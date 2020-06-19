@@ -14,25 +14,24 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
 
     private State lastObserverState;
     private int id;
-    private String username;    // username do user
+    private Client client;    // dono do worker
     private Integer n_threads;      // nº de threads para trabalharem na task
     private String taskName;
     private Task task;      //tarefa
     private int wordsSize;
-    private int creditsWon;
     private ArrayList<Thread> threads = new ArrayList<>();
     private int actualLine;
     private Integer n_threads_dividing;
     private String file_name;
 
-    public WorkerObserverImpl(int id, String username, Integer n_threads) throws RemoteException {
+    public WorkerObserverImpl(int id, Client client, Integer n_threads) throws RemoteException {
         super();
         this.id = id;
-        this.username = username;
+        this.client = client;
         this.n_threads = n_threads;
         this.actualLine = 0;
         this.lastObserverState = new State("Available");
-        this.file_name="file_"+username+"_"+id+".txt";
+        this.file_name="file_"+client.username+"_"+id+".txt";
         n_threads_dividing = this.n_threads;
     }
 
@@ -90,7 +89,9 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             createFileTask();
             try {
                 BufferedReader reader = new BufferedReader(new FileReader(file_name));
-                while (reader.readLine() != null) delta++;
+                while (reader.readLine() != null){
+                    delta++;
+                }
                 reader.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -184,6 +185,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     public void setTask(Task task) throws RemoteException {
         if(task.getTaskSubjectRI().getStrategy() == 2 && task.getTaskSubjectRI().getState().getProcess().compareTo("Dividing")==0){
             this.task = task;
+            this.taskName = task.getTaskSubjectRI().getName();
             doWorkDividing();
         } else {
             this.task = task;
@@ -265,6 +267,12 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
                     System.out.println("\nPaused!!\n");
                 }
                 break;
+            case "Incompleted":
+                if(!this.lastObserverState.getmsg().equals("Incompleted")) {
+                    this.lastObserverState.setmsg(this.task.getTaskSubjectRI().getState().getmsg());
+                    System.out.println("\nWorker all incompleted!!\n");
+                }
+                break;
         }
     }
 
@@ -278,4 +286,12 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.n_threads_dividing = n_threads_dividing;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    @Override
+    public Integer getN_threads() throws RemoteException {
+        return n_threads;
+    }
 }
