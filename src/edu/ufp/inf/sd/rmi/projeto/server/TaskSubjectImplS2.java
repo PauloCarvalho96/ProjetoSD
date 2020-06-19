@@ -37,7 +37,7 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
     @Override
     public void createSubTasks() throws RemoteException{
         try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
-             FileOutputStream fileOutputStream = new FileOutputStream(path)) {
+             FileOutputStream fileOutputStream = new FileOutputStream(path_file)) {
             byte dataBuffer[] = new byte[1024];
             int bytesRead;
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
