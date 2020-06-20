@@ -19,6 +19,15 @@ public class TaskSubjectImplS3 extends TaskSubjectImplMaster implements TaskSubj
         createSubTasks();
     }
 
+    @Override
+    public void checkWorkers() throws RemoteException {
+        for (WorkerObserverRI wo:this.workers) {
+            if(wo==null){
+                System.out.println("PILINHAS");
+            }
+        }
+    }
+
     /** divide linhas para criar sub tasks */
     @Override
     public void createSubTasks() throws RemoteException{

@@ -19,6 +19,7 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
         super(name,hashType,hashPass, delta,1,taskCredits,client);
         this.url = url;
         createSubTasks();
+        checkWorkers();
     }
 
     /** divide linhas para criar sub tasks */
@@ -35,6 +36,8 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
 
     @Override
     public void finishDividing(ArrayList<Integer> linesWithWordLength, WorkerObserverRI workerObserverRI) throws RemoteException {}
+
+
 
     @Override
     public void changeWorkerState(State state, String hash, String pass) throws RemoteException {

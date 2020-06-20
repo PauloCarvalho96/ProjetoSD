@@ -6,6 +6,7 @@ import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TaskSubjectImplMaster extends UnicastRemoteObject {
 
@@ -98,5 +99,44 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
 
     public void setTaskCredits(Integer taskCredits) throws RemoteException {
         this.taskCredits = taskCredits;
+    }
+
+    public void checkWorkers() throws RemoteException {
+        TaskSubjectImplMaster.RunnableDemo R1 = new TaskSubjectImplMaster.RunnableDemo(this);
+        R1.start();
+    }
+
+    class RunnableDemo implements Runnable {
+        private Thread t;
+        private TaskSubjectImplMaster task;
+
+        RunnableDemo(TaskSubjectImplMaster task) {
+            this.task = task;
+        }
+
+        public void run() {
+            while (true){
+                for (WorkerObserverRI wo:this.task.workers) {
+                    //Date de agora neste momento
+                    Date d = new Date();
+                    //Adiciona 30 segundos a data de agora
+                    d.setMinutes(d.getSeconds() - 30);
+                    try {
+                        Date worker_d = wo.getLast_state_time();
+                        if(worker_d.before(d)){
+                            System.out.println("OLAAAAAAAAAAAAAAAAAAAAAA");
+                        }
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        public void start () {
+            System.out.println("CHGEOASKA");
+            t = new Thread (this, "cheking_workers");
+            t.start ();
+        }
     }
 }

@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public interface WorkerObserverRI extends Remote {
     public void updateFound(State state, String hashPass,String pass, int line) throws RemoteException;
@@ -31,4 +32,6 @@ public interface WorkerObserverRI extends Remote {
     public Integer getN_threads_dividing() throws RemoteException;
     public void setN_threads_dividing(Integer n_threads_dividing) throws RemoteException;
     public Integer getN_threads() throws RemoteException;
+    public void setLast_state_time(Date last_state_time) throws RemoteException;
+    public Date getLast_state_time() throws  RemoteException;
 }

@@ -27,6 +27,15 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
         createSubTasksDividing();
     }
 
+    @Override
+    public void checkWorkers() throws RemoteException {
+        for (WorkerObserverRI wo:this.workers) {
+            if(wo==null){
+                System.out.println("PILINHAS");
+            }
+        }
+    }
+
     /** Tasks para divisao do ficheiro por linhas */
     public void createSubTasksDividing(){
         Runnable runnable = this;
@@ -36,16 +45,6 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
 
     @Override
     public void createSubTasks() throws RemoteException{
-        try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
-             FileOutputStream fileOutputStream = new FileOutputStream(path_file)) {
-            byte dataBuffer[] = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-                fileOutputStream.write(dataBuffer, 0, bytesRead);
-            }
-        }catch(Exception e){
-
-        }
         Runnable runnable = this;
         Thread thread = new Thread(runnable);
         thread.start();
@@ -208,34 +207,34 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
             try {
                 try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
                      FileOutputStream fileOutputStream = new FileOutputStream(path_file)) {
-                        BufferedReader reader = new BufferedReader(new FileReader(path_file));
-                        byte dataBuffer[] = new byte[1024];
-                        int bytesRead;
-                        while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-                            fileOutputStream.write(dataBuffer, 0, bytesRead);
-                        }
+                    BufferedReader reader = new BufferedReader(new FileReader(path_file));
+                    byte dataBuffer[] = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                        fileOutputStream.write(dataBuffer, 0, bytesRead);
+                    }
 
-                        int lines = 0;
-                        while (reader.readLine() != null) {
-                            if(lines == start + delta - 1){
-                                Task task = new Task(url,start,delta,this);
-                                task.setWordsSize(wordsSize);
-                                task.isHashing = false;
-                                dividingTasks.add(task);
-                                start = lines + 1;
-                            }
-                            lines++;
-                        }
-                        int lastDelta = delta;
-                        lastDelta = lines - start;
-                        if(lastDelta != 0){
-                            Task task = new Task(url,start,lastDelta,this);
+                    int lines = 0;
+                    while (reader.readLine() != null) {
+                        if(lines == start + delta - 1){
+                            Task task = new Task(url,start,delta,this);
                             task.setWordsSize(wordsSize);
                             task.isHashing = false;
                             dividingTasks.add(task);
-                            reader.close();
+                            start = lines + 1;
                         }
-                    }catch (FileNotFoundException ignored){}
+                        lines++;
+                    }
+                    int lastDelta = delta;
+                    lastDelta = lines - start;
+                    if(lastDelta != 0){
+                        Task task = new Task(url,start,lastDelta,this);
+                        task.setWordsSize(wordsSize);
+                        task.isHashing = false;
+                        dividingTasks.add(task);
+                        reader.close();
+                    }
+                }catch (FileNotFoundException ignored){}
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -244,47 +243,47 @@ public class TaskSubjectImplS2 extends TaskSubjectImplMaster implements TaskSubj
             try {
                 try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
                      FileOutputStream fileOutputStream = new FileOutputStream("file_"+this.name)) {
-                        BufferedReader reader = new BufferedReader(new FileReader("file_"+this.name));
-                        byte dataBuffer[] = new byte[1024];
-                        int bytesRead;
-                        while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-                            fileOutputStream.write(dataBuffer, 0, bytesRead);
-                        }
-                        int lines = 0;
-                        while (reader.readLine() != null) {
-                            if(lines == start + delta - 1){
-                                Task task = new Task(url,start,delta,this);
-                                task.isHashing = true;
-                                tasks.add(task);
-                                for (Integer l:this.lines) {
-                                    if(l > start && l < start + delta +1){
-                                        task.lines.add(l);
-                                    }
-                                }
-                                if(task.lines.isEmpty()){
-                                    tasks.remove(task);
-                                }
-                                start = lines + 1;
-                            }
-                            lines++;
-                        }
-                        int lastDelta = delta;
-                        lastDelta = lines - start;
-                        if(lastDelta != 0){
-                            Task task = new Task(url,start,lastDelta,this);
+                    BufferedReader reader = new BufferedReader(new FileReader("file_"+this.name));
+                    byte dataBuffer[] = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                        fileOutputStream.write(dataBuffer, 0, bytesRead);
+                    }
+                    int lines = 0;
+                    while (reader.readLine() != null) {
+                        if(lines == start + delta - 1){
+                            Task task = new Task(url,start,delta,this);
                             task.isHashing = true;
                             tasks.add(task);
                             for (Integer l:this.lines) {
-                                if(l > start && l < start + lastDelta +1){
+                                if(l > start && l < start + delta +1){
                                     task.lines.add(l);
                                 }
                             }
                             if(task.lines.isEmpty()){
                                 tasks.remove(task);
                             }
-                            reader.close();
+                            start = lines + 1;
                         }
-                    }catch (FileNotFoundException ignored){}
+                        lines++;
+                    }
+                    int lastDelta = delta;
+                    lastDelta = lines - start;
+                    if(lastDelta != 0){
+                        Task task = new Task(url,start,lastDelta,this);
+                        task.isHashing = true;
+                        tasks.add(task);
+                        for (Integer l:this.lines) {
+                            if(l > start && l < start + lastDelta +1){
+                                task.lines.add(l);
+                            }
+                        }
+                        if(task.lines.isEmpty()){
+                            tasks.remove(task);
+                        }
+                        reader.close();
+                    }
+                }catch (FileNotFoundException ignored){}
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -5,5 +5,5 @@ grant codeBase "${edu.ufp.sd.projeto.activation.setup.codebase}" {
     permission java.util.PropertyPermission "edu.ufp.sd.projeto.activation.file","read";
     permission java.util.PropertyPermission "edu.ufp.sd.projeto.activation.servicename","read";
     // permission to connect to the activation system and the registry
-    permission java.net.SocketPermission "*:1098-1099","connect";
+    permission java.net.SocketPermission "*:1098-1100","connect";
 };

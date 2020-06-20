@@ -7,6 +7,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 
@@ -24,6 +25,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     private Integer n_threads_dividing;
     private String file_name;
     private String url;
+    private Date last_state_time;
 
     public WorkerObserverImpl(int id, Client client, Integer n_threads) throws RemoteException {
         super();
@@ -34,6 +36,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         this.lastObserverState = new State("Available");
         this.file_name="file_"+client.username+"_"+id+".txt";
         this.n_threads_dividing = this.n_threads;
+        this.last_state_time = new Date();
     }
 
     private void doWorkDividing() throws RemoteException {
@@ -128,6 +131,7 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     public void updateNotFound(State state, int line) throws RemoteException {
         this.lastObserverState = state;
         this.task.getTaskSubjectRI().changeWorkerState(state, "", "");
+        this.last_state_time = new Date();
     }
 
     @Override
@@ -225,8 +229,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         for(int i = 0; i < task.getAlphabet().length() ; i++){
             ha.put(i, alphabet_aux[i]);
         }
-        for (int i = 0 ; i < ha.size() ; i++){
-        }
 
         for (int i = task.getStart(); i <= task.getStart()+task.getDelta(); i++){
             StringBuilder ch = new StringBuilder(Integer.toString(i, task.getAlphabet().length()));
@@ -297,5 +299,15 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     @Override
     public Integer getN_threads() throws RemoteException {
         return n_threads;
+    }
+
+    @Override
+    public Date getLast_state_time() {
+        return last_state_time;
+    }
+
+    @Override
+    public void setLast_state_time(Date last_state_time) {
+        this.last_state_time = last_state_time;
     }
 }
