@@ -10,12 +10,9 @@ public class State implements Serializable {
 
     private String process;
 
-    private Integer n_credits = 0;
-
     //TASK & WORKER
     public final String PAUSED = "Paused";
     public final String COMPLETED = "Completed";
-    public final String INCOMPLETED = "Incompleted";
     public final String NOT_COMPLETED = "Not Completed";
     public final String WORKING = "Working";
 
@@ -61,13 +58,5 @@ public class State implements Serializable {
 
     public void setProcess(String process) {
         this.process = process;
-    }
-
-    public Integer getN_credits() {
-        return n_credits;
-    }
-
-    public void setN_credits(Integer n_credits) {
-        this.n_credits = n_credits;
     }
 }

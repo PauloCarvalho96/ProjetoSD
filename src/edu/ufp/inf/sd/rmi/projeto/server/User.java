@@ -9,7 +9,6 @@ public class User implements Serializable {
 
     private String uname;
     private String pword;
-    private Integer credits = 0;
 
     public User(String uname, String pword) {
         this.uname = uname;
@@ -30,14 +29,6 @@ public class User implements Serializable {
 
     public void setPword(String pword) {
         this.pword = pword;
-    }
-
-    public Integer getCredits() {
-        return credits;
-    }
-
-    public void setCredits(Integer credits) {
-        this.credits = credits;
     }
 
     @Override
