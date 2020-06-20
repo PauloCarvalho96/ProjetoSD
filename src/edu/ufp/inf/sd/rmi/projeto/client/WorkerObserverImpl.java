@@ -1,6 +1,10 @@
 package edu.ufp.inf.sd.rmi.projeto.client;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.DeliverCallback;
 import edu.ufp.inf.sd.rmi.projeto.server.*;
+import edu.ufp.inf.sd.rmi.util.RabbitUtils;
 
 import java.io.*;
 import java.net.URL;
@@ -8,6 +12,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeoutException;
 
 
 public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObserverRI {
@@ -191,6 +196,14 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
             this.task = task;
             this.taskName = task.getTaskSubjectRI().getName();
             this.wordsSize = task.getDelta();
+
+            /** RabbitMQ */
+            try {
+                connectToQueue(taskName);
+            } catch (IOException | TimeoutException e) {
+                e.printStackTrace();
+            }
+
             doWork();
         }
     }
@@ -220,8 +233,6 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
         char[] alphabet_aux = this.task.getAlphabet().toCharArray();
         for(int i = 0; i < task.getAlphabet().length() ; i++){
             ha.put(i, alphabet_aux[i]);
-        }
-        for (int i = 0 ; i < ha.size() ; i++){
         }
 
         for (int i = task.getStart(); i <= task.getStart()+task.getDelta(); i++){
@@ -294,4 +305,34 @@ public class WorkerObserverImpl extends UnicastRemoteObject implements WorkerObs
     public Integer getN_threads() throws RemoteException {
         return n_threads;
     }
+
+    /** RabbitMQ */
+
+    public Task connectToQueue(String taskName) throws IOException, TimeoutException {
+        Connection connection = RabbitUtils.newConnection2Server("localhost","guest", "guest");
+        Channel channel=RabbitUtils.createChannel2Server(connection);
+
+        boolean durable = true;
+        channel.queueDeclare(taskName, durable, false, false, null);
+        int prefetchCount = 1;
+        channel.basicQos(prefetchCount);
+
+        DeliverCallback deliverCallback=(consumerTag, delivery) -> {
+            try (ByteArrayInputStream bis = new ByteArrayInputStream(delivery.getBody());
+                 ObjectInput in = new ObjectInputStream(bis)) {
+                try {
+                    Task task = (Task) in.readObject();
+                    System.out.println("\nSTART "+task.getStart()+"\nDELTA "+task.getDelta());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        boolean autoAck = false;
+        channel.basicConsume(taskName, autoAck, deliverCallback, consumerTag -> { });
+
+        return task;
+    }
+
 }

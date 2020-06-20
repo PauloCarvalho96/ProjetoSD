@@ -1,14 +1,19 @@
 package edu.ufp.inf.sd.rmi.projeto.server;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.MessageProperties;
 import edu.ufp.inf.sd.rmi.projeto.client.Client;
 import edu.ufp.inf.sd.rmi.projeto.client.TrayIconDemo;
 import edu.ufp.inf.sd.rmi.projeto.client.WorkerObserverRI;
+import edu.ufp.inf.sd.rmi.util.RabbitUtils;
 
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubjectRI , Runnable {
 
@@ -167,12 +172,13 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
                     while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
                         fileOutputStream.write(dataBuffer, 0, bytesRead);
                     }
-
                     int lines = 0;
                     while (reader.readLine() != null) {
                         if(lines == start + delta - 1){
                             Task task = new Task(url,start,delta,this);
                             tasks.add(task);
+                            /** RabbitMQ */
+                            connectToQueue(task);
                             start = lines + 1;
                         }
                         lines++;
@@ -182,6 +188,8 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
                     if(lastDelta != 0){
                         Task task = new Task(url,start,lastDelta,this);
                         tasks.add(task);
+                        /** RabbitMQ */
+                        connectToQueue(task);
                         reader.close();
                     }
                     for (Task task:tasks) {
@@ -192,4 +200,25 @@ public class TaskSubjectImplS1 extends TaskSubjectImplMaster implements TaskSubj
             e.printStackTrace();
         }
     }
+
+    /** RabbitMQ */
+    public void connectToQueue(Task task) throws IOException, TimeoutException {
+        try (Connection connection= RabbitUtils.newConnection2Server("localhost", "guest", "guest");
+             Channel channel=RabbitUtils.createChannel2Server(connection)) {
+            boolean durable=true;
+            channel.queueDeclare(name, durable, false, false, null);
+
+            try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                 ObjectOutput out = new ObjectOutputStream(bos)) {
+                    out.writeObject(task);
+                    byte[] taskbytes = bos.toByteArray();
+
+                channel.basicPublish("", name,
+                        MessageProperties.PERSISTENT_TEXT_PLAIN,
+                        taskbytes);
+                System.out.println(" [x] Sent '" + task + "'");
+            }
+        }
+    }
+
 }

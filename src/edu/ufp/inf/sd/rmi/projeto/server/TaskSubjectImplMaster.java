@@ -13,8 +13,6 @@ public class TaskSubjectImplMaster extends UnicastRemoteObject {
     public String hashType;
     public Client client;   // dono do taskgroup
     public ArrayList<String> hashPass;
-    public Integer creditsWordProcessed;
-    public Integer creditsWordFound;
     public Integer taskCredits;
     public State subjectState = new State();
     public String status;
